@@ -11,32 +11,27 @@ const config: Config = {
       // ZARIF BRAND COLORS
       // ============================================
       colors: {
-        // Primary Navy (মূল ব্যাকগ্রাউন্ড)
         navy: {
           DEFAULT: '#0B132B',
           dark: '#0F172A',
           light: '#1E293B',
           border: '#1E293B',
         },
-        // Accent Gold (লোগো, হাইলাইট)
         gold: {
           DEFAULT: '#D4AF37',
           light: '#F59E0B',
           dark: '#B8941F',
         },
-        // Action Orange (CTA বাটন)
         brand: {
           orange: '#EA580C',
           red: '#DC2626',
         },
-        // Status Colors
         status: {
           success: '#22C55E',
           warning: '#EAB308',
           error: '#EF4444',
           info: '#3B82F6',
         },
-        // Muted Text
         muted: {
           DEFAULT: '#94A3B8',
           dark: '#64748B',
@@ -52,6 +47,21 @@ const config: Config = {
       },
 
       // ============================================
+      // FONT SIZES (বাংলার জন্য line-height বাড়ানো)
+      // ============================================
+      fontSize: {
+        xs: ['0.75rem', { lineHeight: '1.6' }],
+        sm: ['0.875rem', { lineHeight: '1.65' }],
+        base: ['1rem', { lineHeight: '1.75' }],
+        lg: ['1.125rem', { lineHeight: '1.8' }],
+        xl: ['1.25rem', { lineHeight: '1.8' }],
+        '2xl': ['1.5rem', { lineHeight: '1.7' }],
+        '3xl': ['1.875rem', { lineHeight: '1.6' }],
+        '4xl': ['2.25rem', { lineHeight: '1.5' }],
+        '5xl': ['3rem', { lineHeight: '1.4' }],
+      },
+
+      // ============================================
       // ANIMATIONS
       // ============================================
       animation: {
@@ -62,9 +72,6 @@ const config: Config = {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
 
-      // ============================================
-      // KEYFRAMES
-      // ============================================
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0' },
@@ -85,7 +92,7 @@ const config: Config = {
       },
 
       // ============================================
-      // SPACING (নতুন কিছু কাস্টম স্পেস)
+      // SPACING
       // ============================================
       spacing: {
         '18': '4.5rem',
@@ -93,24 +100,15 @@ const config: Config = {
         '128': '32rem',
       },
 
-      // ============================================
-      // MAX WIDTH
-      // ============================================
       maxWidth: {
         '8xl': '88rem',
         '9xl': '96rem',
       },
 
-      // ============================================
-      // BORDER RADIUS
-      // ============================================
       borderRadius: {
         '4xl': '2rem',
       },
 
-      // ============================================
-      // BOX SHADOW
-      // ============================================
       boxShadow: {
         'glow-gold': '0 0 30px rgba(212, 175, 55, 0.3)',
         'glow-orange': '0 0 30px rgba(234, 88, 12, 0.3)',
