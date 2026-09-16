@@ -1,0 +1,223 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "yes": "Yes",
+    "no": "No",
+    "close": "Close",
+    "confirm": "Confirm",
+    "viewAll": "View All",
+    "readMore": "Read More",
+    "learnMore": "Learn More"
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "blog": "Blog",
+    "contact": "Contact",
+    "about": "About Us",
+    "login": "Login",
+    "signup": "Sign Up",
+    "dashboard": "Dashboard",
+    "admin": "Admin",
+    "logout": "Logout",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "hero": {
+    "badge": "10+ Years Experience",
+    "title": "Your Reliable Partner for Land & Property Deeds",
+    "subtitle": "A trusted institution for seamless deed preparation and complete registration support. We are with you for all legal assistance regarding your land.",
+    "cta1": "Contact Us",
+    "cta2": "View Services",
+    "trust": "Honesty and years of experience is our asset"
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "Discover the advantages of our services",
+    "learnMore": "Learn More"
+  },
+  "about": {
+    "title": "About Us",
+    "subtitle": "Our Introduction and Mission"
+  },
+  "howItWorks": {
+    "title": "How It Works",
+    "subtitle": "Complete your work in 4 easy steps"
+  },
+  "whyChooseUs": {
+    "title": "Why Choose Us",
+    "subtitle": "Specialties of our services"
+  },
+  "team": {
+    "title": "Our Team",
+    "subtitle": "Best Team"
+  },
+  "testimonials": {
+    "title": "Client Testimonials",
+    "subtitle": "What our clients say about us"
+  },
+  "blog": {
+    "title": "Latest Announcements",
+    "subtitle": "Recent updates from our blog",
+    "readMore": "Read More"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Explore Common Queries in Our FAQ Section"
+  },
+  "cta": {
+    "title": "Contact Us Today",
+    "subtitle": "We are here for any of your land and property related issues",
+    "button": "Contact Us"
+  },
+  "footer": {
+    "quickLinks": "Quick Links",
+    "policyPages": "Policy Pages",
+    "contactUs": "Contact Us",
+    "followUs": "Follow Us",
+    "newsletter": "Newsletter",
+    "newsletterDesc": "Subscribe to get new updates",
+    "subscribe": "Subscribe",
+    "emailPlaceholder": "Enter your email",
+    "copyright": "© Copyright 2026. All rights reserved.",
+    "madeWith": "Made with love"
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "loginSubtitle": "Access your account",
+    "signupTitle": "Create Account",
+    "signupSubtitle": "Sign up to get our services",
+    "fullName": "Full Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "phone": "Mobile Number",
+    "address": "Address",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "signupLink": "Sign Up",
+    "loginLink": "Login",
+    "rememberMe": "Remember Me",
+    "termsText": "I agree to the Terms & Conditions and Privacy Policy",
+    "loginButton": "Login",
+    "signupButton": "Sign Up",
+    "forgotTitle": "Reset Password",
+    "forgotSubtitle": "Enter your email, we'll send you an OTP",
+    "sendOtp": "Send OTP",
+    "verifyOtp": "Verify OTP",
+    "otpTitle": "Verify OTP",
+    "otpSubtitle": "Enter the 6-digit code sent to your email",
+    "resendOtp": "Resend OTP",
+    "newPassword": "New Password",
+    "resetButton": "Reset Password",
+    "loginSuccess": "Logged in successfully",
+    "signupSuccess": "Account created successfully",
+    "logoutSuccess": "Logged out successfully"
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "overview": "Overview",
+    "deeds": "Deeds",
+    "khatian": "Khatian",
+    "newDeed": "New Deed",
+    "approvedDeeds": "Approved Deeds",
+    "pendingDeeds": "Pending Deeds",
+    "rejectedDeeds": "Rejected Deeds",
+    "newKhatian": "New Khatian",
+    "approvedKhatian": "Approved Khatian",
+    "pendingKhatian": "Pending Khatian",
+    "support": "Support",
+    "settings": "Settings",
+    "profile": "Profile",
+    "myProfile": "My Profile",
+    "logout": "Logout",
+    "totalDeeds": "Total Deeds",
+    "totalKhatian": "Total Khatian",
+    "approved": "Approved",
+    "pending": "Pending"
+  },
+  "deed": {
+    "formTitle": "New Deed Entry",
+    "serialNo": "Serial No",
+    "deedNo": "Deed No",
+    "date": "Date",
+    "donorName": "Donor Name",
+    "donorFatherName": "Donor Father Name",
+    "recipientName": "Recipient Name",
+    "recipientFatherName": "Recipient Father Name",
+    "mouzaName": "Mouza Name",
+    "deedType": "Deed Type",
+    "amount": "Amount",
+    "mobileNo": "Mobile Number",
+    "remarks": "Remarks",
+    "save": "Save Deed Entry",
+    "downloadPdf": "Download PDF",
+    "status": "Status"
+  },
+  "khatian": {
+    "formTitle": "New Khatian Entry",
+    "serialNo": "Serial No",
+    "khatianNo": "Khatian No",
+    "date": "Date",
+    "ownerName": "Owner Name",
+    "ownerFatherName": "Owner Father Name",
+    "mouzaName": "Mouza Name",
+    "district": "District",
+    "upazila": "Upazila",
+    "dagNo": "Dag No",
+    "landArea": "Land Area",
+    "mobileNo": "Mobile Number",
+    "remarks": "Remarks",
+    "save": "Save Khatian Entry",
+    "downloadPdf": "Download PDF",
+    "status": "Status"
+  },
+  "status": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "open": "Open",
+    "inProgress": "In Progress",
+    "closed": "Closed"
+  },
+  "admin": {
+    "dashboard": "Admin Dashboard",
+    "users": "User Management",
+    "deeds": "Deeds Management",
+    "khatian": "Khatian Management",
+    "services": "Services Management",
+    "blogs": "Blogs Management",
+    "team": "Team Management",
+    "faqs": "FAQ Management",
+    "tickets": "Ticket Management",
+    "branding": "Site Branding",
+    "siteSettings": "Site Settings",
+    "logo": "Logo",
+    "favicon": "Favicon",
+    "siteName": "Site Name",
+    "tagline": "Tagline",
+    "uploadLogo": "Upload Logo"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email",
+    "passwordMin": "Password must be at least 8 characters",
+    "passwordMatch": "Passwords do not match",
+    "invalidPhone": "Please enter a valid mobile number",
+    "termsRequired": "You must accept the terms and conditions"
+  },
+  "notFound": {
+    "title": "404 - Page Not Found",
+    "subtitle": "Sorry, the page you are looking for could not be found",
+    "goHome": "Go Home"
+  }
+}
