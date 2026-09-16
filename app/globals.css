@@ -22,14 +22,14 @@
     line-height: 1.7;
   }
 
-  /* বাংলা ফন্ট অটো সিলেক্ট - বেশি line-height */
+  /* বাংলা ফন্ট অটো সিলেক্ট */
   :lang(bn) {
     font-family: var(--font-hind), sans-serif;
     line-height: 1.9;
     letter-spacing: 0.01em;
   }
 
-  /* বাংলা হেডিং - 충분한 উপরের padding */
+  /* বাংলা হেডিং */
   :lang(bn) h1,
   :lang(bn) h2,
   :lang(bn) h3,
@@ -63,6 +63,7 @@
     @apply bg-gold-light;
   }
 
+  /* Text Selection */
   ::selection {
     @apply bg-gold text-navy;
   }
@@ -171,7 +172,7 @@
     @apply text-status-error text-sm mt-1 leading-[1.8];
   }
 
-  /* ---------- Headings (বাংলার জন্য 충분한 padding) ---------- */
+  /* ---------- Headings ---------- */
   .heading-1 {
     @apply text-3xl sm:text-4xl lg:text-5xl font-bold text-white
            leading-[1.5] sm:leading-[1.45] lg:leading-[1.4]
@@ -190,13 +191,12 @@
            pt-[0.2em] pb-[0.05em];
   }
 
-  /* ---------- Badge (বাংলা টেক্সট ফিট - সবচেয়ে গুরুত্বপূর্ণ) ---------- */
+  /* ---------- Badge ---------- */
   .badge {
     @apply inline-flex items-center gap-2 
            px-5 rounded-full
            text-sm font-medium border
            whitespace-nowrap
-           /* উপরে বেশি padding, নিচে কম - বাংলা মাত্রার জন্য */
            leading-[2] pt-[0.6rem] pb-[0.4rem];
   }
 
@@ -287,7 +287,6 @@
     text-wrap: balance;
   }
 
-  /* বাংলা টেক্সটের জন্য স্পেশাল ক্লাস */
   .text-bangla-safe {
     overflow: visible;
     text-overflow: clip;
@@ -313,5 +312,156 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     line-height: 1.8;
+  }
+}
+
+/* ============================================
+   ANIMATED BACKGROUND - CSS ONLY
+   (Performance Optimized - No JavaScript)
+   ============================================ */
+
+/* --------------------------------------------
+   Animation 1: Gradient Shift (Background)
+   Duration: 20s
+   -------------------------------------------- */
+@keyframes bgGradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-bg-gradient {
+  background: linear-gradient(
+    135deg,
+    #0B132B 0%,
+    #0F172A 25%,
+    #111C3A 50%,
+    #0F172A 75%,
+    #0B132B 100%
+  );
+  background-size: 400% 400%;
+  animation: bgGradientShift 20s ease infinite;
+  will-change: background-position;
+}
+
+/* --------------------------------------------
+   Animation 2: Pulse Glow (Carousel Behind)
+   Duration: 5s
+   -------------------------------------------- */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.08);
+  }
+}
+
+.animated-pulse-glow {
+  animation: pulseGlow 5s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+/* --------------------------------------------
+   Animation 3: Twinkling Stars
+   Duration: 4s
+   -------------------------------------------- */
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.1;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+}
+
+.animated-twinkle {
+  animation: twinkle 4s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+/* --------------------------------------------
+   Animation 4: Shimmer Line (Optional)
+   Duration: 3s
+   -------------------------------------------- */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.animated-shimmer {
+  animation: shimmer 3s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* --------------------------------------------
+   Animation 5: Soft Float (Floating Cards)
+   Duration: 5s
+   -------------------------------------------- */
+@keyframes softFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animated-float {
+  animation: softFloat 5s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* --------------------------------------------
+   Mobile Performance Optimization
+   Animation ধীরে চলে মোবাইলে
+   -------------------------------------------- */
+@media (max-width: 768px) {
+  .animated-bg-gradient {
+    animation: bgGradientShift 30s ease infinite;
+  }
+  
+  .animated-pulse-glow {
+    animation-duration: 8s;
+  }
+  
+  .animated-twinkle {
+    animation-duration: 6s;
+  }
+  
+  .animated-shimmer {
+    animation-duration: 5s;
+  }
+  
+  .animated-float {
+    animation-duration: 7s;
+  }
+}
+
+/* --------------------------------------------
+   Accessibility: Reduce Motion
+   যে ইউজার Motion কম চায়
+   -------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .animated-bg-gradient,
+  .animated-pulse-glow,
+  .animated-twinkle,
+  .animated-shimmer,
+  .animated-float {
+    animation: none;
   }
 }
