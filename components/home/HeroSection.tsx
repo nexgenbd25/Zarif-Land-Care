@@ -12,57 +12,51 @@ export default function HeroSection() {
   const t = useTranslations();
   const locale = useLocale();
 
-  // ============================================
-  // URL Helper
-  // ============================================
   const getUrl = (path: string) => {
     const prefix = locale === 'bn' ? '' : `/${locale}`;
     return path === '/' ? prefix || '/' : `${prefix}${path}`;
   };
 
   // ============================================
-  // Framer Motion Variants
+  // Faster, Simpler Animations
   // ============================================
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.1,
+        staggerChildren: 0.08,
+        delayChildren: 0.05,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6,
-        ease: [0.25, 0.4, 0.25, 1] as const,
+        duration: 0.4,
+        ease: 'easeOut' as const,
       },
     },
   };
 
   const imageVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      scale: 1,
       transition: {
-        duration: 0.8,
-        ease: [0.25, 0.4, 0.25, 1] as const,
+        duration: 0.5,
+        ease: 'easeOut' as const,
       },
     },
   };
 
   return (
     <section className="relative overflow-hidden bg-gradient-navy section-padding">
-      {/* ============================================
-          ANIMATED BACKGROUND
-          ============================================ */}
+      {/* Animated Background */}
       <AnimatedBackground />
 
       <div className="container-custom relative z-10">
@@ -93,15 +87,12 @@ export default function HeroSection() {
               {t('hero.subtitle')}
             </motion.p>
 
-            {/* ============================================
-                CTA Buttons (2টি)
-                ============================================ */}
+            {/* CTA Buttons */}
             <motion.div
               variants={itemVariants}
               className="flex flex-col sm:flex-row gap-4 
                          justify-center lg:justify-start"
             >
-              {/* Primary CTA - Contact */}
               <Link
                 href={getUrl('/contact')}
                 className="btn-primary group"
@@ -110,7 +101,6 @@ export default function HeroSection() {
                 <span className="text-bangla-safe">{t('hero.cta1')}</span>
               </Link>
 
-              {/* Secondary CTA - Services */}
               <Link
                 href={getUrl('/services')}
                 className="btn-secondary group"
@@ -123,9 +113,7 @@ export default function HeroSection() {
               </Link>
             </motion.div>
 
-            {/* ============================================
-                Trust Indicators - Desktop
-                ============================================ */}
+            {/* Trust Indicators - Desktop */}
             <motion.div
               variants={itemVariants}
               className="hidden lg:flex items-center gap-8 mt-12 pt-8 
@@ -138,7 +126,7 @@ export default function HeroSection() {
                 </div>
                 <div className="text-left">
                   <div className="text-2xl font-bold text-gold">
-                    <CountUpNumber end={1000} suffix="+" duration={2.5} />
+                    <CountUpNumber end={1000} suffix="+" duration={2} />
                   </div>
                   <div className="text-xs text-muted text-bangla-safe">
                     দলিল সম্পন্ন
@@ -155,7 +143,7 @@ export default function HeroSection() {
                 </div>
                 <div className="text-left">
                   <div className="text-2xl font-bold text-gold">
-                    <CountUpNumber end={500} suffix="+" duration={2.5} delay={0.3} />
+                    <CountUpNumber end={500} suffix="+" duration={2} delay={0.2} />
                   </div>
                   <div className="text-xs text-muted text-bangla-safe">
                     সন্তুষ্ট ক্লায়েন্ট
@@ -178,14 +166,12 @@ export default function HeroSection() {
           </motion.div>
         </div>
 
-        {/* ============================================
-            Trust Indicators - Mobile
-            ============================================ */}
+        {/* Trust Indicators - Mobile */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.4 }}
           className="lg:hidden flex items-center justify-center gap-4 sm:gap-8 mt-12 pt-8 
                      border-t border-navy-border"
         >
@@ -196,7 +182,7 @@ export default function HeroSection() {
             </div>
             <div>
               <div className="text-2xl font-bold text-gold">
-                <CountUpNumber end={1000} suffix="+" duration={2.5} />
+                <CountUpNumber end={1000} suffix="+" duration={2} />
               </div>
               <div className="text-xs text-muted text-bangla-safe">
                 দলিল সম্পন্ন
@@ -213,7 +199,7 @@ export default function HeroSection() {
             </div>
             <div>
               <div className="text-2xl font-bold text-gold">
-                <CountUpNumber end={500} suffix="+" duration={2.5} delay={0.3} />
+                <CountUpNumber end={500} suffix="+" duration={2} delay={0.2} />
               </div>
               <div className="text-xs text-muted text-bangla-safe">
                 সন্তুষ্ট ক্লায়েন্ট
