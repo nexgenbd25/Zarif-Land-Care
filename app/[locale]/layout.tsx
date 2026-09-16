@@ -1,5 +1,5 @@
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { locales, type Locale } from '@/i18n';
 
@@ -55,6 +55,9 @@ export default async function LocaleLayout({
   if (!locales.includes(locale as Locale)) {
     notFound();
   }
+
+  // ⚠️ গুরুত্বপূর্ণ: Static rendering এনাবল করুন
+  setRequestLocale(locale);
 
   // অনুবাদ মেসেজ লোড করুন
   const messages = await getMessages();
