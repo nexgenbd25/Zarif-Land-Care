@@ -10,28 +10,37 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-gradient-navy">
       {/* ============================================
-          HERO SECTION (টেস্ট)
+          HERO SECTION
           ============================================ */}
       <section className="section-padding container-custom">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
           {/* Left - Text */}
           <div className="w-full lg:w-1/2 text-center lg:text-left">
-            <span className="badge-gold mb-6">
-              {t('hero.badge')}
-            </span>
-            <h1 className="heading-1 mb-6">
+            {/* Badge - বাংলা টেক্সট ফিট করার জন্য */}
+            <div className="inline-block mb-6">
+              <span className="badge-gold text-bangla-safe">
+                {t('hero.badge')}
+              </span>
+            </div>
+
+            {/* Heading - বেশি line-height */}
+            <h1 className="heading-1 mb-6 text-bangla-safe">
               {t('hero.title')}
             </h1>
-            <p className="text-muted text-lg mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+
+            {/* Subtitle */}
+            <p className="text-muted text-lg mb-8 leading-[1.85] max-w-2xl mx-auto lg:mx-0 text-bangla-safe">
               {t('hero.subtitle')}
             </p>
+
+            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <a href={`/contact`} className="btn-primary">
+              <a href="/contact" className="btn-primary">
                 <Phone size={18} />
-                {t('hero.cta1')}
+                <span className="text-bangla-safe">{t('hero.cta1')}</span>
               </a>
-              <a href={`/services`} className="btn-secondary">
-                {t('hero.cta2')}
+              <a href="/services" className="btn-secondary">
+                <span className="text-bangla-safe">{t('hero.cta2')}</span>
                 <ArrowRight size={18} />
               </a>
             </div>
@@ -50,11 +59,11 @@ export default function HomePage() {
       </section>
 
       {/* ============================================
-          TEST INFO SECTION (টেস্ট)
+          TRUST SECTION
           ============================================ */}
       <section className="section-padding container-custom">
         <div className="text-center mb-12">
-          <h2 className="heading-2 mb-4">
+          <h2 className="heading-2 mb-4 text-bangla-safe">
             {t('hero.trust')}
           </h2>
           <div className="w-20 h-1 bg-gradient-gold mx-auto rounded-full" />
@@ -66,37 +75,43 @@ export default function HomePage() {
             <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-gradient-orange flex items-center justify-center">
               <Phone className="text-white" size={24} />
             </div>
-            <h3 className="heading-3 mb-2">যোগাযোগ</h3>
-            <p className="text-muted text-sm">+880 1788-766735</p>
+            <h3 className="heading-3 mb-2 text-bangla-safe">যোগাযোগ</h3>
+            <p className="text-muted text-sm text-bangla-safe">
+              +880 1788-766735
+            </p>
           </div>
 
           <div className="card text-center">
             <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-gradient-orange flex items-center justify-center">
               <MapPin className="text-white" size={24} />
             </div>
-            <h3 className="heading-3 mb-2">ঠিকানা</h3>
-            <p className="text-muted text-sm">হাসাইল বাজার, টংগীবাড়ী, মুন্সিগঞ্জ</p>
+            <h3 className="heading-3 mb-2 text-bangla-safe">ঠিকানা</h3>
+            <p className="text-muted text-sm text-bangla-safe leading-relaxed">
+              হাসাইল বাজার, টংগীবাড়ী, মুন্সিগঞ্জ
+            </p>
           </div>
 
           <div className="card text-center">
             <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-gradient-orange flex items-center justify-center">
               <Mail className="text-white" size={24} />
             </div>
-            <h3 className="heading-3 mb-2">ইমেইল</h3>
-            <p className="text-muted text-sm">zariflandcare@gmail.com</p>
+            <h3 className="heading-3 mb-2 text-bangla-safe">ইমেইল</h3>
+            <p className="text-muted text-sm text-bangla-safe break-all">
+              zariflandcare@gmail.com
+            </p>
           </div>
         </div>
       </section>
 
       {/* ============================================
-          SYSTEM STATUS (টেস্ট)
+          SYSTEM STATUS
           ============================================ */}
       <section className="section-padding container-custom">
         <div className="card-glass text-center max-w-3xl mx-auto">
-          <h2 className="heading-3 mb-4 text-gradient-gold">
+          <h2 className="heading-3 mb-4 text-gradient-gold text-bangla-safe">
             ✅ সিস্টেম সফলভাবে সেটআপ হয়েছে
           </h2>
-          <p className="text-muted mb-6">
+          <p className="text-muted mb-6 text-bangla-safe leading-relaxed">
             Next.js + Supabase + Vercel + বাংলা/ইংরেজি ভাষা সিস্টেম কাজ করছে।
           </p>
           <div className="flex flex-wrap justify-center gap-3">
