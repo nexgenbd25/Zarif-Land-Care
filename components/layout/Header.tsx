@@ -5,7 +5,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, LogIn } from 'lucide-react';
+import { 
+  Menu, 
+  X, 
+  LogIn, 
+  Home, 
+  Wrench, 
+  FileText, 
+  Phone, 
+  Info 
+} from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Header() {
@@ -35,7 +44,7 @@ export default function Header() {
   }, [pathname]);
 
   // ============================================
-  // Menu খোলা থাকলে body scroll বন্ধ (Option)
+  // Menu খোলা থাকলে body scroll বন্ধ
   // ============================================
   useEffect(() => {
     if (isMenuOpen) {
@@ -49,14 +58,34 @@ export default function Header() {
   }, [isMenuOpen]);
 
   // ============================================
-  // Menu Items
+  // Menu Items (আইকন সহ)
   // ============================================
   const menuItems = [
-    { name: t('home'), href: `/${locale === 'bn' ? '' : locale}` },
-    { name: t('services'), href: `/${locale === 'bn' ? '' : locale + '/'}services` },
-    { name: t('blog'), href: `/${locale === 'bn' ? '' : locale + '/'}blog` },
-    { name: t('about'), href: `/${locale === 'bn' ? '' : locale + '/'}about` },
-    { name: t('contact'), href: `/${locale === 'bn' ? '' : locale + '/'}contact` },
+    {
+      name: t('home'),
+      href: `/${locale === 'bn' ? '' : locale}`,
+      icon: Home,
+    },
+    {
+      name: t('services'),
+      href: `/${locale === 'bn' ? '' : locale + '/'}services`,
+      icon: Wrench,
+    },
+    {
+      name: t('blog'),
+      href: `/${locale === 'bn' ? '' : locale + '/'}blog`,
+      icon: FileText,
+    },
+    {
+      name: t('contact'),
+      href: `/${locale === 'bn' ? '' : locale + '/'}contact`,
+      icon: Phone,
+    },
+    {
+      name: t('about'),
+      href: `/${locale === 'bn' ? '' : locale + '/'}about`,
+      icon: Info,
+    },
   ];
 
   // ============================================
@@ -98,35 +127,42 @@ export default function Header() {
           </Link>
 
           {/* ============================================
-              DESKTOP MENU (Center)
+              DESKTOP MENU (Center) - আইকন সহ
               ============================================ */}
           <nav className="hidden lg:flex items-center gap-1">
-            {menuItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`relative px-4 py-2 rounded-lg text-sm font-medium
-                            transition-all duration-200
-                            ${
-                              isActive(item.href)
-                                ? 'text-gold'
-                                : 'text-gray-300 hover:text-gold hover:bg-navy-dark'
-                            }`}
-              >
-                {item.name}
-                {isActive(item.href) && (
-                  <motion.div
-                    layoutId="activeNav"
-                    className="absolute bottom-0 left-2 right-2 h-0.5 bg-gold rounded-full"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                  />
-                )}
-              </Link>
-            ))}
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.href);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`relative flex items-center gap-2 
+                              px-4 py-2 rounded-lg text-sm font-medium
+                              transition-all duration-200
+                              ${
+                                active
+                                  ? 'text-gold'
+                                  : 'text-gray-300 hover:text-gold hover:bg-navy-dark'
+                              }`}
+                >
+                  <Icon size={16} strokeWidth={2} />
+                  <span>{item.name}</span>
+                  {active && (
+                    <motion.div
+                      layoutId="activeNav"
+                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-gold rounded-full"
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* ============================================
-              RIGHT SIDE (Language + Login + Hamburger)
+              RIGHT SIDE
               ============================================ */}
           <div className="flex items-center gap-2 lg:gap-3 z-50">
             {/* Language Switcher */}
@@ -162,7 +198,7 @@ export default function Header() {
       </div>
 
       {/* ============================================
-          MOBILE MENU (Absolute Position - কনটেন্ট সরাবে না)
+          MOBILE MENU (আইকন সহ)
           ============================================ */}
       <AnimatePresence>
         {isMenuOpen && (
@@ -188,28 +224,35 @@ export default function Header() {
                          shadow-2xl z-50 max-h-[calc(100vh-4rem)] overflow-y-auto"
             >
               <nav className="container-custom py-6 flex flex-col gap-1">
-                {menuItems.map((item, index) => (
-                  <motion.div
-                    key={item.href}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <Link
-                      href={item.href}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={`block px-4 py-3 rounded-lg text-base font-medium
-                                  transition-all duration-200
-                                  ${
-                                    isActive(item.href)
-                                      ? 'bg-gold/10 text-gold border-l-4 border-gold'
-                                      : 'text-gray-300 hover:text-gold hover:bg-navy'
-                                  }`}
+                {menuItems.map((item, index) => {
+                  const Icon = item.icon;
+                  const active = isActive(item.href);
+
+                  return (
+                    <motion.div
+                      key={item.href}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
                     >
-                      {item.name}
-                    </Link>
-                  </motion.div>
-                ))}
+                      <Link
+                        href={item.href}
+                        onClick={() => setIsMenuOpen(false)}
+                        className={`flex items-center gap-3 
+                                    px-4 py-3 rounded-lg text-base font-medium
+                                    transition-all duration-200
+                                    ${
+                                      active
+                                        ? 'bg-gold/10 text-gold border-l-4 border-gold'
+                                        : 'text-gray-300 hover:text-gold hover:bg-navy'
+                                    }`}
+                      >
+                        <Icon size={20} strokeWidth={2} />
+                        <span>{item.name}</span>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
 
                 {/* Login Button (Mobile) */}
                 <motion.div
