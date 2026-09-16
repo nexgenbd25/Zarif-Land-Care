@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Shield, FileCheck, Award } from 'lucide-react';
 
 // ============================================
 // ডেমো ছবি (পরে Database থেকে আসবে)
@@ -35,10 +35,7 @@ const HERO_IMAGES = [
   },
 ];
 
-// ============================================
-// Auto Slide Interval (milliseconds)
-// ============================================
-const AUTO_SLIDE_INTERVAL = 4000; // ৪ সেকেন্ড
+const AUTO_SLIDE_INTERVAL = 5000; // ৫ সেকেন্ড
 
 export default function HeroCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -48,39 +45,26 @@ export default function HeroCarousel() {
   const touchStartX = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // ============================================
-  // পরের ছবিতে যাওয়া
-  // ============================================
   const goToNext = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % HERO_IMAGES.length);
   }, []);
 
-  // ============================================
-  // আগের ছবিতে যাওয়া
-  // ============================================
   const goToPrev = useCallback(() => {
     setCurrentIndex(
       (prev) => (prev - 1 + HERO_IMAGES.length) % HERO_IMAGES.length
     );
   }, []);
 
-  // ============================================
-  // নির্দিষ্ট ছবিতে যাওয়া
-  // ============================================
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
   };
 
-  // ============================================
-  // Auto Slide Logic
-  // ============================================
   useEffect(() => {
     if (!isPaused) {
       intervalRef.current = setInterval(() => {
         goToNext();
       }, AUTO_SLIDE_INTERVAL);
     }
-
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -89,9 +73,6 @@ export default function HeroCarousel() {
     };
   }, [isPaused, goToNext]);
 
-  // ============================================
-  // Mouse Events (Desktop)
-  // ============================================
   const handleMouseDown = () => {
     setIsPaused(true);
     setIsDragging(true);
@@ -111,9 +92,6 @@ export default function HeroCarousel() {
     }
   };
 
-  // ============================================
-  // Touch Events (Mobile)
-  // ============================================
   const handleTouchStart = (e: React.TouchEvent) => {
     setIsPaused(true);
     touchStartX.current = e.touches[0].clientX;
@@ -144,9 +122,6 @@ export default function HeroCarousel() {
     setIsPaused(false);
   };
 
-  // ============================================
-  // Global MouseUp
-  // ============================================
   useEffect(() => {
     const handleGlobalMouseUp = () => {
       if (isDragging) {
@@ -154,129 +129,196 @@ export default function HeroCarousel() {
         setIsDragging(false);
       }
     };
-
     window.addEventListener('mouseup', handleGlobalMouseUp);
     return () => window.removeEventListener('mouseup', handleGlobalMouseUp);
   }, [isDragging]);
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full max-w-2xl aspect-video rounded-2xl overflow-hidden
-                 shadow-glow-gold select-none group"
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseLeave}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
+    <div className="relative w-full max-w-2xl">
       {/* ============================================
-          IMAGE SLIDES
+          FLOATING CARDS
           ============================================ */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentIndex}
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.6, ease: 'easeInOut' }}
-          className="absolute inset-0"
+      <motion.div
+        initial={{ opacity: 0, x: -30, y: -20 }}
+        animate={{ opacity: 1, x: 0, y: 0 }}
+        transition={{ duration: 0.8, delay: 1.0 }}
+        className="absolute -top-4 -left-4 lg:-top-6 lg:-left-6 z-30
+                   bg-navy-dark/95 backdrop-blur-md
+                   rounded-xl px-4 py-3 shadow-xl
+                   hidden sm:block"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-gold/15 
+                          flex items-center justify-center">
+            <FileCheck size={20} className="text-gold" />
+          </div>
+          <div>
+            <div className="text-sm font-bold text-gold">১০০০+</div>
+            <div className="text-xs text-muted">দলিল সম্পন্ন</div>
+          </div>
+        </div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, x: 30, y: 20 }}
+        animate={{ opacity: 1, x: 0, y: 0 }}
+        transition={{ duration: 0.8, delay: 1.2 }}
+        className="absolute -bottom-4 -right-4 lg:-bottom-6 lg:-right-6 z-30
+                   bg-navy-dark/95 backdrop-blur-md
+                   rounded-xl px-4 py-3 shadow-xl
+                   hidden sm:block"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-gold/15 
+                          flex items-center justify-center">
+            <Award size={20} className="text-gold" />
+          </div>
+          <div>
+            <div className="text-sm font-bold text-gold">১০+ বছর</div>
+            <div className="text-xs text-muted">অভিজ্ঞতা</div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ============================================
+          CAROUSEL CONTAINER - গোল্ড স্ট্রোক সরানো
+          ============================================ */}
+      <div
+        ref={containerRef}
+        className="relative w-full aspect-video rounded-2xl overflow-hidden
+                   shadow-lg select-none group"
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* Images */}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={currentIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: 'easeInOut' }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={HERO_IMAGES[currentIndex].url}
+              alt={HERO_IMAGES[currentIndex].alt_bn}
+              fill
+              priority={currentIndex === 0}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover pointer-events-none"
+              draggable={false}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t 
+                            from-navy/70 via-transparent to-transparent" />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Prev Button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            goToPrev();
+          }}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 z-20
+                     w-10 h-10 rounded-full items-center justify-center
+                     bg-navy/70 backdrop-blur-sm
+                     text-white hover:bg-gold hover:text-navy
+                     transition-all duration-200
+                     opacity-0 group-hover:opacity-100"
+          aria-label="Previous image"
         >
-          <Image
-            src={HERO_IMAGES[currentIndex].url}
-            alt={HERO_IMAGES[currentIndex].alt_bn}
-            fill
-            priority={currentIndex === 0}
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover pointer-events-none"
-            draggable={false}
-          />
+          <ChevronLeft size={20} />
+        </button>
 
-          {/* Dark Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t 
-                          from-navy/80 via-transparent to-transparent" />
-        </motion.div>
-      </AnimatePresence>
+        {/* Next Button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            goToNext();
+          }}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 z-20
+                     w-10 h-10 rounded-full items-center justify-center
+                     bg-navy/70 backdrop-blur-sm
+                     text-white hover:bg-gold hover:text-navy
+                     transition-all duration-200
+                     opacity-0 group-hover:opacity-100"
+          aria-label="Next image"
+        >
+          <ChevronRight size={20} />
+        </button>
 
-      {/* ============================================
-          PREV BUTTON (Desktop Only)
-          ============================================ */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          goToPrev();
-        }}
-        onMouseDown={(e) => e.stopPropagation()}
-        className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 z-20
-                   w-10 h-10 rounded-full items-center justify-center
-                   bg-navy/70 backdrop-blur-sm
-                   text-white hover:bg-gold hover:text-navy
-                   border border-white/20 hover:border-gold
-                   transition-all duration-200
-                   opacity-0 group-hover:opacity-100"
-        aria-label="Previous image"
-      >
-        <ChevronLeft size={20} />
-      </button>
+        {/* Dots */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20
+                        flex items-center gap-2">
+          {HERO_IMAGES.map((_, index) => (
+            <button
+              key={index}
+              onClick={(e) => {
+                e.stopPropagation();
+                goToSlide(index);
+              }}
+              onMouseDown={(e) => e.stopPropagation()}
+              className={`transition-all duration-300 rounded-full
+                          ${
+                            index === currentIndex
+                              ? 'w-8 h-2 bg-gold'
+                              : 'w-2 h-2 bg-white/50 hover:bg-white/80'
+                          }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
 
-      {/* ============================================
-          NEXT BUTTON (Desktop Only)
-          ============================================ */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          goToNext();
-        }}
-        onMouseDown={(e) => e.stopPropagation()}
-        className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 z-20
-                   w-10 h-10 rounded-full items-center justify-center
-                   bg-navy/70 backdrop-blur-sm
-                   text-white hover:bg-gold hover:text-navy
-                   border border-white/20 hover:border-gold
-                   transition-all duration-200
-                   opacity-0 group-hover:opacity-100"
-        aria-label="Next image"
-      >
-        <ChevronRight size={20} />
-      </button>
-
-      {/* ============================================
-          DOTS INDICATOR (Bottom)
-          ============================================ */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20
-                      flex items-center gap-2">
-        {HERO_IMAGES.map((_, index) => (
-          <button
-            key={index}
-            onClick={(e) => {
-              e.stopPropagation();
-              goToSlide(index);
+        {/* Progress Bar */}
+        {!isPaused && (
+          <motion.div
+            key={currentIndex}
+            initial={{ width: '0%' }}
+            animate={{ width: '100%' }}
+            transition={{
+              duration: AUTO_SLIDE_INTERVAL / 1000,
+              ease: 'linear',
             }}
-            onMouseDown={(e) => e.stopPropagation()}
-            className={`transition-all duration-300 rounded-full
-                        ${
-                          index === currentIndex
-                            ? 'w-8 h-2 bg-gold'
-                            : 'w-2 h-2 bg-white/50 hover:bg-white/80'
-                        }`}
-            aria-label={`Go to slide ${index + 1}`}
+            className="absolute bottom-0 left-0 h-0.5 bg-gradient-gold z-20"
           />
-        ))}
+        )}
       </div>
 
       {/* ============================================
-          PROGRESS BAR (Auto Slide চলাকালে)
+          VERIFIED BADGES
           ============================================ */}
-      {!isPaused && (
-        <motion.div
-          key={currentIndex}
-          initial={{ width: '0%' }}
-          animate={{ width: '100%' }}
-          transition={{ duration: AUTO_SLIDE_INTERVAL / 1000, ease: 'linear' }}
-          className="absolute bottom-0 left-0 h-0.5 bg-gradient-gold z-20"
-        />
-      )}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 1.4 }}
+        className="mt-6 flex flex-wrap items-center justify-center gap-3 lg:gap-4"
+      >
+        <div className="flex items-center gap-2 px-3 py-1.5 
+                        bg-navy-dark/60 backdrop-blur-sm 
+                        rounded-full">
+          <Shield size={14} className="text-gold" />
+          <span className="text-xs text-gray-300">সরকার অনুমোদিত</span>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1.5 
+                        bg-navy-dark/60 backdrop-blur-sm 
+                        rounded-full">
+          <FileCheck size={14} className="text-gold" />
+          <span className="text-xs text-gray-300">নিরাপদ সেবা</span>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1.5 
+                        bg-navy-dark/60 backdrop-blur-sm 
+                        rounded-full">
+          <Award size={14} className="text-gold" />
+          <span className="text-xs text-gray-300">আইনসম্মত</span>
+        </div>
+      </motion.div>
     </div>
   );
 }
