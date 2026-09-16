@@ -2,9 +2,11 @@
 
 import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Phone, ArrowRight, FileText, Users } from 'lucide-react';
+import { Phone, ArrowRight, MessageCircle, FileText, Users } from 'lucide-react';
 import Link from 'next/link';
 import HeroCarousel from './HeroCarousel';
+import CountUpNumber from '@/components/ui/CountUp';
+import AnimatedBackground from './AnimatedBackground';
 
 export default function HeroSection() {
   const t = useTranslations();
@@ -56,19 +58,21 @@ export default function HeroSection() {
     },
   };
 
+  // WhatsApp
+  const whatsappNumber = '+8801788766735';
+  const whatsappMessage = encodeURIComponent('আসসালামু আলাইকুম, আমি দলিল সেবা নিতে চাই।');
+
   return (
     <section className="relative overflow-hidden bg-gradient-navy section-padding">
-      {/* Background Decorative Elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl -z-0" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-orange/5 rounded-full blur-3xl -z-0" />
+      {/* ============================================
+          ANIMATED BACKGROUND
+          ============================================ */}
+      <AnimatedBackground />
 
       <div className="container-custom relative z-10">
-        {/* ============================================
-            Main Grid: Text + Carousel
-            ============================================ */}
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-12 xl:gap-16">
           {/* ============================================
-              LEFT COLUMN: Text Content
+              LEFT COLUMN: Text
               ============================================ */}
           <motion.div
             variants={containerVariants}
@@ -76,6 +80,18 @@ export default function HeroSection() {
             animate="visible"
             className="w-full lg:w-1/2 text-center lg:text-left"
           >
+            {/* Trust Badge */}
+            <motion.div variants={itemVariants} className="mb-6">
+              <span className="inline-flex items-center gap-2 
+                              px-4 py-2 rounded-full
+                              bg-gold/10 border border-gold/30
+                              text-gold text-xs sm:text-sm font-medium
+                              backdrop-blur-sm">
+                <span className="w-2 h-2 rounded-full bg-gold animate-pulse" />
+                <span className="text-bangla-safe">⭐ ২০০৫ সাল থেকে বিশ্বস্ত প্রতিষ্ঠান</span>
+              </span>
+            </motion.div>
+
             {/* Headline */}
             <motion.h1
               variants={itemVariants}
@@ -94,14 +110,14 @@ export default function HeroSection() {
             </motion.p>
 
             {/* ============================================
-                CTA Buttons
+                CTA Buttons (3টি)
                 ============================================ */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-col sm:flex-row gap-4 
-                         justify-center lg:justify-start"
+              className="flex flex-col sm:flex-row gap-3 
+                         justify-center lg:justify-start mb-6"
             >
-              {/* Primary CTA */}
+              {/* Primary CTA - Call */}
               <Link
                 href={getUrl('/contact')}
                 className="btn-primary group"
@@ -110,52 +126,77 @@ export default function HeroSection() {
                 <span className="text-bangla-safe">{t('hero.cta1')}</span>
               </Link>
 
-              {/* Secondary CTA */}
+              {/* WhatsApp CTA */}
+              <a
+                href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2
+                           px-6 py-3.5 rounded-lg font-semibold
+                           bg-gradient-to-r from-green-600 to-green-700
+                           text-white shadow-lg shadow-green-600/20
+                           transition-all duration-300
+                           hover:shadow-xl hover:scale-105
+                           active:scale-95
+                           w-full sm:w-auto
+                           leading-[1.7] pt-[0.9rem] pb-[0.7rem]"
+              >
+                <MessageCircle size={18} />
+                <span className="text-bangla-safe">WhatsApp</span>
+              </a>
+            </motion.div>
+
+            {/* Secondary CTA - Services */}
+            <motion.div variants={itemVariants} className="mb-8">
               <Link
                 href={getUrl('/services')}
-                className="btn-secondary group"
+                className="inline-flex items-center gap-2 
+                           text-gold hover:text-gold-light 
+                           transition-colors text-sm font-medium 
+                           group underline-offset-4 hover:underline"
               >
                 <span className="text-bangla-safe">{t('hero.cta2')}</span>
                 <ArrowRight
-                  size={18}
+                  size={16}
                   className="group-hover:translate-x-1 transition-transform"
                 />
               </Link>
             </motion.div>
 
             {/* ============================================
-                Trust Indicators (Desktop Only এখানে)
+                Trust Indicators - Desktop (Animated Count)
                 ============================================ */}
             <motion.div
               variants={itemVariants}
-              className="hidden lg:flex items-center gap-8 mt-12 pt-8 
+              className="hidden lg:flex items-center gap-8 mt-10 pt-8 
                          border-t border-navy-border"
             >
-              {/* Trust 1: Deeds */}
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-gold/10 
                                 border border-gold/30 flex items-center justify-center">
                   <FileText size={22} className="text-gold" />
                 </div>
                 <div className="text-left">
-                  <div className="text-2xl font-bold text-gold">১০০০+</div>
+                  <div className="text-2xl font-bold text-gold">
+                    <CountUpNumber end={1000} suffix="+" duration={2.5} />
+                  </div>
                   <div className="text-xs text-muted text-bangla-safe">
                     দলিল সম্পন্ন
                   </div>
                 </div>
               </div>
 
-              {/* Divider */}
               <div className="w-px h-12 bg-navy-border" />
 
-              {/* Trust 2: Clients */}
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-gold/10 
                                 border border-gold/30 flex items-center justify-center">
                   <Users size={22} className="text-gold" />
                 </div>
                 <div className="text-left">
-                  <div className="text-2xl font-bold text-gold">৫০০+</div>
+                  <div className="text-2xl font-bold text-gold">
+                    <CountUpNumber end={500} suffix="+" duration={2.5} delay={0.3} />
+                  </div>
                   <div className="text-xs text-muted text-bangla-safe">
                     সন্তুষ্ট ক্লায়েন্ট
                   </div>
@@ -165,7 +206,7 @@ export default function HeroSection() {
           </motion.div>
 
           {/* ============================================
-              RIGHT COLUMN: Hero Carousel
+              RIGHT COLUMN: Carousel
               ============================================ */}
           <motion.div
             variants={imageVariants}
@@ -178,7 +219,7 @@ export default function HeroSection() {
         </div>
 
         {/* ============================================
-            Trust Indicators (Mobile Only - নিচে)
+            Trust Indicators - Mobile
             ============================================ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -188,31 +229,32 @@ export default function HeroSection() {
           className="lg:hidden flex items-center justify-center gap-4 sm:gap-8 mt-12 pt-8 
                      border-t border-navy-border"
         >
-          {/* Trust 1: Deeds */}
           <div className="flex flex-col items-center text-center gap-2">
             <div className="w-14 h-14 rounded-full bg-gold/10 
                             border border-gold/30 flex items-center justify-center">
               <FileText size={24} className="text-gold" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gold">১০০০+</div>
+              <div className="text-2xl font-bold text-gold">
+                <CountUpNumber end={1000} suffix="+" duration={2.5} />
+              </div>
               <div className="text-xs text-muted text-bangla-safe">
                 দলিল সম্পন্ন
               </div>
             </div>
           </div>
 
-          {/* Divider */}
           <div className="w-px h-16 bg-navy-border" />
 
-          {/* Trust 2: Clients */}
           <div className="flex flex-col items-center text-center gap-2">
             <div className="w-14 h-14 rounded-full bg-gold/10 
                             border border-gold/30 flex items-center justify-center">
               <Users size={24} className="text-gold" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gold">৫০০+</div>
+              <div className="text-2xl font-bold text-gold">
+                <CountUpNumber end={500} suffix="+" duration={2.5} delay={0.3} />
+              </div>
               <div className="text-xs text-muted text-bangla-safe">
                 সন্তুষ্ট ক্লায়েন্ট
               </div>
