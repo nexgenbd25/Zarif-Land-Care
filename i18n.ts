@@ -16,12 +16,11 @@ export type Locale = (typeof locales)[number];
 // অনুবাদ ফাইল লোড
 // ============================================
 export default getRequestConfig(async ({ requestLocale }) => {
-  // নতুন API: requestLocale (deprecated locale এর বদলে)
-  const locale = await requestLocale;
+  let locale = await requestLocale;
 
-  // ভাষা সাপোর্টেড কিনা চেক
+  // যদি locale না থাকে, ডিফল্ট বাংলা ব্যবহার করো
   if (!locale || !locales.includes(locale as Locale)) {
-    notFound();
+    locale = defaultLocale;
   }
 
   return {
