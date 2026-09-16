@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ============================================
-   BASE STYLES
-   ============================================ */
 @layer base {
   * {
     @apply border-navy-border;
@@ -22,14 +19,12 @@
     line-height: 1.7;
   }
 
-  /* বাংলা ফন্ট অটো সিলেক্ট */
   :lang(bn) {
     font-family: var(--font-hind), sans-serif;
     line-height: 1.9;
     letter-spacing: 0.01em;
   }
 
-  /* বাংলা হেডিং */
   :lang(bn) h1,
   :lang(bn) h2,
   :lang(bn) h3,
@@ -45,7 +40,6 @@
     @apply font-bold text-white;
   }
 
-  /* Scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -63,12 +57,10 @@
     @apply bg-gold-light;
   }
 
-  /* Text Selection */
   ::selection {
     @apply bg-gold text-navy;
   }
 
-  /* Input Autofill Fix */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
@@ -80,21 +72,15 @@
   }
 }
 
-/* ============================================
-   COMPONENTS
-   ============================================ */
 @layer components {
-  /* ---------- Container ---------- */
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  /* ---------- Section Padding ---------- */
   .section-padding {
     @apply py-12 md:py-16 lg:py-20;
   }
 
-  /* ---------- Buttons ---------- */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2
            px-6 py-3.5 rounded-lg font-semibold
@@ -134,7 +120,6 @@
            leading-[1.7] pt-[0.9rem] pb-[0.7rem];
   }
 
-  /* ---------- Card ---------- */
   .card {
     @apply bg-navy-dark border border-navy-border rounded-xl p-6
            transition-all duration-300
@@ -148,7 +133,6 @@
            hover:border-gold/50;
   }
 
-  /* ---------- Inputs ---------- */
   .input-field {
     @apply w-full px-4 py-3 rounded-lg
            bg-navy-dark border border-navy-border
@@ -172,7 +156,6 @@
     @apply text-status-error text-sm mt-1 leading-[1.8];
   }
 
-  /* ---------- Headings ---------- */
   .heading-1 {
     @apply text-3xl sm:text-4xl lg:text-5xl font-bold text-white
            leading-[1.5] sm:leading-[1.45] lg:leading-[1.4]
@@ -191,7 +174,6 @@
            pt-[0.2em] pb-[0.05em];
   }
 
-  /* ---------- Badge ---------- */
   .badge {
     @apply inline-flex items-center gap-2 
            px-5 rounded-full
@@ -216,7 +198,6 @@
     @apply badge border-status-error/50 text-status-error bg-status-error/10;
   }
 
-  /* ---------- Gradient Text ---------- */
   .text-gradient-gold {
     @apply bg-gradient-to-r from-gold to-gold-light bg-clip-text text-transparent
            leading-[1.6] pt-[0.15em] pb-[0.05em];
@@ -227,18 +208,15 @@
            leading-[1.6] pt-[0.15em] pb-[0.05em];
   }
 
-  /* ---------- Divider ---------- */
   .divider {
     @apply h-px w-full bg-navy-border my-8;
   }
 
-  /* ---------- Link ---------- */
   .link-gold {
     @apply text-gold hover:text-gold-light transition-colors 
            underline-offset-4 hover:underline leading-[1.9];
   }
 
-  /* ---------- Status Badge ---------- */
   .status-badge {
     @apply inline-flex items-center px-3 rounded-full 
            text-xs font-semibold uppercase tracking-wide
@@ -258,9 +236,6 @@
   }
 }
 
-/* ============================================
-   UTILITIES
-   ============================================ */
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -315,15 +290,6 @@
   }
 }
 
-/* ============================================
-   ANIMATED BACKGROUND - CSS ONLY
-   (Performance Optimized - No JavaScript)
-   ============================================ */
-
-/* --------------------------------------------
-   Animation 1: Gradient Shift (Background)
-   Duration: 20s
-   -------------------------------------------- */
 @keyframes bgGradientShift {
   0% {
     background-position: 0% 50%;
@@ -341,7 +307,7 @@
     135deg,
     #0B132B 0%,
     #0F172A 25%,
-    #111C3A 50%,
+    #0D1830 50%,
     #0F172A 75%,
     #0B132B 100%
   );
@@ -350,10 +316,6 @@
   will-change: background-position;
 }
 
-/* --------------------------------------------
-   Animation 2: Pulse Glow (Carousel Behind)
-   Duration: 5s
-   -------------------------------------------- */
 @keyframes pulseGlow {
   0%, 100% {
     opacity: 0.15;
@@ -370,10 +332,6 @@
   will-change: opacity, transform;
 }
 
-/* --------------------------------------------
-   Animation 3: Twinkling Stars
-   Duration: 4s
-   -------------------------------------------- */
 @keyframes twinkle {
   0%, 100% {
     opacity: 0.1;
@@ -390,10 +348,6 @@
   will-change: opacity, transform;
 }
 
-/* --------------------------------------------
-   Animation 4: Shimmer Line (Optional)
-   Duration: 3s
-   -------------------------------------------- */
 @keyframes shimmer {
   0% {
     transform: translateX(-100%);
@@ -408,10 +362,6 @@
   will-change: transform;
 }
 
-/* --------------------------------------------
-   Animation 5: Soft Float (Floating Cards)
-   Duration: 5s
-   -------------------------------------------- */
 @keyframes softFloat {
   0%, 100% {
     transform: translateY(0);
@@ -426,10 +376,6 @@
   will-change: transform;
 }
 
-/* --------------------------------------------
-   Mobile Performance Optimization
-   Animation ধীরে চলে মোবাইলে
-   -------------------------------------------- */
 @media (max-width: 768px) {
   .animated-bg-gradient {
     animation: bgGradientShift 30s ease infinite;
@@ -452,10 +398,6 @@
   }
 }
 
-/* --------------------------------------------
-   Accessibility: Reduce Motion
-   যে ইউজার Motion কম চায়
-   -------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   .animated-bg-gradient,
   .animated-pulse-glow,
