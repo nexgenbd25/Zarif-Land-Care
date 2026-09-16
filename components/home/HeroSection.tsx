@@ -2,7 +2,7 @@
 
 import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Phone, ArrowRight, MessageCircle, FileText, Users } from 'lucide-react';
+import { Phone, ArrowRight, FileText, Users } from 'lucide-react';
 import Link from 'next/link';
 import HeroCarousel from './HeroCarousel';
 import CountUpNumber from '@/components/ui/CountUp';
@@ -58,10 +58,6 @@ export default function HeroSection() {
     },
   };
 
-  // WhatsApp
-  const whatsappNumber = '+8801788766735';
-  const whatsappMessage = encodeURIComponent('আসসালামু আলাইকুম, আমি দলিল সেবা নিতে চাই।');
-
   return (
     <section className="relative overflow-hidden bg-gradient-navy section-padding">
       {/* ============================================
@@ -80,18 +76,6 @@ export default function HeroSection() {
             animate="visible"
             className="w-full lg:w-1/2 text-center lg:text-left"
           >
-            {/* Trust Badge */}
-            <motion.div variants={itemVariants} className="mb-6">
-              <span className="inline-flex items-center gap-2 
-                              px-4 py-2 rounded-full
-                              bg-gold/10 border border-gold/30
-                              text-gold text-xs sm:text-sm font-medium
-                              backdrop-blur-sm">
-                <span className="w-2 h-2 rounded-full bg-gold animate-pulse" />
-                <span className="text-bangla-safe">⭐ ২০০৫ সাল থেকে বিশ্বস্ত প্রতিষ্ঠান</span>
-              </span>
-            </motion.div>
-
             {/* Headline */}
             <motion.h1
               variants={itemVariants}
@@ -110,14 +94,14 @@ export default function HeroSection() {
             </motion.p>
 
             {/* ============================================
-                CTA Buttons (3টি)
+                CTA Buttons (2টি)
                 ============================================ */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-col sm:flex-row gap-3 
-                         justify-center lg:justify-start mb-6"
+              className="flex flex-col sm:flex-row gap-4 
+                         justify-center lg:justify-start"
             >
-              {/* Primary CTA - Call */}
+              {/* Primary CTA - Contact */}
               <Link
                 href={getUrl('/contact')}
                 className="btn-primary group"
@@ -126,49 +110,25 @@ export default function HeroSection() {
                 <span className="text-bangla-safe">{t('hero.cta1')}</span>
               </Link>
 
-              {/* WhatsApp CTA */}
-              <a
-                href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2
-                           px-6 py-3.5 rounded-lg font-semibold
-                           bg-gradient-to-r from-green-600 to-green-700
-                           text-white shadow-lg shadow-green-600/20
-                           transition-all duration-300
-                           hover:shadow-xl hover:scale-105
-                           active:scale-95
-                           w-full sm:w-auto
-                           leading-[1.7] pt-[0.9rem] pb-[0.7rem]"
-              >
-                <MessageCircle size={18} />
-                <span className="text-bangla-safe">WhatsApp</span>
-              </a>
-            </motion.div>
-
-            {/* Secondary CTA - Services */}
-            <motion.div variants={itemVariants} className="mb-8">
+              {/* Secondary CTA - Services */}
               <Link
                 href={getUrl('/services')}
-                className="inline-flex items-center gap-2 
-                           text-gold hover:text-gold-light 
-                           transition-colors text-sm font-medium 
-                           group underline-offset-4 hover:underline"
+                className="btn-secondary group"
               >
                 <span className="text-bangla-safe">{t('hero.cta2')}</span>
                 <ArrowRight
-                  size={16}
+                  size={18}
                   className="group-hover:translate-x-1 transition-transform"
                 />
               </Link>
             </motion.div>
 
             {/* ============================================
-                Trust Indicators - Desktop (Animated Count)
+                Trust Indicators - Desktop
                 ============================================ */}
             <motion.div
               variants={itemVariants}
-              className="hidden lg:flex items-center gap-8 mt-10 pt-8 
+              className="hidden lg:flex items-center gap-8 mt-12 pt-8 
                          border-t border-navy-border"
             >
               <div className="flex items-center gap-3">
