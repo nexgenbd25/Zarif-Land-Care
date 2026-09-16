@@ -2,6 +2,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { locales, type Locale } from '@/i18n';
+import Header from '@/components/layout/Header';
 
 // ============================================
 // Static Params (বাংলা + ইংরেজি প্রি-রেন্ডার)
@@ -32,9 +33,9 @@ export async function generateMetadata({
     title: titles[locale] || titles.bn,
     description: descriptions[locale] || descriptions.bn,
     alternates: {
-      canonical: `/${locale}`,
+      canonical: locale === 'bn' ? '/' : '/en',
       languages: {
-        'bn-BD': '/bn',
+        'bn-BD': '/',
         'en-US': '/en',
       },
     },
@@ -56,7 +57,7 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  // ⚠️ গুরুত্বপূর্ণ: Static rendering এনাবল করুন
+  // Static rendering এনাবল করুন
   setRequestLocale(locale);
 
   // অনুবাদ মেসেজ লোড করুন
@@ -64,8 +65,18 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <div lang={locale} className="min-h-screen">
-        {children}
+      <div lang={locale} className="min-h-screen flex flex-col bg-navy">
+        {/* ============================================
+            HEADER (সব পেজে)
+            ============================================ */}
+        <Header />
+
+        {/* ============================================
+            MAIN CONTENT
+            ============================================ */}
+        <main className="flex-1">
+          {children}
+        </main>
       </div>
     </NextIntlClientProvider>
   );
