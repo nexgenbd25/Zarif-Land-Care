@@ -1,91 +1,96 @@
 'use client';
 
-import { motion } from 'framer-motion';
-
 export default function AnimatedBackground() {
+  // ============================================
+  // Twinkling Stars - Static positions
+  // CSS handles the animation
+  // ============================================
+  const stars = [
+    { left: '8%', top: '15%', delay: '0s', size: 1.5 },
+    { left: '22%', top: '45%', delay: '1.2s', size: 1 },
+    { left: '35%', top: '20%', delay: '2.4s', size: 2 },
+    { left: '48%', top: '70%', delay: '0.8s', size: 1 },
+    { left: '62%', top: '30%', delay: '1.8s', size: 1.5 },
+    { left: '75%', top: '60%', delay: '3s', size: 1 },
+    { left: '88%', top: '25%', delay: '0.5s', size: 1.5 },
+    { left: '15%', top: '80%', delay: '2s', size: 1 },
+    { left: '55%', top: '10%', delay: '1.5s', size: 1 },
+    { left: '92%', top: '75%', delay: '2.8s', size: 1.2 },
+  ];
+
   return (
     <div className="absolute inset-0 overflow-hidden -z-0 pointer-events-none">
       {/* ============================================
-          Grid Pattern (খুব হালকা)
+          LAYER 1: Animated Gradient Background
+          (CSS-only, lag-free)
+          ============================================ */}
+      <div className="absolute inset-0 animated-bg-gradient" />
+
+      {/* ============================================
+          LAYER 2: Grid Pattern (Static)
           ============================================ */}
       <div
-        className="absolute inset-0 opacity-[0.02]"
+        className="absolute inset-0 opacity-[0.015]"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.3) 1px, transparent 1px)
+            linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px)
           `,
           backgroundSize: '100px 100px',
         }}
       />
 
       {/* ============================================
-          Only 2 Orbs (Performance-optimized)
+          LAYER 3: Gold Glow (Top Right)
           ============================================ */}
-
-      {/* Gold Orb - Top Right */}
-      <motion.div
-        animate={{
-          opacity: [0.04, 0.06, 0.04],
-          scale: [1, 1.05, 1],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
+      <div
         className="absolute -top-40 -right-40 w-[500px] h-[500px] 
-                   bg-gold rounded-full blur-[180px]"
-        style={{ willChange: 'opacity, transform' }}
-      />
-
-      {/* Orange Orb - Bottom Left */}
-      <motion.div
-        animate={{
-          opacity: [0.03, 0.05, 0.03],
-          scale: [1, 1.05, 1],
-        }}
-        transition={{
-          duration: 25,
-          repeat: Infinity,
-          ease: 'easeInOut',
-          delay: 2,
-        }}
-        className="absolute -bottom-40 -left-40 w-[500px] h-[500px] 
-                   bg-brand-orange rounded-full blur-[180px]"
+                   bg-gold rounded-full blur-[160px] 
+                   animated-pulse-glow"
         style={{ willChange: 'opacity, transform' }}
       />
 
       {/* ============================================
-          Few Floating Particles (6টি only)
+          LAYER 4: Orange Glow (Bottom Left)
           ============================================ */}
-      {[...Array(6)].map((_, i) => (
-        <motion.div
-          key={i}
-          animate={{
-            y: [0, -80, 0],
-            opacity: [0, 0.2, 0],
-          }}
-          transition={{
-            duration: 15 + i * 2,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: i * 2,
-          }}
-          className="absolute w-0.5 h-0.5 bg-gold/40 rounded-full"
+      <div
+        className="absolute -bottom-40 -left-40 w-[500px] h-[500px] 
+                   bg-brand-orange rounded-full blur-[160px] 
+                   animated-pulse-glow"
+        style={{
+          willChange: 'opacity, transform',
+          animationDelay: '2.5s',
+        }}
+      />
+
+      {/* ============================================
+          LAYER 5: Twinkling Stars
+          (CSS-only, super light)
+          ============================================ */}
+      {stars.map((star, index) => (
+        <div
+          key={index}
+          className="absolute rounded-full bg-gold animated-twinkle"
           style={{
-            left: `${15 + i * 15}%`,
-            top: `${20 + i * 10}%`,
-            willChange: 'transform, opacity',
+            left: star.left,
+            top: star.top,
+            width: `${star.size * 2}px`,
+            height: `${star.size * 2}px`,
+            animationDelay: star.delay,
+            willChange: 'opacity, transform',
           }}
         />
       ))}
 
       {/* ============================================
-          Top & Bottom Fade
+          LAYER 6: Top Gradient Fade
           ============================================ */}
       <div className="absolute top-0 left-0 right-0 h-40 
                       bg-gradient-to-b from-navy via-navy/50 to-transparent" />
+
+      {/* ============================================
+          LAYER 7: Bottom Gradient Fade
+          ============================================ */}
       <div className="absolute bottom-0 left-0 right-0 h-40 
                       bg-gradient-to-t from-navy via-navy/50 to-transparent" />
     </div>
