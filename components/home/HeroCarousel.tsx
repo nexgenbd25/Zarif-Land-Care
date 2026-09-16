@@ -11,25 +11,25 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 const HERO_IMAGES = [
   {
     id: 1,
-    url: 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=1200&q=80',
+    url: 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=1600&q=80',
     alt_bn: 'জমির দলিল প্রস্তুতি',
     alt_en: 'Land deed preparation',
   },
   {
     id: 2,
-    url: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80',
+    url: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1600&q=80',
     alt_bn: 'সম্পত্তির কাগজপত্র',
     alt_en: 'Property documents',
   },
   {
     id: 3,
-    url: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&q=80',
+    url: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1600&q=80',
     alt_bn: 'আইনি পরামর্শ',
     alt_en: 'Legal consultation',
   },
   {
     id: 4,
-    url: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&q=80',
+    url: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80',
     alt_bn: 'হ্যান্ডশেক - চুক্তি',
     alt_en: 'Handshake - Agreement',
   },
@@ -75,14 +75,12 @@ export default function HeroCarousel() {
   // Auto Slide Logic
   // ============================================
   useEffect(() => {
-    // যদি Paused না থাকে, Interval শুরু করো
     if (!isPaused) {
       intervalRef.current = setInterval(() => {
         goToNext();
       }, AUTO_SLIDE_INTERVAL);
     }
 
-    // Cleanup
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -107,7 +105,6 @@ export default function HeroCarousel() {
   };
 
   const handleMouseLeave = () => {
-    // Mouse কার্সর বাইরে গেলে paused বন্ধ করো
     if (isDragging) {
       setIsPaused(false);
       setIsDragging(false);
@@ -115,7 +112,7 @@ export default function HeroCarousel() {
   };
 
   // ============================================
-  // Touch Events (Mobile) - Swipe Support
+  // Touch Events (Mobile)
   // ============================================
   const handleTouchStart = (e: React.TouchEvent) => {
     setIsPaused(true);
@@ -124,7 +121,6 @@ export default function HeroCarousel() {
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return;
-    // Swipe distance চেক করা (পরে ব্যবহার করা হবে)
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
@@ -136,13 +132,10 @@ export default function HeroCarousel() {
     const touchEndX = e.changedTouches[0].clientX;
     const swipeDistance = touchStartX.current - touchEndX;
 
-    // Swipe Threshold (৫০px)
     if (Math.abs(swipeDistance) > 50) {
       if (swipeDistance > 0) {
-        // ডানে Swipe → Next
         goToNext();
       } else {
-        // বামে Swipe → Prev
         goToPrev();
       }
     }
@@ -152,7 +145,7 @@ export default function HeroCarousel() {
   };
 
   // ============================================
-  // Global MouseUp (যেকোনো জায়গায় ছেড়ে দিলে)
+  // Global MouseUp
   // ============================================
   useEffect(() => {
     const handleGlobalMouseUp = () => {
@@ -169,7 +162,7 @@ export default function HeroCarousel() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full max-w-md aspect-square rounded-2xl overflow-hidden
+      className="relative w-full max-w-2xl aspect-video rounded-2xl overflow-hidden
                  shadow-glow-gold select-none group"
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
@@ -204,26 +197,6 @@ export default function HeroCarousel() {
           <div className="absolute inset-0 bg-gradient-to-t 
                           from-navy/80 via-transparent to-transparent" />
         </motion.div>
-      </AnimatePresence>
-
-      {/* ============================================
-          PAUSE INDICATOR (যখন Paused)
-          ============================================ */}
-      <AnimatePresence>
-        {isPaused && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute top-4 right-4 z-20
-                       bg-navy/80 backdrop-blur-sm
-                       px-3 py-1.5 rounded-full
-                       text-xs font-medium text-gold
-                       border border-gold/30"
-          >
-            ⏸ Paused
-          </motion.div>
-        )}
       </AnimatePresence>
 
       {/* ============================================
@@ -293,7 +266,7 @@ export default function HeroCarousel() {
       </div>
 
       {/* ============================================
-          PROGRESS BAR (যখন Auto Slide চালু)
+          PROGRESS BAR (Auto Slide চলাকালে)
           ============================================ */}
       {!isPaused && (
         <motion.div
