@@ -1,16 +1,17 @@
 'use client';
 
-import { useLocale, useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useTransition } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, Check } from 'lucide-react';
+import { Globe, Check, Loader2 } from 'lucide-react';
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // ============================================
@@ -31,30 +32,46 @@ export default function LanguageSwitcher() {
   }, []);
 
   // ============================================
-  // ভাষা পরিবর্তন
+  // ভাষা পরিবর্তন (Improved Logic)
   // ============================================
   const switchLanguage = (newLocale: 'bn' | 'en') => {
-    setIsOpen(false);
-
-    // URL থেকে বর্তমান locale মুছে ফেলুন
-    let newPath = pathname;
-
-    // যদি /en দিয়ে শুরু হয়, সেটি মুছে ফেলুন
-    if (newPath.startsWith('/en')) {
-      newPath = newPath.replace('/en', '') || '/';
+    if (newLocale === locale) {
+      setIsOpen(false);
+      return;
     }
 
+    setIsOpen(false);
+
+    // ============================================
+    // নতুন URL তৈরি করুন
+    // ============================================
+    let newPath: string;
+
+    // বর্তমান pathname থেকে locale অংশ সরান
+    // যেমন: /en/services → /services
+    //       /en → /
+    const pathWithoutLocale = pathname.replace(/^\/(bn|en)/, '') || '/';
+
     // নতুন locale অনুযায়ী URL তৈরি করুন
-    if (newLocale === 'en') {
-      newPath = `/en${newPath === '/' ? '' : newPath}`;
+    if (newLocale === 'bn') {
+      // বাংলা: কোনো prefix নেই
+      newPath = pathWithoutLocale === '/' ? '/' : pathWithoutLocale;
+    } else {
+      // ইংরেজি: /en prefix
+      newPath = pathWithoutLocale === '/' ? '/en' : `/en${pathWithoutLocale}`;
     }
 
     // localStorage এ সেভ করুন
-    localStorage.setItem('preferred-locale', newLocale);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('preferred-locale', newLocale);
+      document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
+    }
 
-    // Navigate
-    router.push(newPath);
-    router.refresh();
+    // Navigate with transition
+    startTransition(() => {
+      router.push(newPath);
+      router.refresh();
+    });
   };
 
   const languages = [
@@ -69,13 +86,19 @@ export default function LanguageSwitcher() {
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
+        disabled={isPending}
         className="flex items-center gap-2 px-3 py-2 rounded-lg
                    text-gray-300 hover:text-gold hover:bg-navy-dark
                    transition-all duration-200
-                   focus:outline-none focus:ring-2 focus:ring-gold/20"
+                   focus:outline-none focus:ring-2 focus:ring-gold/20
+                   disabled:opacity-50 disabled:cursor-wait"
         aria-label="Change language"
       >
-        <Globe size={18} />
+        {isPending ? (
+          <Loader2 size={18} className="animate-spin" />
+        ) : (
+          <Globe size={18} />
+        )}
         <span className="hidden sm:inline text-sm font-medium">
           {currentLanguage?.label}
         </span>
