@@ -15,13 +15,17 @@ export type Locale = (typeof locales)[number];
 // ============================================
 // অনুবাদ ফাইল লোড
 // ============================================
-export default getRequestConfig(async ({ locale }) => {
+export default getRequestConfig(async ({ requestLocale }) => {
+  // নতুন API: requestLocale (deprecated locale এর বদলে)
+  const locale = await requestLocale;
+
   // ভাষা সাপোর্টেড কিনা চেক
-  if (!locales.includes(locale as Locale)) {
+  if (!locale || !locales.includes(locale as Locale)) {
     notFound();
   }
 
   return {
+    locale,
     messages: (await import(`./messages/${locale}.json`)).default,
   };
 });
