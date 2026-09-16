@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Shield, FileCheck, Award } from 'lucide-react';
+import { ChevronLeft, ChevronRight, FileCheck, Award } from 'lucide-react';
 
 // ============================================
 // ডেমো ছবি (পরে Database থেকে আসবে)
@@ -134,59 +134,65 @@ export default function HeroCarousel() {
   }, [isDragging]);
 
   return (
-    <div className="relative w-full max-w-2xl">
+    <div className="relative w-full">
       {/* ============================================
-          FLOATING CARDS
+          FLOATING CARDS (Carousel-এর বাইরে)
           ============================================ */}
+      {/* Floating Card 1 - Top Left */}
       <motion.div
         initial={{ opacity: 0, x: -30, y: -20 }}
         animate={{ opacity: 1, x: 0, y: 0 }}
         transition={{ duration: 0.8, delay: 1.0 }}
-        className="absolute -top-4 -left-4 lg:-top-6 lg:-left-6 z-30
+        className="absolute -top-3 -left-3 lg:-top-6 lg:-left-6 z-30
                    bg-navy-dark/95 backdrop-blur-md
-                   rounded-xl px-4 py-3 shadow-xl
+                   rounded-xl px-3 py-2 lg:px-4 lg:py-3 shadow-xl
                    hidden sm:block"
       >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gold/15 
+        <div className="flex items-center gap-2 lg:gap-3">
+          <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gold/15 
                           flex items-center justify-center">
-            <FileCheck size={20} className="text-gold" />
+            <FileCheck size={16} className="text-gold lg:hidden" />
+            <FileCheck size={20} className="text-gold hidden lg:block" />
           </div>
           <div>
-            <div className="text-sm font-bold text-gold">১০০০+</div>
-            <div className="text-xs text-muted">দলিল সম্পন্ন</div>
+            <div className="text-xs lg:text-sm font-bold text-gold">১০০০+</div>
+            <div className="text-[10px] lg:text-xs text-muted">দলিল সম্পন্ন</div>
           </div>
         </div>
       </motion.div>
 
+      {/* Floating Card 2 - Bottom Right */}
       <motion.div
         initial={{ opacity: 0, x: 30, y: 20 }}
         animate={{ opacity: 1, x: 0, y: 0 }}
         transition={{ duration: 0.8, delay: 1.2 }}
-        className="absolute -bottom-4 -right-4 lg:-bottom-6 lg:-right-6 z-30
+        className="absolute -bottom-3 -right-3 lg:-bottom-6 lg:-right-6 z-30
                    bg-navy-dark/95 backdrop-blur-md
-                   rounded-xl px-4 py-3 shadow-xl
+                   rounded-xl px-3 py-2 lg:px-4 lg:py-3 shadow-xl
                    hidden sm:block"
       >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gold/15 
+        <div className="flex items-center gap-2 lg:gap-3">
+          <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gold/15 
                           flex items-center justify-center">
-            <Award size={20} className="text-gold" />
+            <Award size={16} className="text-gold lg:hidden" />
+            <Award size={20} className="text-gold hidden lg:block" />
           </div>
           <div>
-            <div className="text-sm font-bold text-gold">১০+ বছর</div>
-            <div className="text-xs text-muted">অভিজ্ঞতা</div>
+            <div className="text-xs lg:text-sm font-bold text-gold">১০+ বছর</div>
+            <div className="text-[10px] lg:text-xs text-muted">অভিজ্ঞতা</div>
           </div>
         </div>
       </motion.div>
 
       {/* ============================================
-          CAROUSEL CONTAINER - গোল্ড স্ট্রোক সরানো
+          CAROUSEL CONTAINER - 16:9 ratio
+          (মোবাইল ও ডেস্কটপ - দুই জায়গায় একই)
           ============================================ */}
       <div
         ref={containerRef}
-        className="relative w-full aspect-video rounded-2xl overflow-hidden
+        className="relative w-full rounded-2xl overflow-hidden
                    shadow-lg select-none group"
+        style={{ aspectRatio: '16 / 9' }}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
@@ -255,8 +261,8 @@ export default function HeroCarousel() {
         </button>
 
         {/* Dots */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20
-                        flex items-center gap-2">
+        <div className="absolute bottom-3 lg:bottom-4 left-1/2 -translate-x-1/2 z-20
+                        flex items-center gap-1.5 lg:gap-2">
           {HERO_IMAGES.map((_, index) => (
             <button
               key={index}
@@ -268,8 +274,8 @@ export default function HeroCarousel() {
               className={`transition-all duration-300 rounded-full
                           ${
                             index === currentIndex
-                              ? 'w-8 h-2 bg-gold'
-                              : 'w-2 h-2 bg-white/50 hover:bg-white/80'
+                              ? 'w-6 lg:w-8 h-1.5 lg:h-2 bg-gold'
+                              : 'w-1.5 lg:w-2 h-1.5 lg:h-2 bg-white/50 hover:bg-white/80'
                           }`}
               aria-label={`Go to slide ${index + 1}`}
             />
@@ -292,33 +298,9 @@ export default function HeroCarousel() {
       </div>
 
       {/* ============================================
-          VERIFIED BADGES
+          VERIFIED BADGES - সরানো হয়েছে ❌
+          (আগে ছিল: সরকার অনুমোদিত, নিরাপদ সেবা, আইনসম্মত)
           ============================================ */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 1.4 }}
-        className="mt-6 flex flex-wrap items-center justify-center gap-3 lg:gap-4"
-      >
-        <div className="flex items-center gap-2 px-3 py-1.5 
-                        bg-navy-dark/60 backdrop-blur-sm 
-                        rounded-full">
-          <Shield size={14} className="text-gold" />
-          <span className="text-xs text-gray-300">সরকার অনুমোদিত</span>
-        </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 
-                        bg-navy-dark/60 backdrop-blur-sm 
-                        rounded-full">
-          <FileCheck size={14} className="text-gold" />
-          <span className="text-xs text-gray-300">নিরাপদ সেবা</span>
-        </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 
-                        bg-navy-dark/60 backdrop-blur-sm 
-                        rounded-full">
-          <Award size={14} className="text-gold" />
-          <span className="text-xs text-gray-300">আইনসম্মত</span>
-        </div>
-      </motion.div>
     </div>
   );
 }
