@@ -1,49 +1,24 @@
 import createMiddleware from 'next-intl/middleware';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { locales, defaultLocale } from './i18n';
 
 // ============================================
-// i18n Middleware তৈরি
+// i18n Middleware
 // ============================================
 const intlMiddleware = createMiddleware({
   locales,
   defaultLocale,
-  localePrefix: 'always', // URL এ সবসময় ভাষা থাকবে (যেমন: /bn, /en)
+  // ⚠️ এটিই মূল পরিবর্তন
+  // 'as-needed' মানে: ডিফল্ট ভাষায় (bn) /bn থাকবে না
+  // শুধু ইংরেজিতে /en থাকবে
+  localePrefix: 'as-needed',
 });
-
-// ============================================
-// Protected Routes (Login ছাড়া ঢোকা যাবে না)
-// ============================================
-const protectedPaths = ['/dashboard', '/admin'];
-
-// ============================================
-// Auth Routes (Login করা থাকলে ঢোকা যাবে না)
-// ============================================
-const authPaths = ['/login', '/signup', '/forgot-password'];
 
 // ============================================
 // Main Middleware
 // ============================================
 export async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
-
-  // ১. ভাষা রাউটিং (i18n)
-  const intlResponse = intlMiddleware(request);
-
-  // ২. ভাষা ছাড়া URL হলে ডিফল্ট ভাষায় রিডাইরেক্ট
-  // (next-intl অটো করে, তবে চেক করা ভালো)
-
-  // ৩. Protected Routes চেক
-  const isProtectedPath = protectedPaths.some((path) =>
-    pathname.includes(path)
-  );
-
-  const isAuthPath = authPaths.some((path) => pathname.includes(path));
-
-  // আপাতত সেশন চেক বন্ধ রাখছি (পরে Supabase Client যোগ করলে চালু করব)
-  // ভবিষ্যতে এখানে Supabase Session চেক হবে
-
-  return intlResponse;
+  return intlMiddleware(request);
 }
 
 // ============================================
@@ -51,7 +26,6 @@ export async function middleware(request: NextRequest) {
 // ============================================
 export const config = {
   matcher: [
-    // সব রুটে চলবে, তবে নিচেরগুলো বাদ
     '/((?!api|_next|_vercel|.*\\..*).*)',
   ],
 };
