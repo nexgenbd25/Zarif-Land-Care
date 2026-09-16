@@ -32,12 +32,11 @@
     "settings": "Settings"
   },
   "hero": {
-    "badge": "10+ Years Experience",
-    "title": "Your Reliable Partner for Land & Property Deeds",
-    "subtitle": "A trusted institution for seamless deed preparation and complete registration support. We are with you for all legal assistance regarding your land.",
+    "title": "Zarif Landcare Center",
+    "subtitle": "A trusted institution for accurate deed preparation and complete registration support. We stand beside you for all legal assistance regarding your land.",
     "cta1": "Contact Us",
     "cta2": "View Services",
-    "trust": "Honesty and years of experience is our asset"
+    "trust": "Honesty and years of experience is our asset."
   },
   "services": {
     "title": "Our Services",
