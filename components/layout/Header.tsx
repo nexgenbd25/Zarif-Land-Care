@@ -1,0 +1,215 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, User, LogIn } from 'lucide-react';
+import LanguageSwitcher from './LanguageSwitcher';
+
+export default function Header() {
+  const t = useTranslations('nav');
+  const locale = useLocale();
+  const pathname = usePathname();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // ============================================
+  // Scroll Detect (Sticky effect)
+  // ============================================
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // ============================================
+  // Menu বন্ধ করো pathname পরিবর্তন হলে
+  // ============================================
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
+
+  // ============================================
+  // Menu Items
+  // ============================================
+  const menuItems = [
+    { name: t('home'), href: `/${locale === 'bn' ? '' : locale}` },
+    { name: t('services'), href: `/${locale === 'bn' ? '' : locale + '/'}services` },
+    { name: t('blog'), href: `/${locale === 'bn' ? '' : locale + '/'}blog` },
+    { name: t('about'), href: `/${locale === 'bn' ? '' : locale + '/'}about` },
+    { name: t('contact'), href: `/${locale === 'bn' ? '' : locale + '/'}contact` },
+  ];
+
+  // ============================================
+  // Active Link চেক
+  // ============================================
+  const isActive = (href: string) => {
+    if (href === '/' || href === '/en') {
+      return pathname === '/' || pathname === '/en';
+    }
+    return pathname.startsWith(href);
+  };
+
+  return (
+    <header
+      className={`sticky top-0 z-50 transition-all duration-300
+                  ${
+                    isScrolled
+                      ? 'bg-navy/95 backdrop-blur-md shadow-lg border-b border-navy-border'
+                      : 'bg-navy border-b border-navy-border'
+                  }`}
+    >
+      <div className="container-custom">
+        <div className="flex items-center justify-between h-16 lg:h-20">
+          {/* ============================================
+              LOGO (Left)
+              ============================================ */}
+          <Link
+            href={`/${locale === 'bn' ? '' : locale}`}
+            className="flex items-center gap-2 group"
+          >
+            <span className="text-xl lg:text-2xl font-bold text-gold 
+                            group-hover:text-gold-light transition-colors">
+              ZARIF
+            </span>
+            <span className="hidden sm:inline text-xs lg:text-sm 
+                            text-muted font-medium tracking-wider">
+              LANDCARE CENTER
+            </span>
+          </Link>
+
+          {/* ============================================
+              DESKTOP MENU (Center)
+              ============================================ */}
+          <nav className="hidden lg:flex items-center gap-1">
+            {menuItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`relative px-4 py-2 rounded-lg text-sm font-medium
+                            transition-all duration-200
+                            ${
+                              isActive(item.href)
+                                ? 'text-gold'
+                                : 'text-gray-300 hover:text-gold hover:bg-navy-dark'
+                            }`}
+              >
+                {item.name}
+                {isActive(item.href) && (
+                  <motion.div
+                    layoutId="activeNav"
+                    className="absolute bottom-0 left-2 right-2 h-0.5 bg-gold rounded-full"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </Link>
+            ))}
+          </nav>
+
+          {/* ============================================
+              RIGHT SIDE (Language + Login + Hamburger)
+              ============================================ */}
+          <div className="flex items-center gap-2 lg:gap-3">
+            {/* Language Switcher */}
+            <LanguageSwitcher />
+
+            {/* Login Button (Desktop) */}
+            <Link
+              href={`/${locale === 'bn' ? '' : locale + '/'}login`}
+              className="hidden lg:inline-flex items-center gap-2 
+                         px-5 py-2.5 rounded-lg
+                         bg-gradient-to-r from-gold to-gold-light
+                         text-navy font-semibold text-sm
+                         shadow-lg shadow-gold/20
+                         transition-all duration-200
+                         hover:shadow-xl hover:shadow-gold/30 hover:scale-105"
+            >
+              <LogIn size={16} />
+              {t('login')}
+            </Link>
+
+            {/* Hamburger Menu (Mobile) */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="lg:hidden p-2 rounded-lg text-gray-300 
+                         hover:text-gold hover:bg-navy-dark 
+                         transition-colors"
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ============================================
+          MOBILE MENU (Dropdown)
+          ============================================ */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="lg:hidden overflow-hidden 
+                       bg-navy-dark border-t border-navy-border"
+          >
+            <nav className="container-custom py-6 flex flex-col gap-1">
+              {menuItems.map((item, index) => (
+                <motion.div
+                  key={item.href}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <Link
+                    href={item.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className={`block px-4 py-3 rounded-lg text-base font-medium
+                                transition-all duration-200
+                                ${
+                                  isActive(item.href)
+                                    ? 'bg-gold/10 text-gold border-l-4 border-gold'
+                                    : 'text-gray-300 hover:text-gold hover:bg-navy'
+                                }`}
+                  >
+                    {item.name}
+                  </Link>
+                </motion.div>
+              ))}
+
+              {/* Login Button (Mobile) */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: menuItems.length * 0.05 + 0.1 }}
+                className="mt-4 pt-4 border-t border-navy-border"
+              >
+                <Link
+                  href={`/${locale === 'bn' ? '' : locale + '/'}login`}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center justify-center gap-2 
+                             w-full px-6 py-3 rounded-lg
+                             bg-gradient-to-r from-gold to-gold-light
+                             text-navy font-semibold
+                             shadow-lg shadow-gold/20
+                             transition-all duration-200
+                             hover:shadow-xl hover:scale-105"
+                >
+                  <LogIn size={18} />
+                  {t('login')}
+                </Link>
+              </motion.div>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
+  );
+}
