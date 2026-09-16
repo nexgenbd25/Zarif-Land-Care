@@ -1,0 +1,223 @@
+{
+  "common": {
+    "loading": "লোড হচ্ছে...",
+    "save": "সেভ করুন",
+    "cancel": "বাতিল",
+    "delete": "ডিলিট",
+    "edit": "এডিট",
+    "search": "খুঁজুন",
+    "submit": "জমা দিন",
+    "back": "ফিরে যান",
+    "next": "পরবর্তী",
+    "yes": "হ্যাঁ",
+    "no": "না",
+    "close": "বন্ধ করুন",
+    "confirm": "নিশ্চিত করুন",
+    "viewAll": "সব দেখুন",
+    "readMore": "আরও পড়ুন",
+    "learnMore": "আরও জানুন"
+  },
+  "nav": {
+    "home": "হোম",
+    "services": "সেবাসমূহ",
+    "blog": "ব্লগ",
+    "contact": "যোগাযোগ",
+    "about": "আমাদের সম্পর্কে",
+    "login": "লগইন",
+    "signup": "সাইন আপ",
+    "dashboard": "ড্যাশবোর্ড",
+    "admin": "অ্যাডমিন",
+    "logout": "লগ আউট",
+    "profile": "প্রোফাইল",
+    "settings": "সেটিংস"
+  },
+  "hero": {
+    "badge": "১০+ বছরের অভিজ্ঞতা",
+    "title": "আপনার জমি ও সম্পত্তির নির্ভরযোগ্য দলিল অংশীদার",
+    "subtitle": "নির্বিঘ্ন দলিল প্রস্তুত এবং রেজিস্ট্রেশনের পূর্ণ সহায়তার জন্য একটি নির্ভরযোগ্য প্রতিষ্ঠান। আপনার ভূমি সংক্রান্ত সকল আইনি সহায়তায় আমরা পাশে আছি।",
+    "cta1": "যোগাযোগ করুন",
+    "cta2": "সার্ভিস দেখুন",
+    "trust": "সততা ও দীর্ঘ বছরের অভিজ্ঞতা আমাদের মূলধন"
+  },
+  "services": {
+    "title": "আমাদের সেবাসমূহ",
+    "subtitle": "আমাদের সেবার সুবিধাগুলো দেখুন",
+    "learnMore": "আরও জানুন"
+  },
+  "about": {
+    "title": "আমাদের সম্পর্কে",
+    "subtitle": "আমাদের পরিচিতি ও লক্ষ্য"
+  },
+  "howItWorks": {
+    "title": "কিভাবে কাজ করে",
+    "subtitle": "সহজ ৪ ধাপে আপনার কাজ সম্পন্ন করুন"
+  },
+  "whyChooseUs": {
+    "title": "কেন আমাদের বেছে নেবেন",
+    "subtitle": "আমাদের সেবার বিশেষত্ব"
+  },
+  "team": {
+    "title": "আমাদের টিম",
+    "subtitle": "সেরা টিম"
+  },
+  "testimonials": {
+    "title": "ক্লায়েন্টের মতামত",
+    "subtitle": "আমাদের সম্পর্কে ক্লায়েন্টরা কী বলেন"
+  },
+  "blog": {
+    "title": "সর্বশেষ ঘোষণা",
+    "subtitle": "আমাদের ব্লগ থেকে সাম্প্রতিক আপডেট",
+    "readMore": "আরও পড়ুন"
+  },
+  "faq": {
+    "title": "প্রায়শই জিজ্ঞাসিত প্রশ্ন",
+    "subtitle": "আমাদের FAQ সেকশনে সাধারণ প্রশ্ন খুঁজুন"
+  },
+  "cta": {
+    "title": "আজই যোগাযোগ করুন",
+    "subtitle": "আপনার জমি ও সম্পত্তির যেকোনো সমস্যায় আমরা পাশে আছি",
+    "button": "যোগাযোগ করুন"
+  },
+  "footer": {
+    "quickLinks": "গুরুত্বপূর্ণ লিংক",
+    "policyPages": "পলিসি পেজ",
+    "contactUs": "যোগাযোগ",
+    "followUs": "আমাদের ফলো করুন",
+    "newsletter": "নিউজলেটার",
+    "newsletterDesc": "নতুন আপডেট পেতে সাবস্ক্রাইব করুন",
+    "subscribe": "সাবস্ক্রাইব",
+    "emailPlaceholder": "আপনার ইমেইল লিখুন",
+    "copyright": "© কপিরাইট ২০২৬। সর্বস্বত্ব সংরক্ষিত।",
+    "madeWith": "ভালোবাসা দিয়ে তৈরি"
+  },
+  "auth": {
+    "loginTitle": "লগইন করুন",
+    "loginSubtitle": "আপনার অ্যাকাউন্টে প্রবেশ করুন",
+    "signupTitle": "নতুন অ্যাকাউন্ট খুলুন",
+    "signupSubtitle": "সাইন আপ করে সেবা নিন",
+    "fullName": "পূর্ণ নাম",
+    "email": "ইমেইল",
+    "password": "পাসওয়ার্ড",
+    "confirmPassword": "কনফার্ম পাসওয়ার্ড",
+    "phone": "মোবাইল নম্বর",
+    "address": "ঠিকানা",
+    "forgotPassword": "পাসওয়ার্ড ভুলে গেছেন?",
+    "noAccount": "অ্যাকাউন্ট নেই?",
+    "haveAccount": "অ্যাকাউন্ট আছে?",
+    "signupLink": "সাইন আপ করুন",
+    "loginLink": "লগইন করুন",
+    "rememberMe": "মনে রাখুন",
+    "termsText": "আমি শর্তাবলী ও গোপনীয়তা নীতি মেনে নিচ্ছি",
+    "loginButton": "লগইন করুন",
+    "signupButton": "সাইন আপ করুন",
+    "forgotTitle": "পাসওয়ার্ড রিসেট করুন",
+    "forgotSubtitle": "আপনার ইমেইল দিন, আমরা OTP পাঠাব",
+    "sendOtp": "OTP পাঠান",
+    "verifyOtp": "OTP ভেরিফাই করুন",
+    "otpTitle": "OTP ভেরিফাই করুন",
+    "otpSubtitle": "আপনার ইমেইলে পাঠানো ৬ ডিজিটের কোড লিখুন",
+    "resendOtp": "আবার OTP পাঠান",
+    "newPassword": "নতুন পাসওয়ার্ড",
+    "resetButton": "পাসওয়ার্ড রিসেট করুন",
+    "loginSuccess": "সফলভাবে লগইন হয়েছে",
+    "signupSuccess": "সফলভাবে অ্যাকাউন্ট তৈরি হয়েছে",
+    "logoutSuccess": "সফলভাবে লগ আউট হয়েছে"
+  },
+  "dashboard": {
+    "welcome": "স্বাগতম",
+    "overview": "ওভারভিউ",
+    "deeds": "দলিল",
+    "khatian": "খতিয়ান",
+    "newDeed": "নতুন দলিল",
+    "approvedDeeds": "অনুমোদিত দলিল",
+    "pendingDeeds": "পেন্ডিং দলিল",
+    "rejectedDeeds": "বাতিল দলিল",
+    "newKhatian": "নতুন খতিয়ান",
+    "approvedKhatian": "অনুমোদিত খতিয়ান",
+    "pendingKhatian": "পেন্ডিং খতিয়ান",
+    "support": "সাপোর্ট",
+    "settings": "সেটিংস",
+    "profile": "প্রোফাইল",
+    "myProfile": "আমার প্রোফাইল",
+    "logout": "লগ আউট",
+    "totalDeeds": "মোট দলিল",
+    "totalKhatian": "মোট খতিয়ান",
+    "approved": "অনুমোদিত",
+    "pending": "পেন্ডিং"
+  },
+  "deed": {
+    "formTitle": "নতুন দলিল এন্ট্রি",
+    "serialNo": "ক্রমিক নং",
+    "deedNo": "দলিল নং",
+    "date": "তারিখ",
+    "donorName": "দাতার নাম",
+    "donorFatherName": "দাতার পিতার নাম",
+    "recipientName": "গ্রহীতার নাম",
+    "recipientFatherName": "গ্রহীতার পিতার নাম",
+    "mouzaName": "মৌজার নাম",
+    "deedType": "দলিলের রকম",
+    "amount": "মূল্য",
+    "mobileNo": "মোবাইল নম্বর",
+    "remarks": "মন্তব্য",
+    "save": "Save Deed Entry",
+    "downloadPdf": "PDF ডাউনলোড করুন",
+    "status": "স্ট্যাটাস"
+  },
+  "khatian": {
+    "formTitle": "নতুন খতিয়ান এন্ট্রি",
+    "serialNo": "ক্রমিক নং",
+    "khatianNo": "খতিয়ান নং",
+    "date": "তারিখ",
+    "ownerName": "মালিকের নাম",
+    "ownerFatherName": "মালিকের পিতার নাম",
+    "mouzaName": "মৌজার নাম",
+    "district": "জেলা",
+    "upazila": "উপজেলা",
+    "dagNo": "দাগ নম্বর",
+    "landArea": "জমির পরিমাণ",
+    "mobileNo": "মোবাইল নম্বর",
+    "remarks": "মন্তব্য",
+    "save": "Save Khatian Entry",
+    "downloadPdf": "PDF ডাউনলোড করুন",
+    "status": "স্ট্যাটাস"
+  },
+  "status": {
+    "pending": "পেন্ডিং",
+    "approved": "অনুমোদিত",
+    "rejected": "বাতিল",
+    "open": "ওপেন",
+    "inProgress": "চলমান",
+    "closed": "বন্ধ"
+  },
+  "admin": {
+    "dashboard": "অ্যাডমিন ড্যাশবোর্ড",
+    "users": "ইউজার ম্যানেজমেন্ট",
+    "deeds": "দলিল ম্যানেজমেন্ট",
+    "khatian": "খতিয়ান ম্যানেজমেন্ট",
+    "services": "সার্ভিস ম্যানেজমেন্ট",
+    "blogs": "ব্লগ ম্যানেজমেন্ট",
+    "team": "টিম ম্যানেজমেন্ট",
+    "faqs": "FAQ ম্যানেজমেন্ট",
+    "tickets": "টিকেট ম্যানেজমেন্ট",
+    "branding": "সাইট ব্র্যান্ডিং",
+    "siteSettings": "সাইট সেটিংস",
+    "logo": "লোগো",
+    "favicon": "ফ্যাভিকন",
+    "siteName": "সাইটের নাম",
+    "tagline": "ট্যাগলাইন",
+    "uploadLogo": "লোগো আপলোড করুন"
+  },
+  "validation": {
+    "required": "এই ফিল্ডটি পূরণ করা আবশ্যক",
+    "invalidEmail": "সঠিক ইমেইল দিন",
+    "passwordMin": "পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে",
+    "passwordMatch": "পাসওয়ার্ড দুটি মিলছে না",
+    "invalidPhone": "সঠিক মোবাইল নম্বর দিন",
+    "termsRequired": "শর্তাবলী মেনে নিতে হবে"
+  },
+  "notFound": {
+    "title": "৪০৪ - পেজ পাওয়া যায়নি",
+    "subtitle": "দুঃখিত, আপনি যে পেজটি খুঁজছেন তা পাওয়া যায়নি",
+    "goHome": "হোমে ফিরে যান"
+  }
+}
