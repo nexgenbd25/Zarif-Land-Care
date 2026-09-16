@@ -3,7 +3,7 @@
 export default function AnimatedBackground() {
   // ============================================
   // Twinkling Stars - Static positions
-  // CSS handles the animation
+  // শুধু সাদা তারা, সোনালী নেই
   // ============================================
   const stars = [
     { left: '8%', top: '15%', delay: '0s', size: 1.5 },
@@ -22,7 +22,7 @@ export default function AnimatedBackground() {
     <div className="absolute inset-0 overflow-hidden -z-0 pointer-events-none">
       {/* ============================================
           LAYER 1: Animated Gradient Background
-          (CSS-only, lag-free)
+          (শুধু নেভি টোন, সোনালী/কমলা নেই)
           ============================================ */}
       <div className="absolute inset-0 animated-bg-gradient" />
 
@@ -41,36 +41,42 @@ export default function AnimatedBackground() {
       />
 
       {/* ============================================
-          LAYER 3: Gold Glow (Top Right)
+          LAYER 3: Subtle Blue Glow (Top Right)
+          (সোনালী এর বদলে নীল)
           ============================================ */}
       <div
         className="absolute -top-40 -right-40 w-[500px] h-[500px] 
-                   bg-gold rounded-full blur-[160px] 
+                   bg-blue-500 rounded-full blur-[160px] 
                    animated-pulse-glow"
-        style={{ willChange: 'opacity, transform' }}
+        style={{ 
+          willChange: 'opacity, transform',
+          opacity: 0.08,
+        }}
       />
 
       {/* ============================================
-          LAYER 4: Orange Glow (Bottom Left)
+          LAYER 4: Subtle Indigo Glow (Bottom Left)
+          (কমলা এর বদলে ইন্ডিগো)
           ============================================ */}
       <div
         className="absolute -bottom-40 -left-40 w-[500px] h-[500px] 
-                   bg-brand-orange rounded-full blur-[160px] 
+                   bg-indigo-500 rounded-full blur-[160px] 
                    animated-pulse-glow"
         style={{
           willChange: 'opacity, transform',
           animationDelay: '2.5s',
+          opacity: 0.08,
         }}
       />
 
       {/* ============================================
           LAYER 5: Twinkling Stars
-          (CSS-only, super light)
+          (সাদা তারা, সোনালী নয়)
           ============================================ */}
       {stars.map((star, index) => (
         <div
           key={index}
-          className="absolute rounded-full bg-gold animated-twinkle"
+          className="absolute rounded-full bg-white animated-twinkle"
           style={{
             left: star.left,
             top: star.top,
