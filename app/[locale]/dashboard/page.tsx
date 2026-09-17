@@ -2,30 +2,24 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import {
+  CheckCircle2,
+  Hourglass,
   User,
   Mail,
   Phone,
   Globe,
-  LogOut,
-  Home,
-  FileText,
-  MessageCircle,
-  Settings,
-  Award,
   Clock,
-  Shield,
   ArrowRight,
   Loader2,
+  TrendingUp,
+  FileText,
 } from 'lucide-react';
 import { getDemoUser, clearDemoUser, DemoUser } from '@/lib/auth';
-
-const LOGO_URL =
-  'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
+import DashboardLayout from './DashboardLayout';
 
 export default function DashboardPage() {
   const locale = useLocale();
@@ -53,8 +47,14 @@ export default function DashboardPage() {
   const content = {
     welcome_bn: 'স্বাগতম',
     welcome_en: 'Welcome',
-    subtitle_bn: 'আপনার ড্যাশবোর্ডে স্বাগতম',
-    subtitle_en: 'Welcome to your dashboard',
+    approvedDeeds_bn: 'অনুমোদিত দলিল',
+    approvedDeeds_en: 'Approved Deeds',
+    pendingDeeds_bn: 'অপেক্ষমাণ দলিল',
+    pendingDeeds_en: 'Pending Deeds',
+    totalDeeds_bn: 'মোট দলিল',
+    totalDeeds_en: 'Total Deeds',
+    thisMonth_bn: 'এই মাসে',
+    thisMonth_en: 'This Month',
     profile_bn: 'প্রোফাইল তথ্য',
     profile_en: 'Profile Information',
     username_bn: 'ইউজারনেম',
@@ -63,28 +63,24 @@ export default function DashboardPage() {
     email_en: 'Email',
     country_bn: 'দেশ',
     country_en: 'Country',
-    phone_bn: 'মোবাইল নম্বর',
-    phone_en: 'Mobile Number',
+    phone_bn: 'মোবাইল',
+    phone_en: 'Mobile',
     loginTime_bn: 'লগইন সময়',
     loginTime_en: 'Login Time',
     quickActions_bn: 'দ্রুত অ্যাকশন',
     quickActions_en: 'Quick Actions',
-    logout_bn: 'লগআউট',
-    logout_en: 'Logout',
-    home_bn: 'হোম',
-    home_en: 'Home',
-    services_bn: 'সেবাসমূহ',
-    services_en: 'Services',
-    blog_bn: 'ব্লগ',
-    blog_en: 'Blog',
-    settings_bn: 'সেটিংস',
-    settings_en: 'Settings',
-    demoBadge_bn: 'ডেমো অ্যাকাউন্ট',
-    demoBadge_en: 'Demo Account',
-    demoNotice_bn:
-      'এটি একটি ডেমো ড্যাশবোর্ড। প্রকৃত অ্যাকাউন্টের জন্য রেজিস্ট্রেশন করুন।',
-    demoNotice_en:
-      'This is a demo dashboard. Register for a real account.',
+    newDeed_bn: 'নতুন দলিল',
+    newDeed_en: 'New Deed',
+    approvedList_bn: 'অনুমোদিত তালিকা',
+    approvedList_en: 'Approved List',
+    pendingList_bn: 'অপেক্ষমাণ তালিকা',
+    pendingList_en: 'Pending List',
+    support_bn: 'সাপোর্ট',
+    support_en: 'Support',
+    chart_bn: 'দলিল পরিসংখ্যান',
+    chart_en: 'Deeds Statistics',
+    chartSubtitle_bn: 'বছর ভিত্তিক অনুমোদিত দলিল',
+    chartSubtitle_en: 'Yearly approved deeds',
     loading_bn: 'লোড হচ্ছে...',
     loading_en: 'Loading...',
   };
@@ -94,7 +90,7 @@ export default function DashboardPage() {
 
   if (isLoading || !user) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-gradient-to-br from-[#F0FDF4] via-white to-[#F0FDF4]">
+      <div className="min-h-[100dvh] flex items-center justify-center bg-[#F8FAF9]">
         <div className="text-center">
           <Loader2
             size={40}
@@ -108,198 +104,271 @@ export default function DashboardPage() {
     );
   }
 
-  const quickActions = [
+  const statsData = [
     {
-      icon: Home,
-      label_bn: content.home_bn,
-      label_en: content.home_en,
-      href: `/${isBn ? '' : locale}`,
-      color: 'bg-blue-500',
+      icon: CheckCircle2,
+      label_bn: content.approvedDeeds_bn,
+      label_en: content.approvedDeeds_en,
+      value: '566',
+      color: 'bg-[#1F7A3F]',
+      bgLight: 'bg-[#1F7A3F]/10',
+      textColor: 'text-[#1F7A3F]',
+    },
+    {
+      icon: Hourglass,
+      label_bn: content.pendingDeeds_bn,
+      label_en: content.pendingDeeds_en,
+      value: '0',
+      color: 'bg-orange-500',
+      bgLight: 'bg-orange-50',
+      textColor: 'text-orange-600',
     },
     {
       icon: FileText,
-      label_bn: content.services_bn,
-      label_en: content.services_en,
-      href: `/${isBn ? '' : locale + '/'}services`,
-      color: 'bg-[#1F7A3F]',
+      label_bn: content.totalDeeds_bn,
+      label_en: content.totalDeeds_en,
+      value: '566',
+      color: 'bg-blue-500',
+      bgLight: 'bg-blue-50',
+      textColor: 'text-blue-600',
     },
     {
-      icon: MessageCircle,
-      label_bn: content.blog_bn,
-      label_en: content.blog_en,
-      href: `/${isBn ? '' : locale + '/'}blog`,
+      icon: TrendingUp,
+      label_bn: content.thisMonth_bn,
+      label_en: content.thisMonth_en,
+      value: '14',
       color: 'bg-purple-500',
-    },
-    {
-      icon: Settings,
-      label_bn: content.settings_bn,
-      label_en: content.settings_en,
-      href: `/${isBn ? '' : locale + '/'}settings`,
-      color: 'bg-gray-500',
+      bgLight: 'bg-purple-50',
+      textColor: 'text-purple-600',
     },
   ];
 
+  const chartData = [
+    { year: '2020', value: 0 },
+    { year: '2021', value: 20 },
+    { year: '2022', value: 50 },
+    { year: '2023', value: 8 },
+    { year: '2024', value: 140 },
+    { year: '2025', value: 210 },
+    { year: '2026', value: 120 },
+  ];
+  const maxValue = Math.max(...chartData.map((d) => d.value));
+
   const profileFields = [
+    { icon: User, label: t('username'), value: user.username },
+    { icon: Mail, label: t('email'), value: user.email },
+    { icon: Globe, label: t('country'), value: user.country },
+    { icon: Phone, label: t('phone'), value: user.phone },
+  ];
+
+  const quickActions = [
     {
-      icon: User,
-      label: t('username'),
-      value: user.username,
+      icon: FileText,
+      label_bn: content.newDeed_bn,
+      label_en: content.newDeed_en,
+      href: `/${isBn ? '' : locale + '/'}dashboard/deeds/new`,
+      color: 'bg-[#1F7A3F]',
     },
     {
-      icon: Mail,
-      label: t('email'),
-      value: user.email,
+      icon: CheckCircle2,
+      label_bn: content.approvedList_bn,
+      label_en: content.approvedList_en,
+      href: `/${isBn ? '' : locale + '/'}dashboard/deeds/approved`,
+      color: 'bg-blue-500',
+    },
+    {
+      icon: Hourglass,
+      label_bn: content.pendingList_bn,
+      label_en: content.pendingList_en,
+      href: `/${isBn ? '' : locale + '/'}dashboard/deeds/pending`,
+      color: 'bg-orange-500',
     },
     {
       icon: Globe,
-      label: t('country'),
-      value: user.country,
-    },
-    {
-      icon: Phone,
-      label: t('phone'),
-      value: user.phone,
+      label_bn: content.support_bn,
+      label_en: content.support_en,
+      href: `/${isBn ? '' : locale + '/'}dashboard/support`,
+      color: 'bg-purple-500',
     },
   ];
 
   return (
-    <section className="relative min-h-[100dvh] w-full bg-gradient-to-br from-[#F0FDF4] via-white to-[#F0FDF4] py-6 sm:py-8 px-4">
-      <div className="absolute top-0 left-0 w-56 h-56 sm:w-72 sm:h-72 bg-[#1F7A3F]/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-[#22C55E]/5 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="relative max-w-4xl mx-auto z-10">
-        {/* Header Bar */}
+    <DashboardLayout user={user} onLogout={handleLogout}>
+      <div className="space-y-5 sm:space-y-6">
+        {/* Welcome */}
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="flex items-center justify-between mb-6 sm:mb-8"
         >
-          <Link
-            href={`/${isBn ? '' : locale}`}
-            className="flex items-center gap-2 group"
-          >
-            <Image
-              src={LOGO_URL}
-              alt="Zarif Landcare"
-              width={160}
-              height={50}
-              className="h-10 sm:h-12 w-auto object-contain"
-              unoptimized
-            />
-          </Link>
-
-          <button
-            onClick={handleLogout}
-            className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg
-                       bg-white border border-[#E5E7EB] 
-                       text-[#1F2937] hover:text-red-600 hover:border-red-200
-                       hover:bg-red-50 transition-all duration-300
-                       text-xs sm:text-sm font-semibold shadow-sm"
-          >
-            <LogOut size={14} />
-            <span className="text-bangla-safe">{t('logout')}</span>
-          </button>
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold 
+                         text-[#1F2937] text-bangla-heading 
+                         pt-1 pb-1 leading-tight">
+            {t('welcome')}, {user.username}!
+          </h2>
+          <p className="text-xs sm:text-sm text-[#6B7280] text-bangla-safe">
+            {new Date().toLocaleDateString(isBn ? 'bn-BD' : 'en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </p>
         </motion.div>
 
-        {/* Welcome Card */}
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {statsData.map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.08 }}
+                className="bg-white rounded-2xl border border-[#E5E7EB] 
+                           p-4 sm:p-5 shadow-sm hover:shadow-lg 
+                           hover:-translate-y-1 transition-all duration-300 
+                           group"
+              >
+                <div
+                  className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${stat.color} 
+                               flex items-center justify-center mb-3
+                               shadow-md group-hover:scale-110 
+                               transition-transform duration-300`}
+                >
+                  <Icon size={20} className="text-white" />
+                </div>
+                <p className="text-[11px] sm:text-xs font-semibold 
+                              text-[#6B7280] uppercase tracking-wider 
+                              text-bangla-safe mb-1">
+                  {isBn ? stat.label_bn : stat.label_en}
+                </p>
+                <p className="text-2xl sm:text-3xl font-bold text-[#1F2937] 
+                              leading-tight">
+                  {stat.value}
+                </p>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Chart */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="relative bg-white rounded-2xl 
-                     shadow-[0_20px_60px_-15px_rgba(31,122,63,0.25)] 
-                     border border-[#E5E7EB] overflow-hidden mb-5 sm:mb-6"
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="bg-white rounded-2xl border border-[#E5E7EB] 
+                     shadow-sm overflow-hidden"
         >
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#1F7A3F] via-[#22C55E] to-[#1F7A3F]" />
-
-          <div className="p-5 sm:p-6 lg:p-8">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
-              <div
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full 
-                              bg-gradient-to-br from-[#1F7A3F] to-[#155E30]
-                              flex items-center justify-center flex-shrink-0
-                              shadow-lg"
-              >
-                <span className="text-white text-2xl sm:text-3xl font-bold uppercase">
-                  {user.username.charAt(0)}
-                </span>
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span
-                    className="inline-flex items-center gap-1 px-2 py-0.5 
-                                   rounded-full bg-[#DCFCE7] text-[#166534]
-                                   text-[10px] font-bold uppercase tracking-wider"
-                  >
-                    <Award size={10} />
-                    {t('demoBadge')}
-                  </span>
-                </div>
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1">
-                  {t('welcome')}, {user.username}!
-                </h1>
-                <p className="text-xs sm:text-sm text-[#6B7280] text-bangla-safe">
-                  {t('subtitle')}
+          <div className="p-4 sm:p-5 lg:p-6">
+            <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+              <div>
+                <h3 className="text-base sm:text-lg font-bold text-[#1F2937] 
+                               text-bangla-heading pt-1 pb-0.5">
+                  {t('chart')}
+                </h3>
+                <p className="text-[11px] sm:text-xs text-[#6B7280] 
+                              text-bangla-safe">
+                  {t('chartSubtitle')}
                 </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-[#1F7A3F]" />
+                <span className="text-xs font-medium text-[#6B7280] 
+                                 text-bangla-safe">
+                  {isBn ? 'অনুমোদিত' : 'Approved'}
+                </span>
               </div>
             </div>
 
-            <div
-              className="mt-5 flex items-start gap-2 p-3 rounded-lg 
-                            bg-[#FEF3C7] border border-[#FCD34D]/30"
-            >
-              <Shield
-                size={16}
-                className="text-[#B45309] flex-shrink-0 mt-0.5"
-              />
-              <p className="text-[11px] sm:text-xs text-[#92400E] text-bangla-safe leading-bangla">
-                {t('demoNotice')}
-              </p>
+            <div className="relative h-48 sm:h-56 flex items-end gap-2 sm:gap-3 
+                            pt-6 pb-8">
+              {/* Y-axis labels */}
+              <div className="absolute left-0 top-0 bottom-8 flex flex-col 
+                              justify-between text-[10px] sm:text-xs 
+                              text-[#9CA3AF] pr-2">
+                {[250, 200, 150, 100, 50, 0].map((v) => (
+                  <span key={v} className="h-0 leading-none">
+                    {v}
+                  </span>
+                ))}
+              </div>
+
+              {/* Bars */}
+              <div className="flex-1 flex items-end justify-around gap-1 
+                              sm:gap-2 pl-8 h-full border-l border-b 
+                              border-[#E5E7EB]">
+                {chartData.map((d, i) => {
+                  const heightPct = (d.value / maxValue) * 100;
+                  return (
+                    <div
+                      key={i}
+                      className="flex-1 flex flex-col items-center gap-1 
+                                 max-w-[50px]"
+                    >
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: `${heightPct}%` }}
+                        transition={{
+                          duration: 0.8,
+                          delay: 0.4 + i * 0.08,
+                          ease: 'easeOut',
+                        }}
+                        className="w-full rounded-t-md 
+                                   bg-gradient-to-t from-[#1F7A3F] to-[#22C55E]
+                                   shadow-sm hover:from-[#155E30] 
+                                   hover:to-[#1F7A3F] transition-colors 
+                                   min-h-[2px]"
+                        title={`${d.year}: ${d.value}`}
+                      />
+                      <span className="text-[9px] sm:text-[10px] 
+                                       text-[#9CA3AF] -rotate-45 sm:rotate-0 
+                                       origin-center whitespace-nowrap">
+                        {d.year}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Profile Info Grid */}
+        {/* Profile Info */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="bg-white rounded-2xl border border-[#E5E7EB] 
-                     shadow-sm overflow-hidden mb-5 sm:mb-6"
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm"
         >
-          <div className="p-5 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4">
+          <div className="p-4 sm:p-5 lg:p-6">
+            <h3 className="text-base sm:text-lg font-bold text-[#1F2937] 
+                           text-bangla-heading pt-1 pb-2 mb-3">
               {t('profile')}
-            </h2>
+            </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              {profileFields.map((field, index) => {
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+              {profileFields.map((field, i) => {
                 const Icon = field.icon;
                 return (
                   <div
-                    key={index}
+                    key={i}
                     className="flex items-start gap-3 p-3 rounded-xl 
                                bg-[#F8FAF9] border border-[#E5E7EB]"
                   >
-                    <div
-                      className="w-9 h-9 rounded-lg bg-[#1F7A3F]/10 
-                                    flex items-center justify-center flex-shrink-0"
-                    >
+                    <div className="w-9 h-9 rounded-lg bg-[#1F7A3F]/10 
+                                    flex items-center justify-center 
+                                    flex-shrink-0">
                       <Icon size={16} className="text-[#1F7A3F]" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p
-                        className="text-[10px] uppercase tracking-wider 
-                                    text-[#6B7280] font-bold mb-0.5"
-                      >
+                      <p className="text-[10px] uppercase tracking-wider 
+                                    text-[#6B7280] font-bold mb-0.5">
                         {field.label}
                       </p>
-                      <p
-                        className="text-sm text-[#1F2937] font-semibold 
-                                    text-bangla-safe break-all"
-                      >
+                      <p className="text-sm text-[#1F2937] font-semibold 
+                                    text-bangla-safe break-all">
                         {field.value}
                       </p>
                     </div>
@@ -307,21 +376,17 @@ export default function DashboardPage() {
                 );
               })}
 
-              <div
-                className="flex items-start gap-3 p-3 rounded-xl 
-                              bg-[#F8FAF9] border border-[#E5E7EB] sm:col-span-2"
-              >
-                <div
-                  className="w-9 h-9 rounded-lg bg-[#1F7A3F]/10 
-                                flex items-center justify-center flex-shrink-0"
-                >
+              <div className="flex items-start gap-3 p-3 rounded-xl 
+                              bg-[#F8FAF9] border border-[#E5E7EB] 
+                              sm:col-span-2">
+                <div className="w-9 h-9 rounded-lg bg-[#1F7A3F]/10 
+                                flex items-center justify-center 
+                                flex-shrink-0">
                   <Clock size={16} className="text-[#1F7A3F]" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p
-                    className="text-[10px] uppercase tracking-wider 
-                                text-[#6B7280] font-bold mb-0.5"
-                  >
+                  <p className="text-[10px] uppercase tracking-wider 
+                                text-[#6B7280] font-bold mb-0.5">
                     {t('loginTime')}
                   </p>
                   <p className="text-sm text-[#1F2937] font-semibold">
@@ -339,48 +404,46 @@ export default function DashboardPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-white rounded-2xl border border-[#E5E7EB] 
-                     shadow-sm overflow-hidden"
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm"
         >
-          <div className="p-5 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4">
+          <div className="p-4 sm:p-5 lg:p-6">
+            <h3 className="text-base sm:text-lg font-bold text-[#1F2937] 
+                           text-bangla-heading pt-1 pb-2 mb-3">
               {t('quickActions')}
-            </h2>
+            </h3>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {quickActions.map((action, index) => {
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+              {quickActions.map((action, i) => {
                 const Icon = action.icon;
                 return (
                   <Link
-                    key={index}
+                    key={i}
                     href={action.href}
-                    className="group flex flex-col items-center gap-2 p-4 
-                               rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]
-                               hover:border-[#1F7A3F]/30 hover:bg-white
-                               hover:shadow-md transition-all duration-300
-                               hover:-translate-y-1"
+                    className="group flex flex-col items-center gap-2 
+                               p-3 sm:p-4 rounded-xl bg-[#F8FAF9] 
+                               border border-[#E5E7EB] hover:border-[#1F7A3F]/30 
+                               hover:bg-white hover:shadow-md 
+                               transition-all duration-300 hover:-translate-y-1"
                   >
                     <div
-                      className={`w-12 h-12 rounded-xl ${action.color} 
-                                   flex items-center justify-center text-white
-                                   shadow-md group-hover:scale-110 
+                      className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl 
+                                   ${action.color} flex items-center 
+                                   justify-center text-white shadow-md 
+                                   group-hover:scale-110 
                                    transition-transform duration-300`}
                     >
-                      <Icon size={20} />
+                      <Icon size={18} />
                     </div>
-                    <span
-                      className="text-xs sm:text-sm font-semibold 
+                    <span className="text-[11px] sm:text-xs font-semibold 
                                     text-[#1F2937] text-bangla-safe 
-                                    text-center"
-                    >
+                                    text-center leading-tight">
                       {isBn ? action.label_bn : action.label_en}
                     </span>
                     <ArrowRight
-                      size={14}
+                      size={12}
                       className="text-[#1F7A3F] opacity-0 
-                                 group-hover:opacity-100 
-                                 transition-opacity duration-300"
+                                 group-hover:opacity-100 transition-opacity"
                     />
                   </Link>
                 );
@@ -388,14 +451,7 @@ export default function DashboardPage() {
             </div>
           </div>
         </motion.div>
-
-        <p
-          className="text-center text-[11px] sm:text-xs text-[#9CA3AF] 
-                      mt-6 sm:mt-8 text-bangla-safe"
-        >
-          © {new Date().getFullYear()} Zarif Land Care Center
-        </p>
       </div>
-    </section>
+    </DashboardLayout>
   );
 }
