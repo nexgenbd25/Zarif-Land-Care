@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, FileCheck, Award } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const HERO_IMAGES = [
   {
@@ -128,50 +128,6 @@ export default function HeroCarousel() {
 
   return (
     <div className="relative w-full">
-      <motion.div
-        initial={{ opacity: 0, x: -30, y: -20 }}
-        animate={{ opacity: 1, x: 0, y: 0 }}
-        transition={{ duration: 0.8, delay: 1.0 }}
-        className="absolute -top-3 -left-3 lg:-top-6 lg:-left-6 z-30
-                   bg-navy-dark/95 backdrop-blur-md
-                   rounded-xl px-3 py-2 lg:px-4 lg:py-3 shadow-xl
-                   hidden sm:block"
-      >
-        <div className="flex items-center gap-2 lg:gap-3">
-          <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gold/15 
-                          flex items-center justify-center">
-            <FileCheck size={16} className="text-gold lg:hidden" />
-            <FileCheck size={20} className="text-gold hidden lg:block" />
-          </div>
-          <div>
-            <div className="text-xs lg:text-sm font-bold text-gold">১০০০+</div>
-            <div className="text-[10px] lg:text-xs text-muted">দলিল সম্পন্ন</div>
-          </div>
-        </div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, x: 30, y: 20 }}
-        animate={{ opacity: 1, x: 0, y: 0 }}
-        transition={{ duration: 0.8, delay: 1.2 }}
-        className="absolute -bottom-3 -right-3 lg:-bottom-6 lg:-right-6 z-30
-                   bg-navy-dark/95 backdrop-blur-md
-                   rounded-xl px-3 py-2 lg:px-4 lg:py-3 shadow-xl
-                   hidden sm:block"
-      >
-        <div className="flex items-center gap-2 lg:gap-3">
-          <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gold/15 
-                          flex items-center justify-center">
-            <Award size={16} className="text-gold lg:hidden" />
-            <Award size={20} className="text-gold hidden lg:block" />
-          </div>
-          <div>
-            <div className="text-xs lg:text-sm font-bold text-gold">১০+ বছর</div>
-            <div className="text-[10px] lg:text-xs text-muted">অভিজ্ঞতা</div>
-          </div>
-        </div>
-      </motion.div>
-
       <div
         ref={containerRef}
         className="relative w-full rounded-2xl overflow-hidden
