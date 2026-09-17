@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import SectionDivider from '@/components/ui/SectionDivider';
 
 export default function AboutSection() {
   const locale = useLocale();
@@ -69,7 +70,10 @@ export default function AboutSection() {
   };
 
   return (
-    <section className="relative overflow-hidden section-padding bg-navy-dark">
+    <section className="relative overflow-hidden section-padding bg-navy-dark
+                        border-b border-navy-border">
+      <SectionDivider />
+
       <div className="container-custom relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           <motion.div
