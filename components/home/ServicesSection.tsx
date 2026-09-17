@@ -109,14 +109,7 @@ export default function ServicesSection() {
   };
 
   return (
-    <section className="relative overflow-hidden section-padding bg-navy
-                        border-b border-navy-border">
-      <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 
-                   w-[600px] h-[600px] bg-gold/5 rounded-full 
-                   blur-[140px] -z-0"
-      />
-
+    <section className="relative overflow-hidden section-padding bg-[#F8FAF9]">
       <div className="container-custom relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -125,11 +118,11 @@ export default function ServicesSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 lg:mb-16"
         >
-          <h2 className="heading-2 mb-6 text-bangla-safe">
+          <h2 className="heading-2 mb-6 text-[#1F2937] text-bangla-safe">
             {t('services.title')}
           </h2>
 
-          <div className="w-20 h-1 bg-gradient-gold mx-auto rounded-full" />
+          <div className="w-20 h-1 bg-[#1F7A3F] mx-auto rounded-full" />
         </motion.div>
 
         <motion.div
@@ -155,27 +148,13 @@ export default function ServicesSection() {
               >
                 <div
                   className="relative h-full p-6 lg:p-7 rounded-xl
-                             bg-navy-dark border border-navy-border
+                             bg-white border border-[#E5E7EB]
                              transition-all duration-500 ease-out
-                             hover:border-gold hover:bg-navy-dark/95
-                             hover:-translate-y-2 hover:shadow-2xl
+                             hover:border-[#1F7A3F] 
+                             hover:-translate-y-2 
+                             hover:shadow-[0_15px_40px_rgba(31,122,63,0.15)]
                              overflow-hidden text-center"
                 >
-                  <div
-                    className="absolute inset-0 opacity-0 
-                               group-hover:opacity-100 
-                               transition-opacity duration-500
-                               bg-gradient-to-br from-gold/5 to-transparent
-                               pointer-events-none"
-                  />
-
-                  <div
-                    className="absolute top-0 left-0 right-0 h-0.5 
-                               bg-gradient-to-r from-transparent via-gold to-transparent
-                               opacity-0 group-hover:opacity-100
-                               transition-opacity duration-500"
-                  />
-
                   <div className="relative z-10 flex flex-col items-center">
                     <div
                       className="mb-5 flex items-center justify-center
@@ -183,23 +162,23 @@ export default function ServicesSection() {
                                  group-hover:scale-110 group-hover:rotate-3"
                     >
                       <Icon
-                        size={48}
+                        size={56}
                         strokeWidth={1.5}
-                        className="text-gold"
+                        className="text-[#1F7A3F]"
                       />
                     </div>
 
                     <h3
-                      className="text-lg lg:text-xl font-bold text-white mb-3 
+                      className="text-lg lg:text-xl font-bold text-[#1F2937] mb-3 
                                  transition-colors duration-300
-                                 group-hover:text-gold text-bangla-safe 
-                                 leading-[1.6] pt-[0.15em]"
+                                 group-hover:text-[#1F7A3F] 
+                                 text-bangla-safe leading-[1.6] pt-[0.15em]"
                     >
                       {title}
                     </h3>
 
                     <p
-                      className="text-sm text-muted leading-[1.9] 
+                      className="text-sm text-[#6B7280] leading-[1.9] 
                                  text-bangla-safe"
                     >
                       {description}
