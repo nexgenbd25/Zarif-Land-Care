@@ -19,9 +19,18 @@ export default function HeroSection() {
 
   const isBn = locale === 'bn';
 
-  const highlightText = isBn
-    ? 'সততা ও দীর্ঘ বছরের অভিজ্ঞতাই আমাদের মূলধন।'
-    : 'Honesty and years of experience is our asset.';
+  const content = {
+    highlight_bn: 'সততা ও দীর্ঘ বছরের অভিজ্ঞতাই আমাদের মূলধন।',
+    highlight_en: 'Honesty and years of experience is our asset.',
+    deedsLabel_bn: 'দলিল সম্পন্ন',
+    deedsLabel_en: 'Deeds Completed',
+    clientsLabel_bn: 'সন্তুষ্ট ক্লায়েন্ট',
+    clientsLabel_en: 'Happy Clients',
+  };
+
+  const highlightText = isBn ? content.highlight_bn : content.highlight_en;
+  const deedsLabel = isBn ? content.deedsLabel_bn : content.deedsLabel_en;
+  const clientsLabel = isBn ? content.clientsLabel_bn : content.clientsLabel_en;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -164,7 +173,7 @@ export default function HeroSection() {
                     <CountUpNumber end={1000} suffix="+" duration={2} />
                   </div>
                   <div className="text-xs text-muted text-bangla-safe">
-                    দলিল সম্পন্ন
+                    {deedsLabel}
                   </div>
                 </div>
               </div>
@@ -181,7 +190,7 @@ export default function HeroSection() {
                     <CountUpNumber end={500} suffix="+" duration={2} delay={0.2} />
                   </div>
                   <div className="text-xs text-muted text-bangla-safe">
-                    সন্তুষ্ট ক্লায়েন্ট
+                    {clientsLabel}
                   </div>
                 </div>
               </div>
@@ -216,7 +225,7 @@ export default function HeroSection() {
                 <CountUpNumber end={1000} suffix="+" duration={2} />
               </div>
               <div className="text-[11px] text-muted text-bangla-safe leading-tight">
-                দলিল সম্পন্ন
+                {deedsLabel}
               </div>
             </div>
           </div>
@@ -233,7 +242,7 @@ export default function HeroSection() {
                 <CountUpNumber end={500} suffix="+" duration={2} delay={0.2} />
               </div>
               <div className="text-[11px] text-muted text-bangla-safe leading-tight">
-                সন্তুষ্ট ক্লায়েন্ট
+                {clientsLabel}
               </div>
             </div>
           </div>
