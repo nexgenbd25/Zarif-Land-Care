@@ -67,126 +67,135 @@ export default function HeroSection() {
 
   return (
     <section className="relative w-full">
+      {/* ===== TOP HERO BANNER ===== */}
       <div className="relative w-full">
-        <div className="relative w-full">
-          <div className="absolute inset-0 z-0 overflow-hidden">
-            <Image
-              src={HERO_BG}
-              alt="Green Nature Background"
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover object-center scale-105 blur-[2px]"
-              unoptimized
-            />
-            <div className="absolute inset-0 bg-black/50" />
-          </div>
-
-          <div className="container-custom relative z-10 pt-16 sm:pt-20 lg:pt-24 pb-40 sm:pb-48 lg:pb-56">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1
-                className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl 
-                           font-bold text-white mb-6 sm:mb-8 
-                           leading-[1.5] pt-[0.2em] pb-[0.05em]
-                           text-bangla-safe drop-shadow-lg"
-              >
-                {headline}
-              </h1>
-
-              <div className="flex flex-row gap-3 sm:gap-4 justify-center items-center">
-                <Link
-                  href={getUrl('/contact')}
-                  className="group inline-flex items-center justify-center gap-2
-                             w-40 sm:w-48 py-2.5 sm:py-3 rounded-md font-bold
-                             bg-brand text-white
-                             transition-all duration-300
-                             hover:bg-brand-dark
-                             active:scale-95
-                             text-sm sm:text-base"
-                >
-                  <span className="text-bangla-safe">{cta1}</span>
-                  <ArrowRight
-                    size={18}
-                    className="transition-transform duration-300 
-                               group-hover:translate-x-1"
-                  />
-                </Link>
-
-                <Link
-                  href={getUrl('/services')}
-                  className="group inline-flex items-center justify-center gap-2
-                             w-40 sm:w-48 py-2.5 sm:py-3 rounded-md font-bold
-                             bg-white text-brand
-                             transition-all duration-300
-                             hover:bg-gray-100
-                             active:scale-95
-                             text-sm sm:text-base"
-                >
-                  <span className="text-bangla-safe">{cta2}</span>
-                  <ArrowRight
-                    size={18}
-                    className="transition-transform duration-300 
-                               group-hover:translate-x-1"
-                  />
-                </Link>
-              </div>
-            </div>
-          </div>
+        {/* Background */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <Image
+            src={HERO_BG}
+            alt="Green Nature Background"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center scale-105 blur-[2px]"
+            unoptimized
+          />
+          <div className="absolute inset-0 bg-black/55" />
         </div>
 
-        <div className="absolute left-0 right-0 bottom-0 z-20 translate-y-1/2">
-          <div className="container-custom">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-              {FEATURES.map((feature) => {
-                const Icon = feature.icon;
-                const title = isBn ? feature.title_bn : feature.title_en;
+        {/* Content */}
+        <div className="container-custom relative z-10 
+                        pt-20 sm:pt-24 lg:pt-28 
+                        pb-44 sm:pb-52 lg:pb-56">
+          <div className="max-w-4xl mx-auto text-center px-1">
+            <h1
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[3.25rem]
+                         font-bold text-white mb-6 sm:mb-8 
+                         leading-[1.5] pt-[0.2em] pb-[0.05em]
+                         text-bangla-safe drop-shadow-lg"
+            >
+              {headline}
+            </h1>
 
-                return (
-                  <div
-                    key={feature.id}
-                    className="group aspect-square rounded-lg
-                               flex flex-col items-center justify-center
-                               p-4 sm:p-5 lg:p-6
-                               bg-white
-                               shadow-[0_8px_30px_rgba(0,0,0,0.15)]
-                               transition-all duration-300
-                               hover:-translate-y-1
-                               hover:shadow-[0_12px_35px_rgba(31,122,63,0.25)]"
-                  >
-                    <div
-                      className="mb-3 sm:mb-4 flex items-center justify-center
-                                 transition-transform duration-300
-                                 group-hover:scale-110"
-                    >
-                      <Icon
-                        size={44}
-                        strokeWidth={1.8}
-                        className="text-[#1F7A3F] sm:hidden drop-shadow-md"
-                      />
-                      <Icon
-                        size={72}
-                        strokeWidth={1.6}
-                        className="text-[#1F7A3F] hidden sm:block drop-shadow-md"
-                      />
-                    </div>
+            {/* Buttons — mobile e full width, sm+ e auto */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 
+                            justify-center items-stretch sm:items-center
+                            max-w-xs sm:max-w-none mx-auto">
+              <Link
+                href={getUrl('/contact')}
+                className="group inline-flex items-center justify-center gap-2
+                           w-full sm:w-44 lg:w-48 py-3 sm:py-3 rounded-md font-bold
+                           bg-brand text-white
+                           transition-all duration-300
+                           hover:bg-brand-dark
+                           active:scale-95
+                           text-sm sm:text-base"
+              >
+                <span className="text-bangla-safe">{cta1}</span>
+                <ArrowRight
+                  size={18}
+                  className="transition-transform duration-300 
+                             group-hover:translate-x-1"
+                />
+              </Link>
 
-                    <h3
-                      className="text-sm sm:text-base lg:text-lg xl:text-xl 
-                                 font-bold text-black leading-[1.5] 
-                                 text-bangla-safe whitespace-pre-line
-                                 text-center"
-                    >
-                      {title}
-                    </h3>
-                  </div>
-                );
-              })}
+              <Link
+                href={getUrl('/services')}
+                className="group inline-flex items-center justify-center gap-2
+                           w-full sm:w-44 lg:w-48 py-3 sm:py-3 rounded-md font-bold
+                           bg-white text-brand
+                           transition-all duration-300
+                           hover:bg-gray-100
+                           active:scale-95
+                           text-sm sm:text-base"
+              >
+                <span className="text-bangla-safe">{cta2}</span>
+                <ArrowRight
+                  size={18}
+                  className="transition-transform duration-300 
+                             group-hover:translate-x-1"
+                />
+              </Link>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="h-32 sm:h-40 lg:h-48 bg-white" />
+      {/* ===== FEATURE CARDS (Overlap) ===== */}
+      <div className="relative z-20 -mt-28 sm:-mt-36 lg:-mt-40">
+        <div className="container-custom">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+            {FEATURES.map((feature) => {
+              const Icon = feature.icon;
+              const title = isBn ? feature.title_bn : feature.title_en;
+
+              return (
+                <div
+                  key={feature.id}
+                  className="group rounded-lg
+                             flex flex-col items-center justify-center
+                             p-4 sm:p-5 lg:p-6
+                             min-h-[160px] sm:min-h-[200px] lg:min-h-[230px]
+                             bg-white
+                             shadow-[0_8px_30px_rgba(0,0,0,0.15)]
+                             transition-all duration-300
+                             hover:-translate-y-1
+                             hover:shadow-[0_12px_35px_rgba(31,122,63,0.25)]"
+                >
+                  <div
+                    className="mb-3 sm:mb-4 flex items-center justify-center
+                               transition-transform duration-300
+                               group-hover:scale-110"
+                  >
+                    <Icon
+                      size={36}
+                      strokeWidth={1.8}
+                      className="text-[#1F7A3F] sm:hidden drop-shadow-md"
+                    />
+                    <Icon
+                      size={64}
+                      strokeWidth={1.6}
+                      className="text-[#1F7A3F] hidden sm:block drop-shadow-md"
+                    />
+                  </div>
+
+                  <h3
+                    className="text-[11px] xs:text-xs sm:text-sm md:text-base lg:text-lg
+                               font-bold text-black leading-[1.6] 
+                               text-bangla-safe whitespace-pre-line
+                               text-center"
+                  >
+                    {title}
+                  </h3>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom spacing (cards overlap er jonno) */}
+      <div className="h-16 sm:h-20 lg:h-24 bg-white" />
     </section>
   );
 }
