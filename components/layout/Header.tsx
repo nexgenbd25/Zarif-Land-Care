@@ -158,16 +158,6 @@ export default function Header() {
           <div className="flex items-center gap-3 lg:gap-4 z-50">
             <LanguageSwitcher />
 
-            <a
-              href="tel:+8801788766735"
-              className="hidden xl:flex items-center gap-2 
-                         text-[#1F7A3F] font-bold text-base
-                         hover:text-[#155E30] transition-colors"
-            >
-              <Phone size={20} strokeWidth={2.2} />
-              <span className="whitespace-nowrap">+8801788-766735</span>
-            </a>
-
             <Link
               href={`/${isBn ? '' : locale + '/'}login`}
               className="hidden lg:inline-flex items-center gap-2 
@@ -251,7 +241,7 @@ export default function Header() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: menuItems.length * 0.05 + 0.1 }}
-                  className="mt-4 pt-4 border-t border-neutral-light flex flex-col gap-3"
+                  className="mt-4 pt-4 border-t border-neutral-light"
                 >
                   <Link
                     href={`/${isBn ? '' : locale + '/'}login`}
@@ -266,19 +256,6 @@ export default function Header() {
                     <LogIn size={20} />
                     {t('login')}
                   </Link>
-
-                  <a
-                    href="tel:+8801788766735"
-                    className="flex items-center justify-center gap-2 
-                               w-full px-6 py-3 rounded-md
-                               text-[#1F7A3F] font-bold text-base
-                               border-2 border-[#1F7A3F]
-                               transition-all duration-200
-                               hover:bg-[#1F7A3F] hover:text-white"
-                  >
-                    <Phone size={20} strokeWidth={2.2} />
-                    +8801788-766735
-                  </a>
                 </motion.div>
               </nav>
             </motion.div>
