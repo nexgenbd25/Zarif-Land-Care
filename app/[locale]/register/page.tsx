@@ -19,6 +19,7 @@ import {
   AlertCircle,
   Loader2,
 } from 'lucide-react';
+import { demoRegister } from '@/lib/auth';
 
 const LOGO_URL =
   'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
@@ -125,8 +126,8 @@ export default function RegisterPage() {
     passwordMismatch_en: 'Passwords do not match',
     usernameShort_bn: 'ইউজারনেম কমপক্ষে ৩ অক্ষর',
     usernameShort_en: 'Min 3 characters',
-    registerSuccess_bn: 'অ্যাকাউন্ট তৈরি হয়েছে!',
-    registerSuccess_en: 'Account created!',
+    registerSuccess_bn: 'অ্যাকাউন্ট তৈরি হয়েছে! ড্যাশবোর্ডে যাচ্ছে...',
+    registerSuccess_en: 'Account created! Going to dashboard...',
     loading_bn: 'অপেক্ষা করুন...',
     loading_en: 'Please wait...',
   };
@@ -169,13 +170,26 @@ export default function RegisterPage() {
     if (!validate()) return;
 
     setIsLoading(true);
+
+    // 🎯 DEMO REGISTER
     setTimeout(() => {
-      setIsLoading(false);
-      setSuccess(t('registerSuccess'));
-      setTimeout(() => {
-        router.push(`/${isBn ? '' : locale + '/'}login`);
-      }, 1200);
-    }, 1500);
+      const result = demoRegister({
+        username: formData.username,
+        email: formData.email,
+        country: formData.country,
+        phone: formData.phone,
+        password: formData.password,
+      });
+
+      if (result.success) {
+        setSuccess(t('registerSuccess'));
+        setTimeout(() => {
+          router.push(`/${isBn ? '' : locale + '/'}dashboard`);
+        }, 900);
+      } else {
+        setIsLoading(false);
+      }
+    }, 1100);
   };
 
   return (
