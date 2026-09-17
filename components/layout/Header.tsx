@@ -2,20 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Menu, 
-  X, 
-  LogIn, 
-  Home, 
-  Wrench, 
-  FileText, 
-  Phone, 
-  Info 
-} from 'lucide-react';
+import { Menu, X, LogIn, Home, Wrench, FileText, Phone, Info } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
+
+const LOGO_URL = 'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
 
 export default function Header() {
   const t = useTranslations('nav');
@@ -24,9 +18,6 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // ============================================
-  // Scroll Detect (Sticky effect)
-  // ============================================
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -36,16 +27,10 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // ============================================
-  // Menu বন্ধ করো pathname পরিবর্তন হলে
-  // ============================================
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
 
-  // ============================================
-  // Menu খোলা থাকলে body scroll বন্ধ
-  // ============================================
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -57,9 +42,6 @@ export default function Header() {
     };
   }, [isMenuOpen]);
 
-  // ============================================
-  // Menu Items (আইকন সহ)
-  // ============================================
   const menuItems = [
     {
       name: t('home'),
@@ -88,9 +70,6 @@ export default function Header() {
     },
   ];
 
-  // ============================================
-  // Active Link চেক
-  // ============================================
   const isActive = (href: string) => {
     if (href === '/' || href === '/en') {
       return pathname === '/' || pathname === '/en';
@@ -109,26 +88,23 @@ export default function Header() {
     >
       <div className="container-custom">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* ============================================
-              LOGO (Left)
-              ============================================ */}
           <Link
             href={`/${locale === 'bn' ? '' : locale}`}
             className="flex items-center gap-2 group z-50"
           >
-            <span className="text-xl lg:text-2xl font-bold text-gold 
-                            group-hover:text-gold-light transition-colors">
-              ZARIF
-            </span>
-            <span className="hidden sm:inline text-xs lg:text-sm 
-                            text-muted font-medium tracking-wider">
-              LANDCARE CENTER
-            </span>
+            <Image
+              src={LOGO_URL}
+              alt="Zarif Landcare Center"
+              width={200}
+              height={60}
+              priority
+              unoptimized
+              className="h-10 sm:h-12 lg:h-14 w-auto object-contain 
+                         transition-transform duration-300 
+                         group-hover:scale-105"
+            />
           </Link>
 
-          {/* ============================================
-              DESKTOP MENU (Center) - আইকন সহ
-              ============================================ */}
           <nav className="hidden lg:flex items-center gap-1">
             {menuItems.map((item) => {
               const Icon = item.icon;
@@ -161,14 +137,9 @@ export default function Header() {
             })}
           </nav>
 
-          {/* ============================================
-              RIGHT SIDE
-              ============================================ */}
           <div className="flex items-center gap-2 lg:gap-3 z-50">
-            {/* Language Switcher */}
             <LanguageSwitcher />
 
-            {/* Login Button (Desktop) */}
             <Link
               href={`/${locale === 'bn' ? '' : locale + '/'}login`}
               className="hidden lg:inline-flex items-center gap-2 
@@ -183,7 +154,6 @@ export default function Header() {
               {t('login')}
             </Link>
 
-            {/* Hamburger Menu (Mobile) */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden p-2 rounded-lg text-gray-300 
@@ -197,13 +167,9 @@ export default function Header() {
         </div>
       </div>
 
-      {/* ============================================
-          MOBILE MENU (আইকন সহ)
-          ============================================ */}
       <AnimatePresence>
         {isMenuOpen && (
           <>
-            {/* Backdrop Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -213,7 +179,6 @@ export default function Header() {
               className="lg:hidden fixed inset-0 top-16 bg-black/60 backdrop-blur-sm z-40"
             />
 
-            {/* Menu Panel */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -254,7 +219,6 @@ export default function Header() {
                   );
                 })}
 
-                {/* Login Button (Mobile) */}
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
