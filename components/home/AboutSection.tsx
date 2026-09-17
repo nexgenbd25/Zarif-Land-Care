@@ -96,18 +96,16 @@ export default function AboutSection() {
             viewport={{ once: true, margin: '-100px' }}
             className="w-full lg:w-5/12 flex flex-col items-center justify-center"
           >
-            <div className="relative w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72">
-              <div className="relative w-full h-full rounded-full overflow-hidden shadow-2xl border-4 border-[#1F7A3F]/20">
-                <Image
-                  src={profileImage}
-                  alt={content.ownerName}
-                  fill
-                  sizes="(max-width: 768px) 250px, 300px"
-                  className="object-cover object-center"
-                  priority={false}
-                  unoptimized
-                />
-              </div>
+            <div className="relative w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72 aspect-square rounded-full overflow-hidden shadow-2xl border-4 border-[#1F7A3F]/20">
+              <Image
+                src={profileImage}
+                alt={content.ownerName}
+                fill
+                sizes="(max-width: 768px) 250px, 300px"
+                className="object-cover object-center rounded-full"
+                priority={false}
+                unoptimized
+              />
             </div>
 
             <div className="text-center mt-6">
