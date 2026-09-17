@@ -13,7 +13,6 @@ import {
   Phone,
   Globe,
   Clock,
-  ArrowRight,
   Loader2,
   TrendingUp,
   FileText,
@@ -67,20 +66,12 @@ export default function DashboardPage() {
     phone_en: 'Mobile',
     loginTime_bn: 'লগইন সময়',
     loginTime_en: 'Login Time',
-    quickActions_bn: 'দ্রুত অ্যাকশন',
-    quickActions_en: 'Quick Actions',
-    newDeed_bn: 'নতুন দলিল',
-    newDeed_en: 'New Deed',
-    approvedList_bn: 'অনুমোদিত তালিকা',
-    approvedList_en: 'Approved List',
-    pendingList_bn: 'অপেক্ষমাণ তালিকা',
-    pendingList_en: 'Pending List',
-    support_bn: 'সাপোর্ট',
-    support_en: 'Support',
     chart_bn: 'দলিল পরিসংখ্যান',
     chart_en: 'Deeds Statistics',
     chartSubtitle_bn: 'বছর ভিত্তিক অনুমোদিত দলিল',
     chartSubtitle_en: 'Yearly approved deeds',
+    approved_bn: 'অনুমোদিত',
+    approved_en: 'Approved',
     loading_bn: 'লোড হচ্ছে...',
     loading_en: 'Loading...',
   };
@@ -111,8 +102,6 @@ export default function DashboardPage() {
       label_en: content.approvedDeeds_en,
       value: '566',
       color: 'bg-[#1F7A3F]',
-      bgLight: 'bg-[#1F7A3F]/10',
-      textColor: 'text-[#1F7A3F]',
     },
     {
       icon: Hourglass,
@@ -120,8 +109,6 @@ export default function DashboardPage() {
       label_en: content.pendingDeeds_en,
       value: '0',
       color: 'bg-orange-500',
-      bgLight: 'bg-orange-50',
-      textColor: 'text-orange-600',
     },
     {
       icon: FileText,
@@ -129,8 +116,6 @@ export default function DashboardPage() {
       label_en: content.totalDeeds_en,
       value: '566',
       color: 'bg-blue-500',
-      bgLight: 'bg-blue-50',
-      textColor: 'text-blue-600',
     },
     {
       icon: TrendingUp,
@@ -138,8 +123,6 @@ export default function DashboardPage() {
       label_en: content.thisMonth_en,
       value: '14',
       color: 'bg-purple-500',
-      bgLight: 'bg-purple-50',
-      textColor: 'text-purple-600',
     },
   ];
 
@@ -159,37 +142,6 @@ export default function DashboardPage() {
     { icon: Mail, label: t('email'), value: user.email },
     { icon: Globe, label: t('country'), value: user.country },
     { icon: Phone, label: t('phone'), value: user.phone },
-  ];
-
-  const quickActions = [
-    {
-      icon: FileText,
-      label_bn: content.newDeed_bn,
-      label_en: content.newDeed_en,
-      href: `/${isBn ? '' : locale + '/'}dashboard/deeds/new`,
-      color: 'bg-[#1F7A3F]',
-    },
-    {
-      icon: CheckCircle2,
-      label_bn: content.approvedList_bn,
-      label_en: content.approvedList_en,
-      href: `/${isBn ? '' : locale + '/'}dashboard/deeds/approved`,
-      color: 'bg-blue-500',
-    },
-    {
-      icon: Hourglass,
-      label_bn: content.pendingList_bn,
-      label_en: content.pendingList_en,
-      href: `/${isBn ? '' : locale + '/'}dashboard/deeds/pending`,
-      color: 'bg-orange-500',
-    },
-    {
-      icon: Globe,
-      label_bn: content.support_bn,
-      label_en: content.support_en,
-      href: `/${isBn ? '' : locale + '/'}dashboard/support`,
-      color: 'bg-purple-500',
-    },
   ];
 
   return (
@@ -277,7 +229,7 @@ export default function DashboardPage() {
                 <span className="w-3 h-3 rounded-full bg-[#1F7A3F]" />
                 <span className="text-xs font-medium text-[#6B7280] 
                                  text-bangla-safe">
-                  {isBn ? 'অনুমোদিত' : 'Approved'}
+                  {t('approved')}
                 </span>
               </div>
             </div>
@@ -396,58 +348,6 @@ export default function DashboardPage() {
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Quick Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm"
-        >
-          <div className="p-4 sm:p-5 lg:p-6">
-            <h3 className="text-base sm:text-lg font-bold text-[#1F2937] 
-                           text-bangla-heading pt-1 pb-2 mb-3">
-              {t('quickActions')}
-            </h3>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
-              {quickActions.map((action, i) => {
-                const Icon = action.icon;
-                return (
-                  <Link
-                    key={i}
-                    href={action.href}
-                    className="group flex flex-col items-center gap-2 
-                               p-3 sm:p-4 rounded-xl bg-[#F8FAF9] 
-                               border border-[#E5E7EB] hover:border-[#1F7A3F]/30 
-                               hover:bg-white hover:shadow-md 
-                               transition-all duration-300 hover:-translate-y-1"
-                  >
-                    <div
-                      className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl 
-                                   ${action.color} flex items-center 
-                                   justify-center text-white shadow-md 
-                                   group-hover:scale-110 
-                                   transition-transform duration-300`}
-                    >
-                      <Icon size={18} />
-                    </div>
-                    <span className="text-[11px] sm:text-xs font-semibold 
-                                    text-[#1F2937] text-bangla-safe 
-                                    text-center leading-tight">
-                      {isBn ? action.label_bn : action.label_en}
-                    </span>
-                    <ArrowRight
-                      size={12}
-                      className="text-[#1F7A3F] opacity-0 
-                                 group-hover:opacity-100 transition-opacity"
-                    />
-                  </Link>
-                );
-              })}
             </div>
           </div>
         </motion.div>
