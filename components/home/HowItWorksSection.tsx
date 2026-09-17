@@ -50,7 +50,7 @@ export default function HowItWorksSection() {
   const isBn = locale === 'bn';
 
   const content = {
-    heading: isBn ? 'কিভাবে কাজ করে' : 'How It Works',
+    heading: isBn ? 'সেবা গ্রহণের ধাপসমূহ' : 'Steps to Get Our Service',
   };
 
   const containerVariants = {
