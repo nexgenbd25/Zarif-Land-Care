@@ -137,8 +137,7 @@ export default function ServicesSection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 
-                     gap-5 lg:gap-6"
+          className="flex flex-wrap justify-center gap-5 lg:gap-6"
         >
           {SERVICES.map((service) => {
             const Icon = service.icon;
@@ -150,7 +149,9 @@ export default function ServicesSection() {
               <motion.div
                 key={service.id}
                 variants={cardVariants}
-                className="group relative"
+                className="group relative
+                           w-full sm:w-[calc(50%-0.625rem)] 
+                           lg:w-[calc(33.333%-1rem)]"
               >
                 <div
                   className="relative h-full p-6 lg:p-7 rounded-xl
@@ -199,7 +200,7 @@ export default function ServicesSection() {
 
                     <p
                       className="text-sm text-muted leading-[1.9] 
-                                 text-bangla-safe line-clamp-3"
+                                 text-bangla-safe"
                     >
                       {description}
                     </p>
