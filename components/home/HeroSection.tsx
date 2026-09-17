@@ -76,10 +76,10 @@ export default function HeroSection() {
               fill
               priority
               sizes="100vw"
-              className="object-cover object-center scale-110 blur-md"
+              className="object-cover object-center scale-105 blur-[2px]"
               unoptimized
             />
-            <div className="absolute inset-0 bg-black/45" />
+            <div className="absolute inset-0 bg-black/50" />
           </div>
 
           <div className="container-custom relative z-10 pt-16 sm:pt-20 lg:pt-24 pb-40 sm:pb-48 lg:pb-56">
