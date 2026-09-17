@@ -83,7 +83,7 @@ const TEAM: TeamMember[] = [
   },
 ];
 
-const AUTO_SLIDE_INTERVAL = 5000;
+const AUTO_SLIDE_INTERVAL = 3000;
 
 export default function TeamSection() {
   const locale = useLocale();
