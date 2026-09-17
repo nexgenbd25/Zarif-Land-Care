@@ -11,8 +11,12 @@ export default function LayoutContent({
 }) {
   const pathname = usePathname();
 
+  // 🎯 Header + Footer hide on:
+  // /login, /register, /dashboard (and all sub-routes)
   const isAuthPage =
-    pathname.includes('/login') || pathname.includes('/register');
+    pathname.includes('/login') ||
+    pathname.includes('/register') ||
+    pathname.includes('/dashboard');
 
   return (
     <>
