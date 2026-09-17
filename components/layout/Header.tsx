@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, LogIn, Phone } from 'lucide-react';
+import { Menu, X, Home, Wrench, FileText, Phone, Info } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 
 const LOGO_URL = 'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
@@ -15,20 +15,13 @@ export default function Header() {
   const t = useTranslations('nav');
   const locale = useLocale();
   const pathname = usePathname();
+  const isBn = locale === 'bn';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    let ticking = false;
-
     const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setIsScrolled(window.scrollY > 20);
-          ticking = false;
-        });
-        ticking = true;
-      }
+      setIsScrolled(window.scrollY > 20);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -53,23 +46,28 @@ export default function Header() {
   const menuItems = [
     {
       name: t('home'),
-      href: `/${locale === 'bn' ? '' : locale}`,
+      href: `/${isBn ? '' : locale}`,
+      icon: Home,
     },
     {
       name: t('services'),
-      href: `/${locale === 'bn' ? '' : locale + '/'}services`,
+      href: `/${isBn ? '' : locale + '/'}services`,
+      icon: Wrench,
     },
     {
       name: t('blog'),
-      href: `/${locale === 'bn' ? '' : locale + '/'}blog`,
+      href: `/${isBn ? '' : locale + '/'}blog`,
+      icon: FileText,
     },
     {
       name: t('contact'),
-      href: `/${locale === 'bn' ? '' : locale + '/'}contact`,
+      href: `/${isBn ? '' : locale + '/'}contact`,
+      icon: Phone,
     },
     {
       name: t('about'),
-      href: `/${locale === 'bn' ? '' : locale + '/'}about`,
+      href: `/${isBn ? '' : locale + '/'}about`,
+      icon: Info,
     },
   ];
 
@@ -82,20 +80,20 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300
-                  bg-white border-b border-neutral-light
+      className={`sticky top-0 z-50 bg-white transition-all duration-300
+                  border-b border-neutral-light
                   ${isScrolled ? 'shadow-md' : ''}`}
     >
       <div className="container-custom">
         <div className="flex items-center justify-between h-16 sm:h-18 lg:h-20">
           <Link
-            href={`/${locale === 'bn' ? '' : locale}`}
-            className="flex items-center gap-3 group z-50"
+            href={`/${isBn ? '' : locale}`}
+            className="flex items-center gap-2 group z-50 shrink-0"
           >
             <Image
               src={LOGO_URL}
               alt="Zarif Landcare Center"
-              width={200}
+              width={220}
               height={60}
               priority
               unoptimized
@@ -104,37 +102,51 @@ export default function Header() {
                          group-hover:scale-105"
             />
             <div className="hidden sm:block">
-              <div className="text-brand font-bold text-sm lg:text-base leading-tight">
-                জারিফ ল্যান্ড কেয়ার
+              <div
+                className="text-[#1F7A3F] font-bold text-xs lg:text-sm 
+                           leading-tight text-bangla-safe"
+              >
+                {isBn ? 'জারিফ ল্যান্ড কেয়ার' : 'Zarif Landcare'}
               </div>
-              <div className="text-neutral-muted text-[10px] lg:text-xs leading-tight">
-                Landcare Center
+              <div
+                className="text-black text-[10px] lg:text-xs 
+                           leading-tight font-medium text-bangla-safe"
+              >
+                {isBn ? 'এন্ড ডিজিটাল সেবা' : '& Digital Services'}
               </div>
             </div>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
             {menuItems.map((item) => {
+              const Icon = item.icon;
               const active = isActive(item.href);
 
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative px-4 py-2 rounded-lg text-sm font-semibold
+                  className={`relative flex items-center gap-2 
+                              px-4 py-2 rounded-md text-sm font-semibold
                               transition-all duration-200
                               ${
                                 active
-                                  ? 'text-brand'
-                                  : 'text-neutral-dark hover:text-brand'
+                                  ? 'text-[#1F7A3F]'
+                                  : 'text-black hover:text-[#1F7A3F]'
                               }`}
                 >
-                  {item.name}
+                  <Icon size={16} strokeWidth={2.2} />
+                  <span>{item.name}</span>
                   {active && (
                     <motion.div
                       layoutId="activeNav"
-                      className="absolute bottom-0 left-3 right-3 h-0.5 bg-brand rounded-full"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                      className="absolute bottom-0 left-3 right-3 h-0.5 
+                                 bg-[#1F7A3F] rounded-full"
+                      transition={{
+                        type: 'spring',
+                        stiffness: 380,
+                        damping: 30,
+                      }}
                     />
                   )}
                 </Link>
@@ -142,44 +154,23 @@ export default function Header() {
             })}
           </nav>
 
-          <div className="flex items-center gap-2 lg:gap-3 z-50">
+          <div className="flex items-center gap-3 lg:gap-4 z-50">
             <LanguageSwitcher />
 
             <a
               href="tel:+8801788766735"
-              className="hidden lg:inline-flex items-center gap-2 
-                         px-4 py-2.5 rounded-lg
-                         bg-brand text-white font-semibold text-sm
-                         shadow-md shadow-brand/20
-                         transition-all duration-200
-                         hover:bg-brand-dark hover:shadow-lg hover:scale-105"
+              className="hidden lg:flex items-center gap-2 
+                         text-[#1F7A3F] font-bold text-sm
+                         hover:text-[#155E30] transition-colors"
             >
-              <Phone size={16} />
-              <span className="hidden xl:inline">
-                {locale === 'bn' ? 'কল করুন' : 'Call Now'}
-              </span>
-              <span className="xl:hidden">
-                {locale === 'bn' ? 'কল' : 'Call'}
-              </span>
+              <Phone size={16} strokeWidth={2.2} />
+              <span className="whitespace-nowrap">+8801788-766735</span>
             </a>
-
-            <Link
-              href={`/${locale === 'bn' ? '' : locale + '/'}login`}
-              className="hidden lg:inline-flex items-center gap-2 
-                         px-4 py-2.5 rounded-lg
-                         border-2 border-brand text-brand font-semibold text-sm
-                         bg-white
-                         transition-all duration-200
-                         hover:bg-brand hover:text-white"
-            >
-              <LogIn size={16} />
-              {t('login')}
-            </Link>
 
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-neutral-dark 
-                         hover:text-brand hover:bg-brand/5 
+              className="lg:hidden p-2 rounded-md text-black 
+                         hover:text-[#1F7A3F] hover:bg-[#1F7A3F]/5 
                          transition-colors"
               aria-label="Toggle menu"
             >
@@ -198,7 +189,8 @@ export default function Header() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={() => setIsMenuOpen(false)}
-              className="lg:hidden fixed inset-0 top-16 sm:top-18 bg-black/40 backdrop-blur-sm z-40"
+              className="lg:hidden fixed inset-0 top-16 sm:top-18 
+                         bg-black/40 backdrop-blur-sm z-40"
             />
 
             <motion.div
@@ -212,6 +204,7 @@ export default function Header() {
             >
               <nav className="container-custom py-6 flex flex-col gap-1">
                 {menuItems.map((item, index) => {
+                  const Icon = item.icon;
                   const active = isActive(item.href);
 
                   return (
@@ -224,16 +217,17 @@ export default function Header() {
                       <Link
                         href={item.href}
                         onClick={() => setIsMenuOpen(false)}
-                        className={`flex items-center px-4 py-3 rounded-lg 
-                                    text-base font-medium
+                        className={`flex items-center gap-3 
+                                    px-4 py-3 rounded-md text-base font-medium
                                     transition-all duration-200
                                     ${
                                       active
-                                        ? 'bg-brand/10 text-brand border-l-4 border-brand'
-                                        : 'text-neutral-dark hover:text-brand hover:bg-brand/5'
+                                        ? 'bg-[#1F7A3F]/10 text-[#1F7A3F] border-l-4 border-[#1F7A3F]'
+                                        : 'text-black hover:text-[#1F7A3F] hover:bg-[#1F7A3F]/5'
                                     }`}
                       >
-                        {item.name}
+                        <Icon size={20} strokeWidth={2.2} />
+                        <span>{item.name}</span>
                       </Link>
                     </motion.div>
                   );
@@ -243,34 +237,20 @@ export default function Header() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: menuItems.length * 0.05 + 0.1 }}
-                  className="mt-4 pt-4 border-t border-neutral-light flex flex-col gap-3"
+                  className="mt-4 pt-4 border-t border-neutral-light"
                 >
                   <a
                     href="tel:+8801788766735"
                     className="flex items-center justify-center gap-2 
-                               w-full px-6 py-3 rounded-lg
-                               bg-brand text-white font-semibold
-                               shadow-lg shadow-brand/20
-                               transition-all duration-200
-                               hover:bg-brand-dark hover:scale-105"
+                               w-full px-6 py-3 rounded-md
+                               text-[#1F7A3F] font-bold text-base
+                               border-2 border-[#1F7A3F]
+                               hover:bg-[#1F7A3F] hover:text-white
+                               transition-all duration-200"
                   >
-                    <Phone size={18} />
-                    {locale === 'bn' ? 'কল করুন: 01788766735' : 'Call: 01788766735'}
+                    <Phone size={20} strokeWidth={2.2} />
+                    +8801788-766735
                   </a>
-
-                  <Link
-                    href={`/${locale === 'bn' ? '' : locale + '/'}login`}
-                    onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center justify-center gap-2 
-                               w-full px-6 py-3 rounded-lg
-                               border-2 border-brand text-brand
-                               font-semibold
-                               transition-all duration-200
-                               hover:bg-brand hover:text-white"
-                  >
-                    <LogIn size={18} />
-                    {t('login')}
-                  </Link>
                 </motion.div>
               </nav>
             </motion.div>
