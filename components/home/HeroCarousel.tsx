@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const HERO_IMAGES = [
@@ -28,7 +28,7 @@ const HERO_IMAGES = [
   },
 ];
 
-const AUTO_SLIDE_INTERVAL = 5000;
+const AUTO_SLIDE_INTERVAL = 4000;
 
 export default function HeroCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -140,28 +140,38 @@ export default function HeroCarousel() {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={currentIndex}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: 'easeInOut' }}
-            className="absolute inset-0"
-          >
-            <Image
-              src={HERO_IMAGES[currentIndex].url}
-              alt={HERO_IMAGES[currentIndex].alt_bn}
-              fill
-              priority={currentIndex === 0}
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover pointer-events-none"
-              draggable={false}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t 
-                            from-navy/70 via-transparent to-transparent" />
-          </motion.div>
-        </AnimatePresence>
+        <motion.div
+          className="flex h-full"
+          animate={{
+            x: `-${currentIndex * 100}%`,
+          }}
+          transition={{
+            type: 'spring',
+            stiffness: 260,
+            damping: 30,
+          }}
+        >
+          {HERO_IMAGES.map((image) => (
+            <div
+              key={image.id}
+              className="relative flex-shrink-0 w-full h-full"
+            >
+              <Image
+                src={image.url}
+                alt={image.alt_bn}
+                fill
+                priority={image.id === 1}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover pointer-events-none"
+                draggable={false}
+              />
+              <div
+                className="absolute inset-0 bg-gradient-to-t 
+                           from-navy/70 via-transparent to-transparent"
+              />
+            </div>
+          ))}
+        </motion.div>
 
         <button
           onClick={(e) => {
