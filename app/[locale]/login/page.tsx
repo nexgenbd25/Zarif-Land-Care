@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import {
@@ -15,6 +16,7 @@ import {
   AlertCircle,
   Loader2,
 } from 'lucide-react';
+import { demoLogin } from '@/lib/auth';
 
 const LOGO_URL =
   'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
@@ -26,6 +28,7 @@ interface FormErrors {
 
 export default function LoginPage() {
   const locale = useLocale();
+  const router = useRouter();
   const isBn = locale === 'bn';
 
   const [showPassword, setShowPassword] = useState(false);
@@ -66,10 +69,14 @@ export default function LoginPage() {
     passwordShort_en: 'Password must be at least 6 characters',
     loginSuccess_bn: 'সফলভাবে লগইন হয়েছে!',
     loginSuccess_en: 'Logged in successfully!',
+    loginFailed_bn: 'লগইন ব্যর্থ হয়েছে',
+    loginFailed_en: 'Login failed',
     loading_bn: 'অপেক্ষা করুন...',
     loading_en: 'Please wait...',
     or_bn: 'অথবা',
     or_en: 'OR',
+    demoHint_bn: 'ডেমো: যেকোনো ইউজারনেম + ৬ অক্ষরের পাসওয়ার্ড',
+    demoHint_en: 'Demo: Any username + 6 char password',
   };
 
   const t = (key: string) =>
@@ -91,10 +98,21 @@ export default function LoginPage() {
     if (!validate()) return;
 
     setIsLoading(true);
+
+    // 🎯 DEMO LOGIN
     setTimeout(() => {
-      setIsLoading(false);
-      setSuccess(t('loginSuccess'));
-    }, 1500);
+      const result = demoLogin(loginData.identifier, loginData.password);
+
+      if (result.success) {
+        setSuccess(t('loginSuccess'));
+        setTimeout(() => {
+          router.push(`/${isBn ? '' : locale + '/'}dashboard`);
+        }, 700);
+      } else {
+        setIsLoading(false);
+        setErrors({ password: t('loginFailed') });
+      }
+    }, 900);
   };
 
   return (
@@ -129,6 +147,17 @@ export default function LoginPage() {
           </h1>
           <p className="text-[11px] sm:text-sm text-[#6B7280] text-bangla-safe leading-tight">
             {t('subtitle')}
+          </p>
+        </div>
+
+        {/* Demo Hint */}
+        <div className="mb-3 flex items-start gap-2 p-2 rounded-lg bg-[#FEF3C7] border border-[#FCD34D]/40">
+          <AlertCircle
+            size={14}
+            className="text-[#B45309] flex-shrink-0 mt-0.5"
+          />
+          <p className="text-[10px] sm:text-xs text-[#92400E] text-bangla-safe leading-tight">
+            {t('demoHint')}
           </p>
         </div>
 
