@@ -20,7 +20,7 @@
   }
 
   :lang(bn) {
-    font-family: var(--font-hind), sans-serif;
+    font-family: var(--font-hind), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
     line-height: 1.9;
     letter-spacing: 0.01em;
   }
@@ -31,9 +31,22 @@
   :lang(bn) h4,
   :lang(bn) h5,
   :lang(bn) h6 {
-    line-height: 1.65;
-    padding-top: 0.25em;
-    padding-bottom: 0.1em;
+    line-height: 1.75;
+    padding-top: 0.3em;
+    padding-bottom: 0.15em;
+    overflow: visible;
+  }
+
+  :lang(bn) p,
+  :lang(bn) span,
+  :lang(bn) a,
+  :lang(bn) li,
+  :lang(bn) button,
+  :lang(bn) div {
+    line-height: 1.9;
+    overflow: visible;
+    word-break: break-word;
+    overflow-wrap: anywhere;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -90,7 +103,7 @@
            active:scale-95
            disabled:opacity-50 disabled:cursor-not-allowed
            w-full sm:w-auto
-           leading-[1.7] pt-[0.9rem] pb-[0.7rem];
+           leading-[1.9] pt-[0.9rem] pb-[0.7rem];
   }
 
   .btn-secondary {
@@ -103,7 +116,7 @@
            active:scale-95
            disabled:opacity-50 disabled:cursor-not-allowed
            w-full sm:w-auto
-           leading-[1.7] pt-[0.9rem] pb-[0.7rem];
+           leading-[1.9] pt-[0.9rem] pb-[0.7rem];
   }
 
   .btn-outline {
@@ -116,7 +129,7 @@
            active:scale-95
            disabled:opacity-50 disabled:cursor-not-allowed
            w-full sm:w-auto
-           leading-[1.7] pt-[0.9rem] pb-[0.7rem];
+           leading-[1.9] pt-[0.9rem] pb-[0.7rem];
   }
 
   .card {
@@ -139,29 +152,29 @@
            focus:border-brand focus:outline-none 
            focus:ring-2 focus:ring-brand/20
            transition-all duration-200
-           leading-[1.8] pt-[0.85rem] pb-[0.65rem];
+           leading-[1.9] pt-[0.85rem] pb-[0.65rem];
   }
 
   .input-label {
-    @apply block text-sm font-medium text-neutral-dark mb-2 leading-[1.8];
+    @apply block text-sm font-medium text-neutral-dark mb-2 leading-[1.9];
   }
 
   .heading-1 {
     @apply text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-dark
-           leading-[1.5] sm:leading-[1.45] lg:leading-[1.4]
-           pt-[0.2em] pb-[0.05em];
+           leading-[1.6] sm:leading-[1.55] lg:leading-[1.5]
+           pt-[0.25em] pb-[0.1em];
   }
 
   .heading-2 {
     @apply text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-dark
-           leading-[1.5] sm:leading-[1.45] lg:leading-[1.4]
-           pt-[0.2em] pb-[0.05em];
+           leading-[1.6] sm:leading-[1.55] lg:leading-[1.5]
+           pt-[0.25em] pb-[0.1em];
   }
 
   .heading-3 {
     @apply text-xl sm:text-2xl font-semibold text-neutral-dark
-           leading-[1.55] sm:leading-[1.5]
-           pt-[0.2em] pb-[0.05em];
+           leading-[1.65] sm:leading-[1.6]
+           pt-[0.25em] pb-[0.1em];
   }
 
   .badge {
@@ -184,7 +197,17 @@
     overflow-wrap: anywhere;
     line-height: 1.9;
     padding-top: 0.15em;
-    padding-bottom: 0.05em;
+    padding-bottom: 0.1em;
+    font-family: var(--font-hind), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+  }
+
+  .text-bangla-heading {
+    font-family: var(--font-hind), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+    line-height: 1.75;
+    padding-top: 0.3em;
+    padding-bottom: 0.15em;
+    overflow: visible;
+    word-break: break-word;
   }
 
   .line-clamp-2 {
