@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  HelpCircle,
   Plus,
   Minus,
   FileText,
@@ -71,14 +70,17 @@ export default function FAQSection() {
   const locale = useLocale();
   const isBn = locale === 'bn';
 
-  const [openId, setOpenId] = useState<number | null>(1);
+  const [openId, setOpenId] = useState<number | null>(null);
 
   const content = {
-    heading: isBn ? 'প্রায়শই জিজ্ঞাসিত প্রশ্ন (FAQ)' : 'Frequently Asked Questions (FAQ)',
-    subheading: isBn
-      ? 'Explore Common Queries in Our FAQ Section'
-      : 'Explore Common Queries in Our FAQ Section',
+    heading_bn: 'প্রায়শই জিজ্ঞাসিত প্রশ্ন (FAQ)',
+    heading_en: 'Frequently Asked Questions (FAQ)',
+    subheading_bn: 'আমাদের FAQ সেকশনে সাধারণ প্রশ্নগুলো দেখুন',
+    subheading_en: 'Explore Common Queries in Our FAQ Section',
   };
+
+  const heading = isBn ? content.heading_bn : content.heading_en;
+  const subheading = isBn ? content.subheading_bn : content.subheading_en;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -124,15 +126,13 @@ export default function FAQSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 lg:mb-16"
         >
-          <h2 className="heading-2 mb-4 text-bangla-safe">
-            {content.heading}
-          </h2>
+          <h2 className="heading-2 mb-4 text-bangla-safe">{heading}</h2>
 
           <p
             className="text-muted text-sm sm:text-base max-w-2xl mx-auto 
                        leading-[1.9] text-bangla-safe mb-6"
           >
-            {content.subheading}
+            {subheading}
           </p>
 
           <div className="w-20 h-1 bg-gradient-gold mx-auto rounded-full" />
@@ -186,9 +186,7 @@ export default function FAQSection() {
                       <Icon
                         size={20}
                         strokeWidth={2}
-                        className={
-                          isOpen ? 'text-navy' : 'text-gold'
-                        }
+                        className={isOpen ? 'text-navy' : 'text-gold'}
                       />
                     </div>
 
