@@ -9,7 +9,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, LogIn } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 
-const LOGO_URL = 'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
+const LOGO_URL =
+  'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
+
+// 🎯 Slide-in duration (seconds) — apni chaile change korun
+const DRAWER_DURATION = 0.45;
+// 🎯 Backdrop fade duration
+const BACKDROP_DURATION = 0.3;
+
+// 🎯 Framer Motion easing (door er moto smooth)
+const SMOOTH_EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function Header() {
   const t = useTranslations('nav');
@@ -32,6 +41,7 @@ export default function Header() {
     setIsMenuOpen(false);
   }, [pathname]);
 
+  // 🔒 Body scroll lock jokhon drawer open
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -164,42 +174,77 @@ export default function Header() {
               <span>{t('login')}</span>
             </Link>
 
+            {/* Hamburger button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden p-2 rounded-md text-black 
                          hover:text-[#1F7A3F] hover:bg-[#1F7A3F]/5 
-                         transition-colors"
+                         transition-colors relative z-[60]"
               aria-label="Toggle menu"
+              aria-expanded={isMenuOpen}
             >
-              {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+              <AnimatePresence mode="wait" initial={false}>
+                {isMenuOpen ? (
+                  <motion.span
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="block"
+                  >
+                    <X size={28} />
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="menu"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="block"
+                  >
+                    <Menu size={28} />
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </button>
           </div>
         </div>
       </div>
 
+      {/* ===== MOBILE DRAWER ===== */}
       <AnimatePresence>
         {isMenuOpen && (
           <>
+            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: BACKDROP_DURATION }}
               onClick={() => setIsMenuOpen(false)}
               className="lg:hidden fixed inset-0 top-20 sm:top-22 
                          bg-black/40 backdrop-blur-sm z-40"
             />
 
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.25 }}
-              className="lg:hidden absolute top-full left-0 right-0 
-                         bg-white border-t border-b border-neutral-light
-                         shadow-2xl z-50 max-h-[calc(100vh-5rem)] overflow-y-auto"
+            {/* 🚪 Drawer — LEFT theke slide in */}
+            <motion.aside
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{
+                duration: DRAWER_DURATION,
+                ease: SMOOTH_EASE,
+              }}
+              className="lg:hidden fixed top-20 sm:top-22 left-0 bottom-0
+                         w-[80%] max-w-[320px]
+                         bg-white 
+                         border-r border-neutral-light
+                         shadow-2xl z-50
+                         overflow-y-auto"
             >
-              <nav className="container-custom py-6 flex flex-col gap-1">
+              <nav className="flex flex-col gap-1 p-5">
                 {menuItems.map((item, index) => {
                   const active = isActive(item.href);
 
@@ -208,7 +253,11 @@ export default function Header() {
                       key={item.href}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
+                      transition={{
+                        delay: 0.15 + index * 0.06,
+                        duration: 0.3,
+                        ease: SMOOTH_EASE,
+                      }}
                     >
                       <Link
                         href={item.href}
@@ -228,10 +277,15 @@ export default function Header() {
                   );
                 })}
 
+                {/* Login button */}
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: menuItems.length * 0.05 + 0.1 }}
+                  transition={{
+                    delay: 0.15 + menuItems.length * 0.06 + 0.1,
+                    duration: 0.3,
+                    ease: SMOOTH_EASE,
+                  }}
                   className="mt-4 pt-4 border-t border-neutral-light"
                 >
                   <Link
@@ -249,7 +303,7 @@ export default function Header() {
                   </Link>
                 </motion.div>
               </nav>
-            </motion.div>
+            </motion.aside>
           </>
         )}
       </AnimatePresence>
