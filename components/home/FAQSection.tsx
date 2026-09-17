@@ -110,14 +110,7 @@ export default function FAQSection() {
   };
 
   return (
-    <section className="relative overflow-hidden section-padding bg-navy
-                        border-b border-navy-border">
-      <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 
-                   w-[600px] h-[600px] bg-gold/5 rounded-full 
-                   blur-[140px] -z-0"
-      />
-
+    <section className="relative overflow-hidden section-padding bg-[#F8FAF9]">
       <div className="container-custom relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -126,16 +119,15 @@ export default function FAQSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 lg:mb-16"
         >
-          <h2 className="heading-2 mb-4 text-bangla-safe">{heading}</h2>
+          <h2 className="heading-2 mb-4 text-[#1F2937] text-bangla-safe">
+            {heading}
+          </h2>
 
-          <p
-            className="text-muted text-sm sm:text-base max-w-2xl mx-auto 
-                       leading-[1.9] text-bangla-safe mb-6"
-          >
+          <p className="text-[#6B7280] text-sm sm:text-base max-w-2xl mx-auto leading-[1.9] text-bangla-safe mb-6">
             {subheading}
           </p>
 
-          <div className="w-20 h-1 bg-gradient-gold mx-auto rounded-full" />
+          <div className="w-20 h-1 bg-[#1F7A3F] mx-auto rounded-full" />
         </motion.div>
 
         <motion.div
@@ -159,59 +151,47 @@ export default function FAQSection() {
               >
                 <div
                   className={`relative rounded-xl overflow-hidden
-                              bg-navy-dark border 
-                              transition-all duration-300
+                              bg-white border transition-all duration-300
                               ${
                                 isOpen
-                                  ? 'border-gold shadow-lg shadow-gold/10'
-                                  : 'border-navy-border hover:border-gold/50'
+                                  ? 'border-[#1F7A3F] shadow-lg shadow-[#1F7A3F]/10'
+                                  : 'border-[#E5E7EB] hover:border-[#1F7A3F]/50'
                               }`}
                 >
                   <button
                     onClick={() => toggleFAQ(faq.id)}
-                    className="w-full flex items-center gap-4 
-                               px-5 lg:px-6 py-5 text-left
-                               transition-colors duration-200"
+                    className="w-full flex items-center gap-4 px-5 lg:px-6 py-5 text-left transition-colors duration-200"
                   >
                     <div
-                      className={`flex-shrink-0 w-11 h-11 rounded-full 
-                                  flex items-center justify-center
-                                  transition-all duration-300
-                                  ${
-                                    isOpen
-                                      ? 'bg-gradient-to-br from-gold to-gold-light'
-                                      : 'bg-gold/10 border border-gold/30'
-                                  }`}
+                      className={`flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 ${
+                        isOpen
+                          ? 'bg-[#1F7A3F]'
+                          : 'bg-[#1F7A3F]/10 border border-[#1F7A3F]/30'
+                      }`}
                     >
                       <Icon
                         size={20}
                         strokeWidth={2}
-                        className={isOpen ? 'text-navy' : 'text-gold'}
+                        className={isOpen ? 'text-white' : 'text-[#1F7A3F]'}
                       />
                     </div>
 
                     <h3
-                      className={`flex-1 font-semibold text-left 
-                                  text-base lg:text-lg leading-[1.6] 
-                                  text-bangla-safe transition-colors duration-300
-                                  ${
-                                    isOpen
-                                      ? 'text-gold'
-                                      : 'text-white group-hover:text-gold'
-                                  }`}
+                      className={`flex-1 font-semibold text-left text-base lg:text-lg leading-[1.6] text-bangla-safe transition-colors duration-300 ${
+                        isOpen
+                          ? 'text-[#1F7A3F]'
+                          : 'text-[#1F2937] group-hover:text-[#1F7A3F]'
+                      }`}
                     >
                       {question}
                     </h3>
 
                     <div
-                      className={`flex-shrink-0 w-8 h-8 rounded-full 
-                                  flex items-center justify-center
-                                  transition-all duration-300
-                                  ${
-                                    isOpen
-                                      ? 'bg-gold text-navy rotate-180'
-                                      : 'bg-navy-border text-gray-300'
-                                  }`}
+                      className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+                        isOpen
+                          ? 'bg-[#1F7A3F] text-white rotate-180'
+                          : 'bg-[#E5E7EB] text-[#6B7280]'
+                      }`}
                     >
                       {isOpen ? <Minus size={18} /> : <Plus size={18} />}
                     </div>
@@ -227,18 +207,12 @@ export default function FAQSection() {
                         className="overflow-hidden"
                       >
                         <div className="px-5 lg:px-6 pb-5 lg:pb-6">
-                          <div
-                            className="flex items-start gap-3 
-                                       pt-4 border-t border-navy-border"
-                          >
+                          <div className="flex items-start gap-3 pt-4 border-t border-[#E5E7EB]">
                             <ArrowRight
                               size={20}
-                              className="text-gold flex-shrink-0 mt-1"
+                              className="text-[#1F7A3F] flex-shrink-0 mt-1"
                             />
-                            <p
-                              className="text-muted text-sm lg:text-base 
-                                         leading-[1.9] text-bangla-safe"
-                            >
+                            <p className="text-[#6B7280] text-sm lg:text-base leading-[1.9] text-bangla-safe">
                               {answer}
                             </p>
                           </div>
