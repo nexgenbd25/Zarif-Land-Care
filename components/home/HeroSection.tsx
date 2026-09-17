@@ -8,7 +8,6 @@ import {
   Monitor,
   Printer,
   Smartphone,
-  ArrowRight,
 } from 'lucide-react';
 
 const HERO_BG =
@@ -69,14 +68,14 @@ export default function HeroSection() {
     <section className="relative w-full">
       <div className="relative w-full">
         <div className="relative w-full">
-          <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 z-0 overflow-hidden">
             <Image
               src={HERO_BG}
               alt="Green Nature Background"
               fill
               priority
               sizes="100vw"
-              className="object-cover object-center"
+              className="object-cover object-center scale-110 blur-md"
               unoptimized
             />
             <div className="absolute inset-0 bg-black/45" />
@@ -134,38 +133,40 @@ export default function HeroSection() {
                 return (
                   <div
                     key={feature.id}
-                    className="group bg-white rounded-xl 
-                               p-4 sm:p-5 lg:p-6 text-center
-                               shadow-[0_8px_30px_rgba(0,0,0,0.12)]
-                               border-b-4 border-transparent
+                    className="group aspect-square rounded-lg
+                               flex flex-col items-center justify-center
+                               p-3 sm:p-4 lg:p-5
+                               bg-white/15 backdrop-blur-lg
+                               border border-white/30
+                               shadow-[0_8px_30px_rgba(0,0,0,0.15)]
                                transition-all duration-300
-                               hover:-translate-y-1 
-                               hover:shadow-[0_12px_35px_rgba(31,122,63,0.2)]
-                               hover:border-brand"
+                               hover:bg-white/25
+                               hover:border-white/50
+                               hover:-translate-y-1
+                               hover:shadow-[0_12px_35px_rgba(0,0,0,0.25)]"
                   >
                     <div
-                      className="mx-auto mb-3 flex items-center justify-center
+                      className="mb-2 sm:mb-3 flex items-center justify-center
                                  transition-transform duration-300
                                  group-hover:scale-110"
                     >
                       <Icon
-                        size={40}
-                        strokeWidth={1.5}
-                        className="text-brand lg:hidden"
+                        size={36}
+                        strokeWidth={1.6}
+                        className="text-white sm:hidden drop-shadow-md"
                       />
                       <Icon
-                        size={52}
-                        strokeWidth={1.5}
-                        className="text-brand hidden lg:block"
+                        size={48}
+                        strokeWidth={1.6}
+                        className="text-white hidden sm:block drop-shadow-md"
                       />
                     </div>
 
                     <h3
-                      className="text-xs sm:text-sm lg:text-base font-bold 
-                                 text-black leading-[1.5] 
-                                 text-bangla-safe whitespace-pre-line 
-                                 transition-colors duration-300
-                                 group-hover:text-[#1F7A3F]"
+                      className="text-[10px] sm:text-xs lg:text-sm font-bold 
+                                 text-white leading-[1.5] 
+                                 text-bangla-safe whitespace-pre-line
+                                 drop-shadow-md text-center"
                     >
                       {title}
                     </h3>
