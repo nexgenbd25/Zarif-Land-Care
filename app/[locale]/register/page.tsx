@@ -179,7 +179,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <section className="relative min-h-[100dvh] w-full flex items-center justify-center px-4 py-6 sm:py-8 bg-gradient-to-br from-[#F0FDF4] via-white to-[#F0FDF4] overflow-hidden">
+    <section className="relative min-h-[100dvh] w-full flex items-center justify-center px-4 py-3 sm:py-6 bg-gradient-to-br from-[#F0FDF4] via-white to-[#F0FDF4] overflow-hidden">
       <div className="absolute top-0 left-0 w-56 h-56 sm:w-72 sm:h-72 bg-[#1F7A3F]/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-[#22C55E]/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -187,62 +187,60 @@ export default function RegisterPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative w-full max-w-md z-10"
+        className="relative w-full max-w-sm sm:max-w-md z-10"
       >
         {/* Logo */}
-        <div className="text-center mb-4 sm:mb-6">
-          <Link
-            href={`/${isBn ? '' : locale}`}
-            className="inline-block group"
-          >
+        <div className="text-center mb-2.5 sm:mb-4">
+          <Link href={`/${isBn ? '' : locale}`} className="inline-block group">
             <Image
               src={LOGO_URL}
               alt="Zarif Landcare Center"
               width={200}
               height={60}
-              className="h-11 sm:h-14 w-auto object-contain mx-auto transition-transform duration-300 group-hover:scale-105"
+              className="h-9 sm:h-12 w-auto object-contain mx-auto transition-transform duration-300 group-hover:scale-105"
               unoptimized
             />
           </Link>
         </div>
 
         {/* Title */}
-        <div className="text-center mb-5 sm:mb-6">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1">
+        <div className="text-center mb-3 sm:mb-5">
+          <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-0.5 leading-tight">
             {t('title')}
           </h1>
-          <p className="text-xs sm:text-sm text-[#6B7280] text-bangla-safe">
+          <p className="text-[11px] sm:text-sm text-[#6B7280] text-bangla-safe leading-tight">
             {t('subtitle')}
           </p>
         </div>
 
-        {/* Success Message */}
+        {/* Success */}
         {success && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-3 flex items-start gap-2 p-2.5 rounded-lg bg-[#DCFCE7] border border-[#22C55E]/30"
+            className="mb-2 flex items-start gap-2 p-2 rounded-lg bg-[#DCFCE7] border border-[#22C55E]/30"
           >
             <CheckCircle
-              size={16}
+              size={14}
               className="text-[#15803D] flex-shrink-0 mt-0.5"
             />
-            <p className="text-xs sm:text-sm text-[#166534] text-bangla-safe">
+            <p className="text-[11px] sm:text-sm text-[#166534] text-bangla-safe">
               {success}
             </p>
           </motion.div>
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-2.5 sm:space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-2 sm:space-y-2.5">
           {/* Username */}
           <div>
-            <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1 sm:mb-1.5 text-bangla-safe">
+            <label className="block text-[11px] sm:text-sm font-semibold text-[#1F2937] mb-0.5 text-bangla-safe">
               {t('usernameLabel')}
             </label>
             <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                <User size={16} />
+              <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                <User size={14} className="sm:hidden" />
+                <User size={16} className="hidden sm:block" />
               </div>
               <input
                 type="text"
@@ -251,7 +249,7 @@ export default function RegisterPage() {
                   setFormData({ ...formData, username: e.target.value })
                 }
                 placeholder={t('usernamePlaceholder')}
-                className={`w-full pl-9 sm:pl-10 pr-4 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
                   errors.username
                     ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                     : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -259,8 +257,8 @@ export default function RegisterPage() {
               />
             </div>
             {errors.username && (
-              <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                <AlertCircle size={12} />
+              <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                <AlertCircle size={10} />
                 {errors.username}
               </p>
             )}
@@ -268,12 +266,13 @@ export default function RegisterPage() {
 
           {/* Email */}
           <div>
-            <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1 sm:mb-1.5 text-bangla-safe">
+            <label className="block text-[11px] sm:text-sm font-semibold text-[#1F2937] mb-0.5 text-bangla-safe">
               {t('emailLabel')}
             </label>
             <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                <Mail size={16} />
+              <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                <Mail size={14} className="sm:hidden" />
+                <Mail size={16} className="hidden sm:block" />
               </div>
               <input
                 type="email"
@@ -282,7 +281,7 @@ export default function RegisterPage() {
                   setFormData({ ...formData, email: e.target.value })
                 }
                 placeholder={t('emailPlaceholder')}
-                className={`w-full pl-9 sm:pl-10 pr-4 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
                   errors.email
                     ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                     : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -290,8 +289,8 @@ export default function RegisterPage() {
               />
             </div>
             {errors.email && (
-              <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                <AlertCircle size={12} />
+              <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                <AlertCircle size={10} />
                 {errors.email}
               </p>
             )}
@@ -299,19 +298,20 @@ export default function RegisterPage() {
 
           {/* Country */}
           <div>
-            <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1 sm:mb-1.5 text-bangla-safe">
+            <label className="block text-[11px] sm:text-sm font-semibold text-[#1F2937] mb-0.5 text-bangla-safe">
               {t('countryLabel')}
             </label>
             <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none z-10">
-                <Globe size={16} />
+              <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none z-10">
+                <Globe size={14} className="sm:hidden" />
+                <Globe size={16} className="hidden sm:block" />
               </div>
               <select
                 value={formData.country}
                 onChange={(e) =>
                   setFormData({ ...formData, country: e.target.value })
                 }
-                className={`w-full pl-9 sm:pl-10 pr-10 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm sm:text-base text-[#1F2937] text-bangla-safe focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
+                className={`w-full pl-8 sm:pl-10 pr-8 sm:pr-10 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-base text-[#1F2937] text-bangla-safe focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
                   errors.country
                     ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                     : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -323,8 +323,8 @@ export default function RegisterPage() {
                   </option>
                 ))}
               </select>
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <div className="absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
                   <path
                     d="M3 4.5L6 7.5L9 4.5"
                     stroke="currentColor"
@@ -336,8 +336,8 @@ export default function RegisterPage() {
               </div>
             </div>
             {errors.country && (
-              <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                <AlertCircle size={12} />
+              <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                <AlertCircle size={10} />
                 {errors.country}
               </p>
             )}
@@ -345,12 +345,13 @@ export default function RegisterPage() {
 
           {/* Phone */}
           <div>
-            <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1 sm:mb-1.5 text-bangla-safe">
+            <label className="block text-[11px] sm:text-sm font-semibold text-[#1F2937] mb-0.5 text-bangla-safe">
               {t('phoneLabel')}
             </label>
             <div className="relative flex">
-              <div className="flex items-center gap-1 px-2.5 sm:px-3 py-2.5 rounded-l-lg border border-r-0 border-[#E5E7EB] bg-[#F8FAF9] text-[#1F2937] font-semibold text-xs sm:text-sm min-w-[72px] sm:min-w-[85px]">
-                <Phone size={14} className="text-[#1F7A3F]" />
+              <div className="flex items-center gap-1 px-2 sm:px-3 py-2 sm:py-2.5 rounded-l-lg border border-r-0 border-[#E5E7EB] bg-[#F8FAF9] text-[#1F2937] font-semibold text-[11px] sm:text-sm min-w-[64px] sm:min-w-[85px]">
+                <Phone size={12} className="text-[#1F7A3F] sm:hidden" />
+                <Phone size={14} className="text-[#1F7A3F] hidden sm:block" />
                 <span>{formData.country}</span>
               </div>
               <input
@@ -363,7 +364,7 @@ export default function RegisterPage() {
                   })
                 }
                 placeholder={t('phonePlaceholder')}
-                className={`w-full px-3 sm:px-4 py-2.5 rounded-r-lg border transition-all duration-200 bg-white text-sm sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                className={`w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-r-lg border transition-all duration-200 bg-white text-[13px] sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
                   errors.phone
                     ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                     : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -371,8 +372,8 @@ export default function RegisterPage() {
               />
             </div>
             {errors.phone && (
-              <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                <AlertCircle size={12} />
+              <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                <AlertCircle size={10} />
                 {errors.phone}
               </p>
             )}
@@ -380,12 +381,13 @@ export default function RegisterPage() {
 
           {/* Password */}
           <div>
-            <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1 sm:mb-1.5 text-bangla-safe">
+            <label className="block text-[11px] sm:text-sm font-semibold text-[#1F2937] mb-0.5 text-bangla-safe">
               {t('passwordLabel')}
             </label>
             <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                <Lock size={16} />
+              <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                <Lock size={14} className="sm:hidden" />
+                <Lock size={16} className="hidden sm:block" />
               </div>
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -394,7 +396,7 @@ export default function RegisterPage() {
                   setFormData({ ...formData, password: e.target.value })
                 }
                 placeholder={t('passwordPlaceholder')}
-                className={`w-full pl-9 sm:pl-10 pr-11 sm:pr-12 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                className={`w-full pl-8 sm:pl-10 pr-10 sm:pr-12 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
                   errors.password
                     ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                     : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -403,15 +405,24 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#1F7A3F] transition-colors p-1"
-                aria-label="Toggle password visibility"
+                className="absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#1F7A3F] transition-colors p-1"
+                aria-label="Toggle password"
               >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                {showPassword ? (
+                  <EyeOff size={14} className="sm:hidden" />
+                ) : (
+                  <Eye size={14} className="sm:hidden" />
+                )}
+                {showPassword ? (
+                  <EyeOff size={16} className="hidden sm:block" />
+                ) : (
+                  <Eye size={16} className="hidden sm:block" />
+                )}
               </button>
             </div>
             {errors.password && (
-              <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                <AlertCircle size={12} />
+              <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                <AlertCircle size={10} />
                 {errors.password}
               </p>
             )}
@@ -419,12 +430,13 @@ export default function RegisterPage() {
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1 sm:mb-1.5 text-bangla-safe">
+            <label className="block text-[11px] sm:text-sm font-semibold text-[#1F2937] mb-0.5 text-bangla-safe">
               {t('confirmPasswordLabel')}
             </label>
             <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                <Lock size={16} />
+              <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                <Lock size={14} className="sm:hidden" />
+                <Lock size={16} className="hidden sm:block" />
               </div>
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
@@ -436,7 +448,7 @@ export default function RegisterPage() {
                   })
                 }
                 placeholder={t('confirmPasswordPlaceholder')}
-                className={`w-full pl-9 sm:pl-10 pr-11 sm:pr-12 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                className={`w-full pl-8 sm:pl-10 pr-10 sm:pr-12 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
                   errors.confirmPassword
                     ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                     : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -445,15 +457,24 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#1F7A3F] transition-colors p-1"
-                aria-label="Toggle password visibility"
+                className="absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#1F7A3F] transition-colors p-1"
+                aria-label="Toggle password"
               >
-                {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                {showConfirmPassword ? (
+                  <EyeOff size={14} className="sm:hidden" />
+                ) : (
+                  <Eye size={14} className="sm:hidden" />
+                )}
+                {showConfirmPassword ? (
+                  <EyeOff size={16} className="hidden sm:block" />
+                ) : (
+                  <Eye size={16} className="hidden sm:block" />
+                )}
               </button>
             </div>
             {errors.confirmPassword && (
-              <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                <AlertCircle size={12} />
+              <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                <AlertCircle size={10} />
                 {errors.confirmPassword}
               </p>
             )}
@@ -463,23 +484,25 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-bold text-white text-sm sm:text-base bg-[#1F7A3F] hover:bg-[#155E30] shadow-md shadow-[#1F7A3F]/20 hover:shadow-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98] mt-3 sm:mt-4"
+            className="w-full flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-white text-[13px] sm:text-base bg-[#1F7A3F] hover:bg-[#155E30] shadow-md shadow-[#1F7A3F]/20 hover:shadow-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98] mt-1"
           >
             {isLoading ? (
               <>
-                <Loader2 size={16} className="animate-spin" />
+                <Loader2 size={14} className="animate-spin sm:hidden" />
+                <Loader2 size={16} className="animate-spin hidden sm:block" />
                 <span className="text-bangla-safe">{t('loading')}</span>
               </>
             ) : (
               <>
                 <span className="text-bangla-safe">{t('registerBtn')}</span>
-                <ArrowRight size={16} />
+                <ArrowRight size={14} className="sm:hidden" />
+                <ArrowRight size={16} className="hidden sm:block" />
               </>
             )}
           </button>
 
           {/* Login Link */}
-          <p className="text-center text-xs sm:text-sm text-[#6B7280] pt-3 text-bangla-safe">
+          <p className="text-center text-[11px] sm:text-sm text-[#6B7280] pt-1 text-bangla-safe leading-tight">
             {t('haveAccount')}{' '}
             <Link
               href={`/${isBn ? '' : locale + '/'}login`}
