@@ -136,14 +136,11 @@ export default function HeroSection() {
                     className="group aspect-square rounded-lg
                                flex flex-col items-center justify-center
                                p-3 sm:p-4 lg:p-5
-                               bg-white/15 backdrop-blur-lg
-                               border border-white/30
+                               bg-white
                                shadow-[0_8px_30px_rgba(0,0,0,0.15)]
                                transition-all duration-300
-                               hover:bg-white/25
-                               hover:border-white/50
                                hover:-translate-y-1
-                               hover:shadow-[0_12px_35px_rgba(0,0,0,0.25)]"
+                               hover:shadow-[0_12px_35px_rgba(31,122,63,0.2)]"
                   >
                     <div
                       className="mb-2 sm:mb-3 flex items-center justify-center
