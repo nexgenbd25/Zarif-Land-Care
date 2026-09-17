@@ -67,9 +67,7 @@ const DEED_TYPES = [
 ];
 
 function generateSerialNo(existingSerials: string[]): string {
-  if (!existingSerials || existingSerials.length === 0) {
-    return '01';
-  }
+  if (!existingSerials || existingSerials.length === 0) return '01';
 
   const lastSerial = existingSerials
     .map((s) => parseInt(s, 10))
@@ -110,12 +108,6 @@ export default function NewDeedPage() {
   useEffect(() => {
     const fetchAndGenerateSerial = async () => {
       setSerialLoading(true);
-
-      // TODO: Replace with actual API call
-      // const res = await fetch('/api/deeds/all-serials');
-      // const data = await res.json();
-      // const existingSerials = data.serials;
-
       const existingSerials = ['01', '02', '03', '04', '05'];
 
       setTimeout(() => {
@@ -263,8 +255,7 @@ export default function NewDeedPage() {
     if (!formData.deedNo.trim()) newErrors.deedNo = t('required');
     if (!formData.date) newErrors.date = t('required');
     if (!formData.donorName.trim()) newErrors.donorName = t('required');
-    if (!formData.recipientName.trim())
-      newErrors.recipientName = t('required');
+    if (!formData.recipientName.trim()) newErrors.recipientName = t('required');
     if (!formData.mouzaName.trim()) newErrors.mouzaName = t('required');
     if (!formData.deedType) newErrors.deedType = t('required');
     if (!formData.value.trim()) newErrors.value = t('required');
@@ -288,7 +279,6 @@ export default function NewDeedPage() {
 
     setIsLoading(true);
 
-    // TODO: Replace with actual API call + file upload
     setTimeout(() => {
       setIsLoading(false);
       setSuccess(t('success'));
@@ -313,7 +303,7 @@ export default function NewDeedPage() {
     type?: string;
     required?: boolean;
   }) => (
-    <div>
+    <div className="w-full min-w-0">
       <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
         {label}
         {required && <span className="text-red-500 ml-0.5">*</span>}
@@ -327,7 +317,7 @@ export default function NewDeedPage() {
           value={formData[field]}
           onChange={(e) => handleChange(field, e.target.value)}
           placeholder={placeholder}
-          className={`w-full pl-10 pr-4 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+          className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
             errors[field as keyof FormErrors]
               ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
               : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -348,16 +338,16 @@ export default function NewDeedPage() {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="max-w-4xl mx-auto"
+      className="w-full max-w-4xl mx-auto"
     >
       {/* Header */}
       <div className="mb-5 sm:mb-6">
         <div className="flex items-center gap-3 mb-1">
-          <div className="w-11 h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
-            <FilePlus2 size={22} className="text-[#1F7A3F]" />
+          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
+            <FilePlus2 size={20} className="text-[#1F7A3F]" />
           </div>
           <div className="min-w-0">
-            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5 leading-tight">
+            <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5 leading-tight">
               {t('pageTitle')}
             </h1>
             <p className="text-[11px] sm:text-xs text-[#6B7280] text-bangla-safe">
@@ -384,16 +374,16 @@ export default function NewDeedPage() {
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-        {/* Section 1: Deed Basic Info */}
+        {/* Section 1 */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5 lg:p-6">
           <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
             <Hash size={16} className="text-[#1F7A3F]" />
             {t('sectionBasic')}
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Serial No — Auto Generated */}
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            {/* Serial No */}
+            <div className="w-full min-w-0">
               <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
                 {t('serialNo')}
                 <span className="text-red-500 ml-0.5">*</span>
@@ -436,7 +426,7 @@ export default function NewDeedPage() {
             })}
 
             {/* Deed Type */}
-            <div>
+            <div className="w-full min-w-0">
               <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
                 {t('deedType')}
                 <span className="text-red-500 ml-0.5">*</span>
@@ -499,14 +489,14 @@ export default function NewDeedPage() {
           </div>
         </div>
 
-        {/* Section 2: Donor & Recipient */}
+        {/* Section 2 */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5 lg:p-6">
           <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
             <Users size={16} className="text-[#1F7A3F]" />
             {t('sectionParty')}
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             {renderField({
               icon: User,
               label: t('donorName'),
@@ -536,14 +526,14 @@ export default function NewDeedPage() {
           </div>
         </div>
 
-        {/* Section 3: Contact & Notes */}
+        {/* Section 3 */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5 lg:p-6">
           <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
             <Phone size={16} className="text-[#1F7A3F]" />
             {t('sectionContact')}
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             {renderField({
               icon: Phone,
               label: t('mobile'),
@@ -552,7 +542,7 @@ export default function NewDeedPage() {
               type: 'tel',
               required: true,
             })}
-            <div>
+            <div className="w-full min-w-0">
               <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
                 {t('remarks')}
               </label>
@@ -565,14 +555,14 @@ export default function NewDeedPage() {
                   onChange={(e) => handleChange('remarks', e.target.value)}
                   placeholder={t('remarksPh')}
                   rows={3}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20 resize-none"
+                  className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20 resize-none"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Section 4: PDF Upload */}
+        {/* Section 4: PDF */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5 lg:p-6">
           <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
             <FileText size={16} className="text-[#1F7A3F]" />
@@ -589,7 +579,7 @@ export default function NewDeedPage() {
 
           <div
             onClick={() => fileInputRef.current?.click()}
-            className={`relative cursor-pointer rounded-xl border-2 border-dashed p-6 sm:p-8 text-center transition-all duration-200 ${
+            className={`relative cursor-pointer rounded-xl border-2 border-dashed p-5 sm:p-8 text-center transition-all duration-200 ${
               errors.pdf
                 ? 'border-red-300 bg-red-50'
                 : pdfFile
@@ -599,11 +589,11 @@ export default function NewDeedPage() {
           >
             {pdfFile ? (
               <div className="flex items-center justify-center gap-3 flex-wrap sm:flex-nowrap">
-                <div className="w-12 h-12 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
-                  <FileText size={22} className="text-[#1F7A3F]" />
+                <div className="w-11 h-11 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
+                  <FileText size={20} className="text-[#1F7A3F]" />
                 </div>
                 <div className="text-left min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-[#1F2937] text-bangla-safe break-all max-w-[200px] sm:max-w-md">
+                  <p className="text-xs sm:text-sm font-semibold text-[#1F2937] text-bangla-safe break-all">
                     {pdfFile.name}
                   </p>
                   <p className="text-[11px] text-[#6B7280]">
@@ -625,10 +615,10 @@ export default function NewDeedPage() {
               </div>
             ) : (
               <>
-                <div className="w-12 h-12 mx-auto rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center mb-2">
-                  <Upload size={22} className="text-[#1F7A3F]" />
+                <div className="w-11 h-11 mx-auto rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center mb-2">
+                  <Upload size={20} className="text-[#1F7A3F]" />
                 </div>
-                <p className="text-sm font-semibold text-[#1F2937] text-bangla-safe mb-1">
+                <p className="text-xs sm:text-sm font-semibold text-[#1F2937] text-bangla-safe mb-1">
                   {t('pdfUpload')}
                 </p>
                 <p className="text-[11px] text-[#6B7280] text-bangla-safe">
@@ -647,7 +637,7 @@ export default function NewDeedPage() {
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:justify-end pt-2 sticky bottom-0 sm:static bg-[#F8FAF9] sm:bg-transparent p-3 sm:p-0 -mx-4 sm:mx-0 border-t sm:border-0 border-[#E5E7EB]">
+        <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 sm:justify-end pt-1">
           <button
             type="button"
             onClick={() => router.back()}
