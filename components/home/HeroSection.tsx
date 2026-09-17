@@ -8,6 +8,8 @@ import HeroCarousel from './HeroCarousel';
 import CountUpNumber from '@/components/ui/CountUp';
 import AnimatedBackground from './AnimatedBackground';
 
+const HERO_BG_IMAGE = 'https://i.postimg.cc/cHg8hVSB/file-0000000076f48211bea028ad9978bf68.png';
+
 export default function HeroSection() {
   const t = useTranslations();
   const locale = useLocale();
@@ -52,8 +54,18 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-navy
-                        pt-4 pb-8 sm:pt-8 sm:pb-12 lg:py-20">
+    <section
+      className="relative overflow-hidden bg-navy
+                 pt-4 pb-8 sm:pt-8 sm:pb-12 lg:py-20"
+      style={{
+        backgroundImage: `url(${HERO_BG_IMAGE})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      <div className="absolute inset-0 bg-navy/70 z-0" />
+
       <AnimatedBackground />
 
       <div className="container-custom relative z-10">
@@ -76,7 +88,7 @@ export default function HeroSection() {
 
             <motion.p
               variants={itemVariants}
-              className="text-muted text-sm sm:text-base lg:text-lg 
+              className="text-gray-300 text-sm sm:text-base lg:text-lg 
                          mb-5 sm:mb-7 lg:mb-8 leading-[1.85] 
                          max-w-2xl mx-auto lg:mx-0 text-bangla-safe"
             >
@@ -110,7 +122,7 @@ export default function HeroSection() {
                 className="inline-flex items-center justify-center gap-2
                            px-6 py-3 sm:py-3.5 rounded-lg font-semibold
                            border-2 border-gold text-gold
-                           bg-transparent
+                           bg-navy/50 backdrop-blur-sm
                            transition-all duration-300
                            hover:bg-gold hover:text-navy
                            active:scale-95
@@ -140,7 +152,7 @@ export default function HeroSection() {
                   <div className="text-2xl font-bold text-gold">
                     <CountUpNumber end={1000} suffix="+" duration={2} />
                   </div>
-                  <div className="text-xs text-muted text-bangla-safe">
+                  <div className="text-xs text-gray-300 text-bangla-safe">
                     দলিল সম্পন্ন
                   </div>
                 </div>
@@ -157,7 +169,7 @@ export default function HeroSection() {
                   <div className="text-2xl font-bold text-gold">
                     <CountUpNumber end={500} suffix="+" duration={2} delay={0.2} />
                   </div>
-                  <div className="text-xs text-muted text-bangla-safe">
+                  <div className="text-xs text-gray-300 text-bangla-safe">
                     সন্তুষ্ট ক্লায়েন্ট
                   </div>
                 </div>
@@ -192,7 +204,7 @@ export default function HeroSection() {
               <div className="text-xl font-bold text-gold leading-tight">
                 <CountUpNumber end={1000} suffix="+" duration={2} />
               </div>
-              <div className="text-[11px] text-muted text-bangla-safe leading-tight">
+              <div className="text-[11px] text-gray-300 text-bangla-safe leading-tight">
                 দলিল সম্পন্ন
               </div>
             </div>
@@ -209,7 +221,7 @@ export default function HeroSection() {
               <div className="text-xl font-bold text-gold leading-tight">
                 <CountUpNumber end={500} suffix="+" duration={2} delay={0.2} />
               </div>
-              <div className="text-[11px] text-muted text-bangla-safe leading-tight">
+              <div className="text-[11px] text-gray-300 text-bangla-safe leading-tight">
                 সন্তুষ্ট ক্লায়েন্ট
               </div>
             </div>
