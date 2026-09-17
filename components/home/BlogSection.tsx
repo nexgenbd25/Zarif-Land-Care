@@ -152,15 +152,16 @@ export default function BlogSection() {
                                bg-white border border-[#E5E7EB] rounded-2xl
                                overflow-hidden transition-all duration-500
                                hover:border-[#1F7A3F] hover:-translate-y-2
-                               hover:shadow-[0_15px_40px_rgba(31,122,63,0.15)]"
+                               hover:shadow-[0_15px_40px_rgba(31,122,63,0.15)]
+                               isolate"
                   >
-                    <div className="relative w-full aspect-[16/10] overflow-hidden rounded-t-2xl">
+                    <div className="relative w-full aspect-[16/10] overflow-hidden rounded-t-2xl isolate">
                       <Image
                         src={blog.image_url}
                         alt={title}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                        className="object-cover object-center transition-transform duration-700 transform-gpu will-change-transform group-hover:scale-105"
                         unoptimized
                       />
 
