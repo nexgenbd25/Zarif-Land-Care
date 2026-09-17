@@ -210,26 +210,6 @@ export default function ServicesSection() {
             );
           })}
         </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center mt-12 lg:mt-16"
-        >
-          <a
-            href={locale === 'bn' ? '/services' : `/${locale}/services`}
-            className="inline-flex items-center gap-2 
-                       px-6 py-3 rounded-lg
-                       border-2 border-gold text-gold
-                       hover:bg-gold hover:text-navy
-                       transition-all duration-300
-                       font-semibold text-sm"
-          >
-            <span className="text-bangla-safe">সব সেবা দেখুন</span>
-          </a>
-        </motion.div>
       </div>
     </section>
   );
