@@ -121,11 +121,11 @@ export default function BlogSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 lg:mb-16"
         >
-          <h2 className="heading-2 mb-4 text-[#1F2937] text-bangla-safe">
+          <h2 className="heading-2 mb-4 text-[#1F2937] text-bangla-heading pt-2 pb-2">
             {heading}
           </h2>
 
-          <p className="text-[#6B7280] text-sm sm:text-base max-w-2xl mx-auto leading-[1.9] text-bangla-safe mb-6">
+          <p className="text-[#6B7280] text-sm sm:text-base max-w-2xl mx-auto text-bangla-safe mb-6">
             {subheading}
           </p>
 
@@ -154,17 +154,17 @@ export default function BlogSection() {
                                hover:border-[#1F7A3F] hover:-translate-y-2
                                hover:shadow-[0_15px_40px_rgba(31,122,63,0.15)]"
                   >
-                    <div className="relative w-full aspect-[16/10] overflow-hidden">
+                    <div className="relative w-full aspect-[16/10] overflow-hidden rounded-t-2xl">
                       <Image
                         src={blog.image_url}
                         alt={title}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover object-center transition-transform duration-700 group-hover:scale-110"
+                        className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
                         unoptimized
                       />
 
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
                     </div>
 
                     <div className="relative flex-1 flex flex-col p-5 lg:p-6">
@@ -173,11 +173,11 @@ export default function BlogSection() {
                         <span className="text-bangla-safe">{date}</span>
                       </div>
 
-                      <h3 className="text-lg lg:text-xl font-bold text-[#1F2937] mb-3 leading-[1.5] text-bangla-safe transition-colors duration-300 group-hover:text-[#1F7A3F]">
+                      <h3 className="text-lg lg:text-xl font-bold text-[#1F2937] mb-3 text-bangla-heading pt-1 pb-1 transition-colors duration-300 group-hover:text-[#1F7A3F]">
                         {title}
                       </h3>
 
-                      <p className="text-sm text-[#6B7280] leading-[1.85] text-bangla-safe mb-5 flex-1 line-clamp-3">
+                      <p className="text-sm text-[#6B7280] text-bangla-safe mb-5 flex-1 line-clamp-3">
                         {excerpt}
                       </p>
 
