@@ -2,7 +2,7 @@
 
 import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
-import { ArrowRight, FileText, Users } from 'lucide-react';
+import { ArrowRight, FileText, Users, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import HeroCarousel from './HeroCarousel';
 import CountUpNumber from '@/components/ui/CountUp';
@@ -16,6 +16,12 @@ export default function HeroSection() {
     const prefix = locale === 'bn' ? '' : `/${locale}`;
     return path === '/' ? prefix || '/' : `${prefix}${path}`;
   };
+
+  const isBn = locale === 'bn';
+
+  const highlightText = isBn
+    ? 'সততা ও দীর্ঘ বছরের অভিজ্ঞতাই আমাদের মূলধন।'
+    : 'Honesty and years of experience is our asset.';
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -78,11 +84,29 @@ export default function HeroSection() {
             <motion.p
               variants={itemVariants}
               className="text-muted text-sm sm:text-base lg:text-lg 
-                         mb-5 sm:mb-7 lg:mb-8 leading-[1.85] 
+                         mb-5 sm:mb-6 lg:mb-7 leading-[1.85] 
                          max-w-2xl mx-auto lg:mx-0 text-bangla-safe"
             >
               {t('hero.subtitle')}
             </motion.p>
+
+            <motion.div
+              variants={itemVariants}
+              className="flex items-center gap-2 sm:gap-3 mb-5 sm:mb-7 lg:mb-8
+                         justify-center lg:justify-start"
+            >
+              <Sparkles
+                size={18}
+                className="text-gold flex-shrink-0 animate-pulse"
+              />
+              <p
+                className="text-gold text-sm sm:text-base lg:text-lg 
+                           font-semibold leading-[1.85] 
+                           text-bangla-safe"
+              >
+                {highlightText}
+              </p>
+            </motion.div>
 
             <motion.div
               variants={itemVariants}
