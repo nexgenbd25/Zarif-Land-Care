@@ -12,7 +12,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 const LOGO_URL =
   'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
 
-// 🎯 Slide-in duration (seconds) — apni chaile change korun
+// 🎯 Slide-in duration (seconds)
 const DRAWER_DURATION = 0.45;
 // 🎯 Backdrop fade duration
 const BACKDROP_DURATION = 0.3;
@@ -179,7 +179,7 @@ export default function Header() {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden p-2 rounded-md text-black 
                          hover:text-[#1F7A3F] hover:bg-[#1F7A3F]/5 
-                         transition-colors relative z-[60]"
+                         transition-colors relative z-[110]"
               aria-label="Toggle menu"
               aria-expanded={isMenuOpen}
             >
@@ -217,7 +217,7 @@ export default function Header() {
       <AnimatePresence>
         {isMenuOpen && (
           <>
-            {/* Backdrop */}
+            {/* Backdrop — z-[95] (drawer er niche, header er upore) */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -225,10 +225,10 @@ export default function Header() {
               transition={{ duration: BACKDROP_DURATION }}
               onClick={() => setIsMenuOpen(false)}
               className="lg:hidden fixed inset-0 top-20 sm:top-22 
-                         bg-black/40 backdrop-blur-sm z-40"
+                         bg-black/50 backdrop-blur-sm z-[95]"
             />
 
-            {/* 🚪 Drawer — LEFT theke slide in */}
+            {/* 🚪 Drawer — z-[100] (sobar upore) */}
             <motion.aside
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
@@ -241,7 +241,7 @@ export default function Header() {
                          w-[80%] max-w-[320px]
                          bg-white 
                          border-r border-neutral-light
-                         shadow-2xl z-50
+                         shadow-2xl z-[100]
                          overflow-y-auto"
             >
               <nav className="flex flex-col gap-1 p-5">
