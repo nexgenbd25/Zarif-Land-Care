@@ -29,7 +29,9 @@ export default function AboutSection() {
       : 'We believe that transparency, punctuality, and accurate deed preparation are the keys to our success. That is why we accept every client\'s work as a personal responsibility.',
     cta: isBn ? 'আরও জানুন' : 'Learn More',
     ownerName: isBn ? 'মোঃ জাহিদুল ইসলাম' : 'Md. Zahidul Islam',
-    ownerRole: isBn ? 'প্রতিষ্ঠাতা ও প্রধান দলিল লেখক' : 'Founder & Chief Deed Writer',
+    ownerRole: isBn
+      ? 'সরকারী লইসেন্স প্রাপ্ত দলিল লেখক'
+      : 'Government Licensed Deed Writer',
   };
 
   const profileImage = 'https://i.postimg.cc/wx0q1tz9/20260917-044318.jpg';
