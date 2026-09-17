@@ -77,13 +77,7 @@ export default function HowItWorksSection() {
   };
 
   return (
-    <section className="relative overflow-hidden section-padding bg-navy
-                        border-b border-navy-border">
-      <div
-        className="absolute top-0 right-0 w-[500px] h-[500px] 
-                   bg-gold/5 rounded-full blur-[140px] -z-0"
-      />
-
+    <section className="relative overflow-hidden section-padding bg-white">
       <div className="container-custom relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -92,11 +86,11 @@ export default function HowItWorksSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 lg:mb-16"
         >
-          <h2 className="heading-2 mb-6 text-bangla-safe">
+          <h2 className="heading-2 mb-6 text-[#1F2937] text-bangla-safe">
             {content.heading}
           </h2>
 
-          <div className="w-20 h-1 bg-gradient-gold mx-auto rounded-full" />
+          <div className="w-20 h-1 bg-[#1F7A3F] mx-auto rounded-full" />
         </motion.div>
 
         <motion.div
@@ -106,7 +100,7 @@ export default function HowItWorksSection() {
           viewport={{ once: true, margin: '-100px' }}
           className="relative"
         >
-          <div className="hidden lg:block absolute top-20 left-[16.666%] right-[16.666%] h-0.5 bg-gradient-to-r from-gold/20 via-gold/50 to-gold/20 -z-0" />
+          <div className="hidden lg:block absolute top-24 left-[16.666%] right-[16.666%] h-0.5 bg-[#1F7A3F]/20 -z-0" />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-6 relative">
             {STEPS.map((step) => {
@@ -124,47 +118,47 @@ export default function HowItWorksSection() {
                     <div className="relative mb-6">
                       <div
                         className="relative w-32 h-32 lg:w-36 lg:h-36 
-                                   rounded-full bg-navy-dark 
-                                   border-2 border-gold/30
+                                   rounded-full bg-white 
+                                   border-2 border-[#1F7A3F]
                                    flex items-center justify-center
                                    transition-all duration-500
-                                   group-hover:border-gold 
+                                   group-hover:bg-[#1F7A3F]
                                    group-hover:scale-105
-                                   shadow-xl"
+                                   shadow-xl shadow-[#1F7A3F]/10"
                       >
                         <Icon
-                          size={52}
+                          size={56}
                           strokeWidth={1.5}
-                          className="text-gold transition-all duration-500 
-                                     group-hover:scale-110"
+                          className="text-[#1F7A3F] transition-all duration-500 
+                                     group-hover:text-white"
                         />
                       </div>
 
                       <div
                         className="absolute -top-1 -right-1 
-                                   w-10 h-10 lg:w-11 lg:h-11 
+                                   w-11 h-11 lg:w-12 lg:h-12 
                                    rounded-full 
-                                   bg-gradient-to-br from-gold to-gold-light
+                                   bg-[#1F7A3F]
                                    flex items-center justify-center
-                                   text-navy font-bold text-base lg:text-lg
+                                   text-white font-bold text-lg lg:text-xl
                                    shadow-lg
-                                   border-4 border-navy"
+                                   border-4 border-white"
                       >
                         {step.number}
                       </div>
                     </div>
 
                     <h3
-                      className="text-lg lg:text-xl font-bold text-white mb-3 
+                      className="text-lg lg:text-xl font-bold text-[#1F2937] mb-3 
                                  transition-colors duration-300
-                                 group-hover:text-gold text-bangla-safe 
-                                 leading-[1.6] pt-[0.15em]"
+                                 group-hover:text-[#1F7A3F] 
+                                 text-bangla-safe leading-[1.6] pt-[0.15em]"
                     >
                       {title}
                     </h3>
 
                     <p
-                      className="text-sm text-muted leading-[1.9] 
+                      className="text-sm text-[#6B7280] leading-[1.9] 
                                  text-bangla-safe max-w-xs mx-auto"
                     >
                       {description}
