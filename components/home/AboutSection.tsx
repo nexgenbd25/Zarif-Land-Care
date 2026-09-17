@@ -81,7 +81,7 @@ export default function AboutSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 lg:mb-16"
         >
-          <h2 className="heading-2 mb-6 text-[#1F2937] text-bangla-safe">
+          <h2 className="heading-2 mb-6 text-[#1F2937] text-bangla-heading pt-2 pb-2">
             {content.heading}
           </h2>
 
@@ -111,10 +111,14 @@ export default function AboutSection() {
             </div>
 
             <div className="text-center mt-6">
-              <div className="text-[#1F2937] text-lg sm:text-xl font-bold text-bangla-safe leading-[1.6] mb-1">
+              <div className="text-[#1F2937] text-lg sm:text-xl font-bold 
+                              text-bangla-heading leading-bangla-tight 
+                              pt-1 pb-1 mb-1">
                 {content.ownerName}
               </div>
-              <div className="text-[#1F7A3F] text-xs sm:text-sm font-semibold text-bangla-safe leading-[1.8]">
+              <div className="text-[#1F7A3F] text-xs sm:text-sm font-semibold 
+                              text-bangla-safe leading-bangla 
+                              pt-1 pb-2">
                 {content.ownerRole}
               </div>
             </div>
@@ -129,21 +133,21 @@ export default function AboutSection() {
           >
             <motion.p
               variants={itemVariants}
-              className="text-[#6B7280] text-base leading-[1.9] mb-5 text-bangla-safe"
+              className="text-[#6B7280] text-base leading-bangla mb-5 text-bangla-safe"
             >
               {content.paragraph1}
             </motion.p>
 
             <motion.p
               variants={itemVariants}
-              className="text-[#6B7280] text-base leading-[1.9] mb-5 text-bangla-safe"
+              className="text-[#6B7280] text-base leading-bangla mb-5 text-bangla-safe"
             >
               {content.paragraph2}
             </motion.p>
 
             <motion.p
               variants={itemVariants}
-              className="text-[#6B7280] text-base leading-[1.9] mb-8 text-bangla-safe"
+              className="text-[#6B7280] text-base leading-bangla mb-8 text-bangla-safe"
             >
               {content.paragraph3}
             </motion.p>
@@ -158,7 +162,9 @@ export default function AboutSection() {
                            transition-all duration-300
                            hover:bg-[#155E30] hover:shadow-lg hover:scale-105"
               >
-                <span className="text-bangla-safe">{content.cta}</span>
+                <span className="text-bangla-safe leading-bangla">
+                  {content.cta}
+                </span>
                 <ArrowRight
                   size={18}
                   className="transition-transform group-hover:translate-x-1"
