@@ -152,19 +152,19 @@ export default function HeroSection() {
                     >
                       <Icon
                         size={36}
-                        strokeWidth={1.6}
-                        className="text-white sm:hidden drop-shadow-md"
+                        strokeWidth={1.8}
+                        className="text-[#1F7A3F] sm:hidden drop-shadow-md"
                       />
                       <Icon
                         size={48}
-                        strokeWidth={1.6}
-                        className="text-white hidden sm:block drop-shadow-md"
+                        strokeWidth={1.8}
+                        className="text-[#1F7A3F] hidden sm:block drop-shadow-md"
                       />
                     </div>
 
                     <h3
                       className="text-[10px] sm:text-xs lg:text-sm font-bold 
-                                 text-white leading-[1.5] 
+                                 text-black leading-[1.5] 
                                  text-bangla-safe whitespace-pre-line
                                  drop-shadow-md text-center"
                     >
