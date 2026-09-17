@@ -68,14 +68,14 @@ export default function HeroSection() {
   return (
     <section className="relative">
       <div className="relative w-full">
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 overflow-hidden">
           <Image
             src={HERO_BG}
             alt="Green Nature Background"
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center"
+            className="object-cover object-center scale-110 blur-md"
             unoptimized
           />
           <div className="absolute inset-0 bg-black/50" />
