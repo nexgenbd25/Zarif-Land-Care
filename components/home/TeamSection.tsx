@@ -150,7 +150,6 @@ export default function TeamSection() {
 
   return (
     <section className="relative overflow-hidden section-padding bg-gradient-to-b from-white via-[#F8FAF9] to-white">
-      {/* Decorative background glow */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#1F7A3F]/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="container-custom relative z-10">
@@ -210,38 +209,31 @@ export default function TeamSection() {
                                hover:shadow-[0_20px_50px_-15px_rgba(31,122,63,0.25)]
                                hover:-translate-y-1"
                   >
-                    {/* Top gradient ribbon */}
                     <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#1F7A3F] via-[#22C55E] to-[#1F7A3F]" />
 
-                    {/* Subtle pattern overlay */}
                     <div className="absolute inset-0 bg-gradient-to-br from-[#1F7A3F]/[0.02] via-transparent to-[#22C55E]/[0.03] pointer-events-none" />
 
-                    {/* Header band */}
                     <div className="relative pt-6 pb-4 px-5 lg:px-6">
-                      <div className="relative w-24 h-24 lg:w-28 lg:h-28 mx-auto aspect-square">
-                        {/* Outer ring glow */}
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#1F7A3F]/20 to-[#22C55E]/10 blur-md scale-105" />
+                      <div className="relative w-24 h-24 lg:w-28 lg:h-28 mx-auto">
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#1F7A3F]/20 to-[#22C55E]/10 blur-md scale-105 pointer-events-none" />
 
-                        {/* Photo circle */}
-                        <div className="relative w-full h-full aspect-square rounded-full overflow-hidden border-[3px] border-white ring-2 ring-[#1F7A3F]/25 group-hover:ring-[#1F7A3F] transition-all duration-500 shadow-lg">
+                        <div className="absolute inset-0 rounded-full overflow-hidden border-[3px] border-white ring-2 ring-[#1F7A3F]/25 group-hover:ring-[#1F7A3F] transition-all duration-500 shadow-lg">
                           <Image
                             src={member.image_url}
                             alt={name}
                             fill
                             sizes="120px"
-                            className="object-cover object-center"
+                            className="object-cover object-center w-full h-full"
                             unoptimized
                           />
                         </div>
 
-                        {/* Verified badge */}
-                        <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] border-[3px] border-white flex items-center justify-center shadow-md">
+                        <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] border-[3px] border-white flex items-center justify-center shadow-md z-10">
                           <BadgeCheck size={14} className="text-white" />
                         </div>
                       </div>
                     </div>
 
-                    {/* Body */}
                     <div className="relative px-5 lg:px-6 pb-6">
                       <div className="text-center mb-4">
                         <h3 className="text-base lg:text-lg font-bold text-[#1F2937] mb-1 text-bangla-heading pt-1 pb-1 group-hover:text-[#1F7A3F] transition-colors duration-300">
@@ -255,7 +247,6 @@ export default function TeamSection() {
                         <div className="w-12 h-0.5 bg-gradient-to-r from-[#1F7A3F] to-[#22C55E] mx-auto rounded-full mt-1" />
                       </div>
 
-                      {/* Info list */}
                       <div className="space-y-3 pt-4 border-t border-[#E5E7EB]">
                         <div className="flex items-start gap-2.5">
                           <div className="w-7 h-7 rounded-lg bg-[#1F7A3F]/8 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -305,7 +296,6 @@ export default function TeamSection() {
           </motion.div>
         </div>
 
-        {/* Dots */}
         <div className="flex items-center justify-center gap-2 mt-10">
           {Array.from({ length: totalDots }).map((_, index) => (
             <button
