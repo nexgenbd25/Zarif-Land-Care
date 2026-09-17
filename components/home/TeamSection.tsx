@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Phone, MapPin, Mail, MessageCircle, Star, Award } from 'lucide-react';
+import { Phone, MapPin } from 'lucide-react';
 
 interface TeamMember {
   id: number;
@@ -17,9 +17,6 @@ interface TeamMember {
   address_bn: string;
   address_en: string;
   phone: string;
-  badge_bn: string;
-  badge_en: string;
-  badgeIcon: 'star' | 'award';
   image_url: string;
 }
 
@@ -37,9 +34,6 @@ const TEAM: TeamMember[] = [
     address_bn: 'বড়াইল, কাপাইয়া, চাঁদপুর, কুমিল্লা।',
     address_en: 'Borail, Kapaiya, Chandpur, Comilla.',
     phone: '+880 1788-766735',
-    badge_bn: 'টিম লিড',
-    badge_en: 'Team Lead',
-    badgeIcon: 'star',
     image_url: 'https://i.postimg.cc/wx0q1tz9/20260917-044318.jpg',
   },
   {
@@ -55,9 +49,6 @@ const TEAM: TeamMember[] = [
     address_bn: 'বড়াইল, কাপাইয়া, চাঁদপুর, কুমিল্লা।',
     address_en: 'Borail, Kapaiya, Chandpur, Comilla.',
     phone: '+880 1627-660841',
-    badge_bn: 'এক্সপার্ট',
-    badge_en: 'Expert',
-    badgeIcon: 'star',
     image_url: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80',
   },
   {
@@ -73,9 +64,6 @@ const TEAM: TeamMember[] = [
     address_bn: 'মোঃ দেলোয়ার হোসেন শেখ বাড়ি।',
     address_en: 'Md. Delwar Hossain Sheikh Bari.',
     phone: '+880 1829-784457',
-    badge_bn: 'এক্সপার্ট',
-    badge_en: 'Expert',
-    badgeIcon: 'star',
     image_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
   },
   {
@@ -91,9 +79,6 @@ const TEAM: TeamMember[] = [
     address_bn: 'আবু বাসার দেওয়ান বাড়ি।',
     address_en: 'Abu Basar Dewan Bari.',
     phone: '+880 1302-555723',
-    badge_bn: 'সিনিয়র এক্সপার্ট',
-    badge_en: 'Senior Expert',
-    badgeIcon: 'award',
     image_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80',
   },
 ];
@@ -110,8 +95,6 @@ export default function TeamSection() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const content = {
-    topLabel_bn: 'আমাদের টিম',
-    topLabel_en: 'OUR TEAM',
     heading_bn: 'আমাদের অভিজ্ঞ টিম',
     heading_en: 'Our Experienced Team',
     subheading_bn:
@@ -120,7 +103,6 @@ export default function TeamSection() {
       'Our team consists of experienced and skilled professionals, always ready to provide all types of land-related services.',
   };
 
-  const topLabel = isBn ? content.topLabel_bn : content.topLabel_en;
   const heading = isBn ? content.heading_bn : content.heading_en;
   const subheading = isBn ? content.subheading_bn : content.subheading_en;
 
@@ -210,14 +192,6 @@ export default function TeamSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 lg:mb-16"
         >
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <span className="w-12 sm:w-20 h-0.5 bg-[#1F7A3F]/40" />
-            <span className="text-[#1F7A3F] text-xs sm:text-sm font-bold tracking-[0.2em] uppercase">
-              {topLabel}
-            </span>
-            <span className="w-12 sm:w-20 h-0.5 bg-[#1F7A3F]/40" />
-          </div>
-
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1F2937] text-bangla-heading pt-2 pb-3 mb-4">
             {heading}
           </h2>
@@ -263,8 +237,6 @@ export default function TeamSection() {
                 ? member.description_bn
                 : member.description_en;
               const address = isBn ? member.address_bn : member.address_en;
-              const badge = isBn ? member.badge_bn : member.badge_en;
-              const BadgeIcon = member.badgeIcon === 'award' ? Award : Star;
 
               return (
                 <div
@@ -281,43 +253,8 @@ export default function TeamSection() {
                                hover:shadow-[0_25px_60px_-15px_rgba(31,122,63,0.25)]
                                hover:-translate-y-1"
                   >
-                    <div className="absolute bottom-0 right-0 w-24 h-24 sm:w-28 sm:h-28 opacity-90 pointer-events-none">
-                      <svg
-                        viewBox="0 0 100 100"
-                        className="w-full h-full"
-                        fill="none"
-                      >
-                        <path
-                          d="M100,40 Q70,50 60,80 Q55,95 70,100 Q85,100 95,90 Q100,80 100,40 Z"
-                          fill="#1F7A3F"
-                          opacity="0.85"
-                        />
-                        <path
-                          d="M70,60 Q65,70 70,85"
-                          stroke="#86EFAC"
-                          strokeWidth="1"
-                          fill="none"
-                          opacity="0.6"
-                        />
-                        <path
-                          d="M80,55 Q75,65 80,80"
-                          stroke="#86EFAC"
-                          strokeWidth="1"
-                          fill="none"
-                          opacity="0.6"
-                        />
-                        <path
-                          d="M90,50 Q85,60 90,75"
-                          stroke="#86EFAC"
-                          strokeWidth="1"
-                          fill="none"
-                          opacity="0.6"
-                        />
-                      </svg>
-                    </div>
-
-                    <div className="relative pt-5 px-5 lg:px-6">
-                      <div className="flex items-start justify-between gap-3">
+                    <div className="relative pt-6 px-5 lg:px-6">
+                      <div className="flex justify-center">
                         <div className="relative w-28 h-28 sm:w-32 sm:h-32 flex-shrink-0 aspect-square">
                           <div className="absolute inset-0 rounded-full overflow-hidden border-[3px] border-white ring-2 ring-[#1F7A3F]/20 group-hover:ring-[#1F7A3F] transition-all duration-500 shadow-lg">
                             <Image
@@ -330,66 +267,9 @@ export default function TeamSection() {
                             />
                           </div>
                         </div>
-
-                        <div className="flex flex-col items-end gap-3 pt-1">
-                          <div className="inline-flex items-center gap-1.5 
-                                         px-3 py-1.5 rounded-full
-                                         bg-[#1F7A3F] text-white
-                                         shadow-md">
-                            <BadgeIcon size={12} className="fill-white" />
-                            <span className="text-[10px] sm:text-xs font-bold 
-                                            whitespace-nowrap">
-                              {badge}
-                            </span>
-                          </div>
-
-                          <div className="flex flex-col gap-2">
-                            <a
-                              href={`tel:${member.phone.replace(/\s/g, '')}`}
-                              aria-label="Call"
-                              className="w-9 h-9 rounded-full 
-                                         bg-[#E8F5E9] hover:bg-[#1F7A3F]
-                                         flex items-center justify-center
-                                         text-[#1F7A3F] hover:text-white
-                                         transition-all duration-300
-                                         hover:scale-110"
-                            >
-                              <Phone size={14} />
-                            </a>
-                            <a
-                              href={`https://wa.me/${member.phone.replace(
-                                /\D/g,
-                                ''
-                              )}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              aria-label="WhatsApp"
-                              className="w-9 h-9 rounded-full 
-                                         bg-[#E8F5E9] hover:bg-[#25D366]
-                                         flex items-center justify-center
-                                         text-[#1F7A3F] hover:text-white
-                                         transition-all duration-300
-                                         hover:scale-110"
-                            >
-                              <MessageCircle size={14} />
-                            </a>
-                            <a
-                              href="mailto:zariflandcare@gmail.com"
-                              aria-label="Email"
-                              className="w-9 h-9 rounded-full 
-                                         bg-[#E8F5E9] hover:bg-[#1F7A3F]
-                                         flex items-center justify-center
-                                         text-[#1F7A3F] hover:text-white
-                                         transition-all duration-300
-                                         hover:scale-110"
-                            >
-                              <Mail size={14} />
-                            </a>
-                          </div>
-                        </div>
                       </div>
 
-                      <div className="mt-4">
+                      <div className="mt-5 text-center">
                         <h3 className="text-xl sm:text-2xl font-bold text-[#1F2937] 
                                       text-bangla-heading pt-1 pb-1
                                       group-hover:text-[#1F7A3F] 
@@ -403,7 +283,7 @@ export default function TeamSection() {
                       </div>
 
                       <p className="text-[#4B5563] text-xs sm:text-sm 
-                                   text-bangla-safe mt-2 mb-4">
+                                   text-bangla-safe mt-2 mb-4 text-center">
                         {description}
                       </p>
                     </div>
@@ -451,17 +331,6 @@ export default function TeamSection() {
                             </a>
                           </div>
                         </div>
-                      </div>
-
-                      <div className="flex gap-1 mt-4">
-                        {[0, 1, 2, 3, 4].map((i) => (
-                          <span
-                            key={i}
-                            className={`w-1.5 h-1.5 rounded-full ${
-                              i === 0 ? 'bg-[#1F7A3F]' : 'bg-[#1F7A3F]/20'
-                            }`}
-                          />
-                        ))}
                       </div>
                     </div>
                   </div>
