@@ -2,7 +2,7 @@
 
 import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
-import { ArrowRight, FileText, Users, Sparkles } from 'lucide-react';
+import { ArrowRight, FileText, Users } from 'lucide-react';
 import Link from 'next/link';
 import HeroCarousel from './HeroCarousel';
 import CountUpNumber from '@/components/ui/CountUp';
@@ -92,13 +92,8 @@ export default function HeroSection() {
 
             <motion.div
               variants={itemVariants}
-              className="flex items-center gap-2 sm:gap-3 mb-5 sm:mb-7 lg:mb-8
-                         justify-center lg:justify-start"
+              className="mb-5 sm:mb-7 lg:mb-8"
             >
-              <Sparkles
-                size={18}
-                className="text-gold flex-shrink-0 animate-pulse"
-              />
               <p
                 className="text-gold text-sm sm:text-base lg:text-lg 
                            font-semibold leading-[1.85] 
