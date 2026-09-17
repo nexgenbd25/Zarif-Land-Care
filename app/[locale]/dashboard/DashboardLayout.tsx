@@ -42,7 +42,12 @@ export default function DashboardLayout({
   const isBn = locale === 'bn';
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isDeedsOpen, setIsDeedsOpen] = useState(true);
+  const [isDeedsOpen, setIsDeedsOpen] = useState(
+    pathname.includes('/dashboard/deeds')
+  );
+  const [isKhatianOpen, setIsKhatianOpen] = useState(
+    pathname.includes('/dashboard/khatian')
+  );
 
   const content = {
     dashboard_bn: 'ড্যাশবোর্ড',
@@ -55,12 +60,22 @@ export default function DashboardLayout({
     approvedDeed_en: 'Approved Deed List',
     pendingDeed_bn: 'অপেক্ষমাণ দলিল',
     pendingDeed_en: 'Pending Deed List',
+    khatian_bn: 'খতিয়ান',
+    khatian_en: 'Khatian',
+    newKhatian_bn: 'নতুন খতিয়ান',
+    newKhatian_en: 'New Khatian',
+    approvedKhatian_bn: 'অনুমোদিত খতিয়ান',
+    approvedKhatian_en: 'Approved Khatian List',
+    pendingKhatian_bn: 'অপেক্ষমাণ খতিয়ান',
+    pendingKhatian_en: 'Pending Khatian List',
     support_bn: 'সাপোর্ট টিকেট',
     support_en: 'Support Ticket',
     security_bn: '২এফএ সিকিউরিটি',
     security_en: '2FA Security',
     logout_bn: 'লগআউট',
     logout_en: 'Log Out',
+    user_bn: 'ইউজার',
+    user_en: 'User',
   };
 
   const t = (key: string) =>
@@ -68,18 +83,19 @@ export default function DashboardLayout({
 
   const menuItems = [
     {
-      type: 'link',
+      type: 'link' as const,
       icon: Home,
       label: t('dashboard'),
       href: `/${isBn ? '' : locale + '/'}dashboard`,
       active: pathname === `/${isBn ? '' : locale + '/'}dashboard`,
     },
     {
-      type: 'dropdown',
+      type: 'dropdown' as const,
       icon: FileText,
       label: t('deeds'),
       isOpen: isDeedsOpen,
       onToggle: () => setIsDeedsOpen(!isDeedsOpen),
+      active: pathname.includes('/dashboard/deeds'),
       children: [
         {
           label: t('newDeed'),
@@ -96,14 +112,36 @@ export default function DashboardLayout({
       ],
     },
     {
-      type: 'link',
+      type: 'dropdown' as const,
+      icon: FileText,
+      label: t('khatian'),
+      isOpen: isKhatianOpen,
+      onToggle: () => setIsKhatianOpen(!isKhatianOpen),
+      active: pathname.includes('/dashboard/khatian'),
+      children: [
+        {
+          label: t('newKhatian'),
+          href: `/${isBn ? '' : locale + '/'}dashboard/khatian/new`,
+        },
+        {
+          label: t('approvedKhatian'),
+          href: `/${isBn ? '' : locale + '/'}dashboard/khatian/approved`,
+        },
+        {
+          label: t('pendingKhatian'),
+          href: `/${isBn ? '' : locale + '/'}dashboard/khatian/pending`,
+        },
+      ],
+    },
+    {
+      type: 'link' as const,
       icon: Ticket,
       label: t('support'),
       href: `/${isBn ? '' : locale + '/'}dashboard/support`,
       active: pathname.includes('/dashboard/support'),
     },
     {
-      type: 'link',
+      type: 'link' as const,
       icon: Shield,
       label: t('security'),
       href: `/${isBn ? '' : locale + '/'}dashboard/security`,
@@ -133,20 +171,15 @@ export default function DashboardLayout({
 
       {/* User Card */}
       <div className="px-4 py-5">
-        <div className="relative rounded-2xl border-2 border-dashed border-[#22C55E]/40 
-                        bg-[#1F7A3F]/10 p-4 text-center">
-          <div className="w-14 h-14 mx-auto rounded-full 
-                          bg-gradient-to-br from-[#1F7A3F] to-[#155E30]
-                          flex items-center justify-center shadow-lg mb-2">
+        <div className="relative rounded-2xl border-2 border-dashed border-[#22C55E]/40 bg-[#1F7A3F]/10 p-4 text-center">
+          <div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center shadow-lg mb-2">
             <User size={24} className="text-white" />
           </div>
-          <p className="text-white font-bold text-sm truncate 
-                        text-bangla-safe">
+          <p className="text-white font-bold text-sm truncate text-bangla-safe">
             {user.username}
           </p>
-          <p className="text-[#22C55E] text-[10px] uppercase tracking-wider 
-                        font-semibold mt-0.5">
-            {isBn ? 'ইউজার' : 'User'}
+          <p className="text-[#22C55E] text-[10px] uppercase tracking-wider font-semibold mt-0.5">
+            {t('user')}
           </p>
         </div>
       </div>
@@ -163,13 +196,11 @@ export default function DashboardLayout({
                   <Link
                     href={item.href!}
                     onClick={() => setIsSidebarOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-lg 
-                               text-sm font-semibold transition-all duration-200
-                               text-bangla-safe ${
-                                 item.active
-                                   ? 'bg-[#1F7A3F] text-white shadow-md shadow-[#1F7A3F]/30'
-                                   : 'text-gray-200 hover:bg-white/10 hover:text-white'
-                               }`}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 text-bangla-safe ${
+                      item.active
+                        ? 'bg-[#1F7A3F] text-white shadow-md shadow-[#1F7A3F]/30'
+                        : 'text-gray-200 hover:bg-white/10 hover:text-white'
+                    }`}
                   >
                     <Icon size={18} className="flex-shrink-0" />
                     <span>{item.label}</span>
@@ -183,10 +214,11 @@ export default function DashboardLayout({
                 <li key={index}>
                   <button
                     onClick={item.onToggle}
-                    className="w-full flex items-center justify-between gap-3 
-                               px-4 py-3 rounded-lg text-sm font-semibold 
-                               text-gray-200 hover:bg-white/10 hover:text-white
-                               transition-all duration-200 text-bangla-safe"
+                    className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 text-bangla-safe ${
+                      item.active
+                        ? 'bg-[#1F7A3F]/20 text-white'
+                        : 'text-gray-200 hover:bg-white/10 hover:text-white'
+                    }`}
                   >
                     <div className="flex items-center gap-3">
                       <Icon size={18} className="flex-shrink-0" />
@@ -209,25 +241,28 @@ export default function DashboardLayout({
                         transition={{ duration: 0.25 }}
                         className="overflow-hidden ml-4 mt-1 space-y-1"
                       >
-                        {item.children?.map((child, i) => (
-                          <li key={i}>
-                            <Link
-                              href={child.href}
-                              onClick={() => setIsSidebarOpen(false)}
-                              className="flex items-center gap-3 px-4 py-2.5 
-                                         rounded-lg text-xs font-medium 
-                                         text-gray-300 hover:bg-white/5 
-                                         hover:text-[#22C55E] transition-all 
-                                         text-bangla-safe"
-                            >
-                              <Circle
-                                size={6}
-                                className="fill-current flex-shrink-0"
-                              />
-                              <span>{child.label}</span>
-                            </Link>
-                          </li>
-                        ))}
+                        {item.children?.map((child, i) => {
+                          const childActive = pathname === child.href;
+                          return (
+                            <li key={i}>
+                              <Link
+                                href={child.href}
+                                onClick={() => setIsSidebarOpen(false)}
+                                className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-medium transition-all text-bangla-safe ${
+                                  childActive
+                                    ? 'bg-[#1F7A3F]/20 text-[#22C55E]'
+                                    : 'text-gray-300 hover:bg-white/5 hover:text-[#22C55E]'
+                                }`}
+                              >
+                                <Circle
+                                  size={6}
+                                  className="fill-current flex-shrink-0"
+                                />
+                                <span>{child.label}</span>
+                              </Link>
+                            </li>
+                          );
+                        })}
                       </motion.ul>
                     )}
                   </AnimatePresence>
@@ -243,10 +278,7 @@ export default function DashboardLayout({
         <div className="mt-4 pt-4 border-t border-white/10">
           <button
             onClick={onLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg 
-                       text-sm font-semibold text-red-300 hover:bg-red-500/20 
-                       hover:text-red-100 transition-all duration-200 
-                       text-bangla-safe"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold text-red-300 hover:bg-red-500/20 hover:text-red-100 transition-all duration-200 text-bangla-safe"
           >
             <LogOut size={18} className="flex-shrink-0" />
             <span>{t('logout')}</span>
@@ -266,9 +298,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-[100dvh] bg-[#F8FAF9] flex">
       {/* ===== DESKTOP SIDEBAR ===== */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-72 
-                        bg-gradient-to-b from-[#0F3D1F] via-[#0A2E17] to-[#061B0D] 
-                        text-white fixed inset-y-0 left-0 z-40">
+      <aside className="hidden lg:flex lg:flex-col lg:w-72 bg-gradient-to-b from-[#0F3D1F] via-[#0A2E17] to-[#061B0D] text-white fixed inset-y-0 left-0 z-40">
         <SidebarContent />
       </aside>
 
@@ -292,16 +322,12 @@ export default function DashboardLayout({
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="lg:hidden fixed inset-y-0 left-0 w-[80%] max-w-[320px] 
-                         bg-gradient-to-b from-[#0F3D1F] via-[#0A2E17] to-[#061B0D] 
-                         text-white z-50 flex flex-col overflow-y-auto"
+              className="lg:hidden fixed inset-y-0 left-0 w-[80%] max-w-[320px] bg-gradient-to-b from-[#0F3D1F] via-[#0A2E17] to-[#061B0D] text-white z-50 flex flex-col overflow-y-auto"
             >
               {/* Close button */}
               <button
                 onClick={() => setIsSidebarOpen(false)}
-                className="absolute top-4 right-4 w-9 h-9 rounded-full 
-                           bg-white/10 hover:bg-white/20 flex items-center 
-                           justify-center transition-colors z-10"
+                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-10"
                 aria-label="Close menu"
               >
                 <X size={18} />
@@ -316,25 +342,19 @@ export default function DashboardLayout({
       {/* ===== MAIN CONTENT ===== */}
       <div className="flex-1 flex flex-col lg:ml-72 min-w-0">
         {/* Top Bar */}
-        <header className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB] 
-                           shadow-sm">
+        <header className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB] shadow-sm">
           <div className="flex items-center justify-between px-4 sm:px-6 py-3">
             {/* Mobile menu button */}
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className="lg:hidden w-10 h-10 rounded-lg bg-[#F8FAF9] 
-                         border border-[#E5E7EB] flex items-center justify-center 
-                         text-[#1F2937] hover:bg-[#1F7A3F]/10 
-                         hover:border-[#1F7A3F]/30 transition-all"
+              className="lg:hidden w-10 h-10 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB] flex items-center justify-center text-[#1F2937] hover:bg-[#1F7A3F]/10 hover:border-[#1F7A3F]/30 transition-all"
               aria-label="Open menu"
             >
               <Menu size={20} />
             </button>
 
             {/* Page Title */}
-            <h1 className="text-base sm:text-lg lg:text-xl font-bold 
-                           text-[#1F2937] text-bangla-heading 
-                           pt-1 pb-1 flex-1 lg:flex-none ml-3 lg:ml-0">
+            <h1 className="text-base sm:text-lg lg:text-xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1 flex-1 lg:flex-none ml-3 lg:ml-0">
               {t('dashboard')}
             </h1>
 
@@ -342,30 +362,21 @@ export default function DashboardLayout({
             <div className="flex items-center gap-2 sm:gap-3">
               {/* Notifications */}
               <button
-                className="relative w-10 h-10 rounded-lg bg-[#F8FAF9] 
-                           border border-[#E5E7EB] flex items-center justify-center 
-                           text-[#1F2937] hover:bg-[#1F7A3F]/10 
-                           hover:border-[#1F7A3F]/30 transition-all"
+                className="relative w-10 h-10 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB] flex items-center justify-center text-[#1F2937] hover:bg-[#1F7A3F]/10 hover:border-[#1F7A3F]/30 transition-all"
                 aria-label="Notifications"
               >
                 <Bell size={18} />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 
-                                 bg-[#22C55E] rounded-full" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#22C55E] rounded-full" />
               </button>
 
               {/* Avatar */}
-              <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg 
-                              bg-[#F8FAF9] border border-[#E5E7EB]">
-                <div className="w-7 h-7 rounded-full 
-                                bg-gradient-to-br from-[#1F7A3F] to-[#155E30]
-                                flex items-center justify-center">
+              <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB]">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center">
                   <span className="text-white text-xs font-bold uppercase">
                     {user.username.charAt(0)}
                   </span>
                 </div>
-                <span className="hidden sm:inline text-sm font-semibold 
-                                 text-[#1F2937] text-bangla-safe 
-                                 max-w-[100px] truncate">
+                <span className="hidden sm:inline text-sm font-semibold text-[#1F2937] text-bangla-safe max-w-[100px] truncate">
                   {user.username}
                 </span>
               </div>
@@ -374,9 +385,7 @@ export default function DashboardLayout({
         </header>
 
         {/* Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">
-          {children}
-        </main>
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );
