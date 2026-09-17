@@ -10,11 +10,15 @@
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   body {
     @apply bg-white text-neutral-dark antialiased;
     overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
     font-feature-settings: "rlig" 1, "calt" 1;
     line-height: 1.7;
   }
@@ -41,10 +45,8 @@
   :lang(bn) span,
   :lang(bn) a,
   :lang(bn) li,
-  :lang(bn) button,
-  :lang(bn) div {
+  :lang(bn) button {
     line-height: 1.9;
-    overflow: visible;
     word-break: break-word;
     overflow-wrap: anywhere;
   }
