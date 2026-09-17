@@ -138,10 +138,10 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative overflow-hidden bg-navy-dark">
+    <footer className="relative overflow-hidden bg-navy">
       <div
-        className="absolute top-0 left-0 right-0 h-1 
-                   bg-gradient-to-r from-transparent via-gold to-transparent"
+        className="absolute top-0 left-0 right-0 h-px 
+                   bg-gradient-to-r from-transparent via-gold/40 to-transparent"
       />
       <div
         className="absolute top-0 left-1/4 w-[400px] h-[400px] 
@@ -198,7 +198,7 @@ export default function Footer() {
                     rel="noopener noreferrer"
                     aria-label={social.label}
                     className={`w-11 h-11 lg:w-12 lg:h-12 rounded-full 
-                               bg-navy border border-gold/30
+                               bg-navy-dark border border-gold/30
                                flex items-center justify-center
                                text-gold transition-all duration-300
                                hover:text-white hover:border-transparent
