@@ -20,8 +20,8 @@ export async function generateMetadata({
   };
 
   const descriptions: Record<string, string> = {
-    bn: 'নির্বিঘ্ন দলিল প্রস্তুত এবং রেজিস্ট্রেশনের পূর্ণ সহায়তার জন্য একটি নির্ভরযোগ্য প্রতিষ্ঠান।',
-    en: 'A trusted institution for seamless deed preparation and complete registration support.',
+    bn: 'নির্ভুল দলিল প্রস্তুত এবং রেজিস্ট্রেশনের পূর্ণ সহায়তার জন্য একটি নির্ভরযোগ্য প্রতিষ্ঠান।',
+    en: 'A trusted institution for accurate deed preparation and complete registration support.',
   };
 
   return {
@@ -54,7 +54,7 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <div lang={locale} className="min-h-screen flex flex-col bg-navy">
+      <div lang={locale} className="min-h-screen flex flex-col bg-white">
         <Header />
 
         <main className="flex-1">{children}</main>
