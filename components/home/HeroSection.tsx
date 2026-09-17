@@ -2,7 +2,7 @@
 
 import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Phone, ArrowRight, FileText, Users } from 'lucide-react';
+import { ArrowRight, FileText, Users } from 'lucide-react';
 import Link from 'next/link';
 import HeroCarousel from './HeroCarousel';
 import CountUpNumber from '@/components/ui/CountUp';
@@ -101,8 +101,11 @@ export default function HeroSection() {
                            leading-[1.7] pt-[0.8rem] pb-[0.6rem]
                            text-sm sm:text-base group"
               >
-                <Phone size={18} className="group-hover:scale-110 transition-transform" />
                 <span className="text-bangla-safe">{t('hero.cta1')}</span>
+                <ArrowRight
+                  size={18}
+                  className="group-hover:translate-x-1 transition-transform"
+                />
               </Link>
 
               <Link
