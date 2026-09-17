@@ -12,7 +12,6 @@ import {
   Phone,
   MapPin,
   ArrowRight,
-  Heart,
 } from 'lucide-react';
 
 const LOGO_URL = 'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
@@ -37,8 +36,6 @@ export default function Footer() {
     policyPages_en: 'Policy Pages',
     contactUs_bn: 'যোগাযোগ',
     contactUs_en: 'Contact Us',
-    followUs_bn: 'আমাদের ফলো করুন',
-    followUs_en: 'Follow Us',
     home_bn: 'হোম',
     home_en: 'Home',
     service_bn: 'সেবাসমূহ',
@@ -51,24 +48,18 @@ export default function Footer() {
     staking_en: 'Staking Policy',
     copyright_bn: 'সর্বস্বত্ব সংরক্ষিত।',
     copyright_en: 'All rights reserved.',
-    madeWith_bn: 'ভালোবাসা দিয়ে তৈরি',
-    madeWith_en: 'Made with',
-    by_bn: 'দ্বারা',
-    by_en: 'by',
   };
 
   const description = isBn ? content.description_bn : content.description_en;
   const usefulLinksLabel = isBn ? content.usefulLinks_bn : content.usefulLinks_en;
   const policyPagesLabel = isBn ? content.policyPages_bn : content.policyPages_en;
   const contactUsLabel = isBn ? content.contactUs_bn : content.contactUs_en;
-  const followUsLabel = isBn ? content.followUs_bn : content.followUs_en;
   const homeLabel = isBn ? content.home_bn : content.home_en;
   const serviceLabel = isBn ? content.service_bn : content.service_en;
   const privacyLabel = isBn ? content.privacy_bn : content.privacy_en;
   const termsLabel = isBn ? content.terms_bn : content.terms_en;
   const stakingLabel = isBn ? content.staking_bn : content.staking_en;
   const copyrightText = isBn ? content.copyright_bn : content.copyright_en;
-  const madeWithText = isBn ? content.madeWith_bn : content.madeWith_en;
 
   const usefulLinks = [
     { name: homeLabel, href: getUrl('/') },
@@ -83,7 +74,6 @@ export default function Footer() {
 
   const contacts = [
     {
-      icon: MapPin,
       text_bn:
         'হাসাইল বাজার, সামছুল হক মাঝি মার্কেট, টঙ্গীবাড়ি মুন্সিগঞ্জ।',
       text_en:
@@ -91,7 +81,6 @@ export default function Footer() {
       phone: '+8801788766735',
     },
     {
-      icon: MapPin,
       text_bn:
         'কামারখাড়া বাজার, হাইস্কুলের পুকুরের পশ্চিম পাশে, কামারখাড়া, টংগিবাড়ী, মুন্সিগঞ্জ।',
       text_en:
@@ -99,7 +88,6 @@ export default function Footer() {
       phone: '+8801531568468',
     },
     {
-      icon: MapPin,
       text_bn:
         'ঠিনারাঃ- পাঁচগাও বাজার, মোল্লা মার্কেট, টংগিবাড়ী, মুন্সিগঞ্জ।',
       text_en:
@@ -151,12 +139,8 @@ export default function Footer() {
         className="absolute top-0 left-1/4 w-[400px] h-[400px] 
                    bg-gold/5 rounded-full blur-[140px] -z-0"
       />
-      <div
-        className="absolute bottom-0 right-1/4 w-[400px] h-[400px] 
-                   bg-blue-500/5 rounded-full blur-[140px] -z-0"
-      />
 
-      <div className="container-custom relative z-10 pt-14 pb-8 lg:pt-20 lg:pb-10">
+      <div className="container-custom relative z-10 pt-12 pb-6 lg:pt-16 lg:pb-6">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -168,19 +152,20 @@ export default function Footer() {
               transition: { staggerChildren: 0.1 },
             },
           }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 
+                     gap-8 md:gap-10 lg:gap-6"
         >
-          <motion.div variants={itemVariants} className="lg:col-span-1">
-            <Link
-              href={getUrl('/')}
-              className="inline-block mb-6 group"
-            >
+          <motion.div
+            variants={itemVariants}
+            className="lg:col-span-4"
+          >
+            <Link href={getUrl('/')} className="inline-block mb-5 group">
               <Image
                 src={LOGO_URL}
                 alt="Zarif Landcare Center"
                 width={240}
                 height={72}
-                className="h-14 lg:h-16 w-auto object-contain 
+                className="h-16 lg:h-20 w-auto object-contain 
                            transition-transform duration-300 
                            group-hover:scale-105"
                 unoptimized
@@ -188,8 +173,8 @@ export default function Footer() {
             </Link>
 
             <p
-              className="text-gray-300 text-sm leading-[1.9] 
-                         text-bangla-safe mb-6"
+              className="text-gray-300 text-sm lg:text-base leading-[1.9] 
+                         text-bangla-safe mb-6 max-w-md"
             >
               {description}
             </p>
@@ -204,33 +189,36 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className={`w-10 h-10 rounded-full 
+                    className={`w-11 h-11 lg:w-12 lg:h-12 rounded-full 
                                bg-navy border border-gold/30
                                flex items-center justify-center
                                text-gold transition-all duration-300
                                hover:text-white hover:border-transparent
                                hover:scale-110 ${social.color}`}
                   >
-                    <Icon size={18} />
+                    <Icon size={20} />
                   </a>
                 );
               })}
             </div>
           </motion.div>
 
-          <motion.div variants={itemVariants}>
+          <motion.div
+            variants={itemVariants}
+            className="lg:col-span-2"
+          >
             <h3
-              className="text-white font-bold text-lg mb-5 
+              className="text-white font-bold text-base lg:text-lg mb-4 
                          text-bangla-safe relative inline-block"
             >
               {usefulLinksLabel}
               <span
-                className="absolute -bottom-2 left-0 w-12 h-0.5 
+                className="absolute -bottom-1.5 left-0 w-10 h-0.5 
                            bg-gradient-gold rounded-full"
               />
             </h3>
 
-            <ul className="space-y-3 mt-6">
+            <ul className="space-y-2.5 mt-5">
               {usefulLinks.map((link) => (
                 <li key={link.name}>
                   <Link
@@ -238,12 +226,13 @@ export default function Footer() {
                     className="group flex items-center gap-2 
                                text-gray-300 hover:text-gold 
                                transition-all duration-300 
-                               text-sm"
+                               text-sm lg:text-base"
                   >
                     <ArrowRight
                       size={14}
                       className="text-gold transition-transform 
-                                 group-hover:translate-x-1"
+                                 group-hover:translate-x-1 
+                                 flex-shrink-0"
                     />
                     <span className="text-bangla-safe">{link.name}</span>
                   </Link>
@@ -252,19 +241,22 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          <motion.div variants={itemVariants}>
+          <motion.div
+            variants={itemVariants}
+            className="lg:col-span-2"
+          >
             <h3
-              className="text-white font-bold text-lg mb-5 
+              className="text-white font-bold text-base lg:text-lg mb-4 
                          text-bangla-safe relative inline-block"
             >
               {policyPagesLabel}
               <span
-                className="absolute -bottom-2 left-0 w-12 h-0.5 
+                className="absolute -bottom-1.5 left-0 w-10 h-0.5 
                            bg-gradient-gold rounded-full"
               />
             </h3>
 
-            <ul className="space-y-3 mt-6">
+            <ul className="space-y-2.5 mt-5">
               {policyLinks.map((link) => (
                 <li key={link.name}>
                   <Link
@@ -272,12 +264,13 @@ export default function Footer() {
                     className="group flex items-center gap-2 
                                text-gray-300 hover:text-gold 
                                transition-all duration-300 
-                               text-sm"
+                               text-sm lg:text-base"
                   >
                     <ArrowRight
                       size={14}
                       className="text-gold transition-transform 
-                                 group-hover:translate-x-1"
+                                 group-hover:translate-x-1 
+                                 flex-shrink-0"
                     />
                     <span className="text-bangla-safe">{link.name}</span>
                   </Link>
@@ -286,36 +279,38 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="md:col-span-2 lg:col-span-1">
+          <motion.div
+            variants={itemVariants}
+            className="lg:col-span-4"
+          >
             <h3
-              className="text-white font-bold text-lg mb-5 
+              className="text-white font-bold text-base lg:text-lg mb-4 
                          text-bangla-safe relative inline-block"
             >
               {contactUsLabel}
               <span
-                className="absolute -bottom-2 left-0 w-12 h-0.5 
+                className="absolute -bottom-1.5 left-0 w-10 h-0.5 
                            bg-gradient-gold rounded-full"
               />
             </h3>
 
-            <ul className="space-y-4 mt-6">
+            <ul className="space-y-3 mt-5">
               {contacts.map((contact, index) => {
-                const Icon = contact.icon;
                 const text = isBn ? contact.text_bn : contact.text_en;
                 return (
-                  <li key={index} className="flex items-start gap-3">
+                  <li key={index} className="flex items-start gap-2.5">
                     <div
-                      className="w-7 h-7 rounded-full bg-gold/10 
+                      className="w-8 h-8 rounded-full bg-gold/10 
                                  border border-gold/20
                                  flex items-center justify-center 
-                                 flex-shrink-0 mt-1"
+                                 flex-shrink-0 mt-0.5"
                     >
-                      <Icon size={13} className="text-gold" />
+                      <MapPin size={14} className="text-gold" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p
-                        className="text-gray-300 text-xs lg:text-sm 
-                                   leading-[1.8] text-bangla-safe 
+                        className="text-gray-300 text-sm lg:text-base 
+                                   leading-[1.7] text-bangla-safe 
                                    break-words"
                       >
                         {text}
@@ -325,10 +320,10 @@ export default function Footer() {
                           href={`tel:${contact.phone}`}
                           className="inline-flex items-center gap-1.5 
                                      text-gold hover:text-gold-light 
-                                     transition-colors text-xs lg:text-sm 
+                                     transition-colors text-sm lg:text-base 
                                      font-medium mt-1"
                         >
-                          <Phone size={11} />
+                          <Phone size={13} />
                           {contact.phone}
                         </a>
                       )}
@@ -336,70 +331,61 @@ export default function Footer() {
                   </li>
                 );
               })}
-
-              <li className="flex items-center gap-3 pt-2 border-t border-gold/10">
-                <div
-                  className="w-7 h-7 rounded-full 
-                             bg-gradient-to-br from-gold to-gold-light
-                             flex items-center justify-center flex-shrink-0"
-                >
-                  <Mail size={13} className="text-navy" />
-                </div>
-                <a
-                  href="mailto:zariflandcare@gmail.com"
-                  className="text-gold hover:text-gold-light 
-                             transition-colors text-xs lg:text-sm 
-                             font-medium break-all"
-                >
-                  zariflandcare@gmail.com
-                </a>
-              </li>
-
-              <li className="flex items-center gap-3">
-                <div
-                  className="w-7 h-7 rounded-full 
-                             bg-gradient-to-br from-gold to-gold-light
-                             flex items-center justify-center flex-shrink-0"
-                >
-                  <Phone size={13} className="text-navy" />
-                </div>
-                <a
-                  href="tel:+8801788766735"
-                  className="text-gold hover:text-gold-light 
-                             transition-colors text-xs lg:text-sm 
-                             font-medium"
-                >
-                  +8801788766735
-                </a>
-              </li>
             </ul>
+
+            <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-gold/10">
+              <a
+                href="mailto:zariflandcare@gmail.com"
+                className="flex items-center gap-2.5 text-gray-300 
+                           hover:text-gold transition-colors 
+                           text-sm lg:text-base group"
+              >
+                <div
+                  className="w-8 h-8 rounded-full 
+                             bg-gradient-to-br from-gold to-gold-light
+                             flex items-center justify-center 
+                             flex-shrink-0
+                             transition-transform duration-300
+                             group-hover:scale-110"
+                >
+                  <Mail size={14} className="text-navy" />
+                </div>
+                <span className="break-all text-bangla-safe">
+                  zariflandcare@gmail.com
+                </span>
+              </a>
+
+              <a
+                href="tel:+8801788766735"
+                className="flex items-center gap-2.5 text-gray-300 
+                           hover:text-gold transition-colors 
+                           text-sm lg:text-base group"
+              >
+                <div
+                  className="w-8 h-8 rounded-full 
+                             bg-gradient-to-br from-gold to-gold-light
+                             flex items-center justify-center 
+                             flex-shrink-0
+                             transition-transform duration-300
+                             group-hover:scale-110"
+                >
+                  <Phone size={14} className="text-navy" />
+                </div>
+                <span className="text-bangla-safe">
+                  +8801788766735
+                </span>
+              </a>
+            </div>
           </motion.div>
         </motion.div>
 
-        <div className="mt-12 lg:mt-16 pt-8 border-t border-gold/10">
-          <div
-            className="flex flex-col md:flex-row items-center 
-                       justify-between gap-4"
+        <div className="mt-8 lg:mt-10 pt-5 border-t border-gold/10">
+          <p
+            className="text-gray-400 text-xs lg:text-sm text-center
+                       text-bangla-safe"
           >
-            <p
-              className="text-gray-400 text-xs lg:text-sm text-center md:text-left
-                         text-bangla-safe"
-            >
-              © {new Date().getFullYear()} Zarif Land Care Center. {copyrightText}
-            </p>
-
-            <p
-              className="text-gray-400 text-xs lg:text-sm flex items-center gap-1.5
-                         text-bangla-safe"
-            >
-              {madeWithText}{' '}
-              <Heart
-                size={14}
-                className="text-gold fill-gold animate-pulse"
-              />{' '}
-              Zarif Land Care Center
-            </p>
-          </div>
+            © {new Date().getFullYear()} Zarif Land Care Center. {copyrightText}
+          </p>
         </div>
       </div>
     </footer>
