@@ -21,15 +21,20 @@ export default function AboutSection() {
       ? 'একটি নির্ভরযোগ্য প্রতিষ্ঠান'
       : 'A Trusted Institution',
     paragraph1: isBn
-      ? 'অভিজ্ঞ দলিল লেখক দল হিসেবে ভূমি ও সম্পত্তি লেনদেনের দলিল তৈরির নির্ভরযোগ্য ও পেশাদার সেবা প্রদান করে থাকি। আপনার জমি বা সম্পত্তির ক্রয়-বিক্রয়ের প্রতিটি ধাপে সহজ, নির্ভুল ও নিরাপদ করতে আমরা সর্বোচ্চ গুরুত্ব দিয়ে কাজ করি।'
+      ? 'অভিজ্ঞ দলিল লেখক দল হিসেবে ভূমি ও সম্পত্তি লেনদেনের দলিল তৈরির নির্ভরযোগ্য ও পেশাদার সেবা প্রদান করে থাকি। আপনার জমি বা সম্পত্তির ক্রয়-বিক্রয়ের প্রতিটি ধাপকে সহজ, নির্ভুল ও নিরাপদ করতে আমরা সর্বোচ্চ গুরুত্ব দিয়ে কাজ করি।'
       : 'As an experienced deed writers team, we provide reliable and professional services for land and property transaction documentation. We give our highest priority to making every step of your land or property transactions simple, accurate, and safe.',
     paragraph2: isBn
       ? 'দীর্ঘ বছরের অভিজ্ঞতায় আমরা শিখেছি—একটি সঠিক ও সুশৃঙ্খল দলিল শুধু আইনি সুরক্ষা দেয় না, বরং ভবিষ্যতের জটিলতা থেকেও রক্ষা করে। আমাদের সেবার মধ্যে রয়েছে দলিল প্রস্তুতি, খসড়া তৈরি, পরামর্শ, ও সম্পূর্ণ রেজিস্ট্রেশন সহায়তা।'
       : 'Through years of experience, we have learned that a correct and well-organized deed not only provides legal protection but also prevents future complications. Our services include deed preparation, drafting, consultation, and complete registration support.',
+    paragraph3: isBn
+      ? 'আমরা বিশ্বাস করি স্বচ্ছতা, সময়ানুবর্তিতা ও নির্ভুল দলিল তৈরিই আমাদের সাফল্যের চাবিকাঠি। তাই প্রতিটি ক্লায়েন্টের কাজকে আমরা গ্রহণ করি ব্যক্তিগত দায়িত্ব হিসেবে।'
+      : 'We believe that transparency, punctuality, and accurate deed preparation are the keys to our success. That is why we accept every client\'s work as a personal responsibility.',
     cta: isBn ? 'আরও জানুন' : 'Learn More',
     ownerName: isBn ? 'মোঃ জাহিদুল ইসলাম' : 'Md. Zahidul Islam',
     ownerRole: isBn ? 'প্রতিষ্ঠাতা ও প্রধান দলিল লেখক' : 'Founder & Chief Deed Writer',
   };
+
+  const profileImage = 'https://i.postimg.cc/wx0q1tz9/20260917-044318.jpg';
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -94,12 +99,13 @@ export default function AboutSection() {
                            overflow-hidden border-4 border-gold/30 shadow-2xl"
               >
                 <Image
-                  src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80"
+                  src={profileImage}
                   alt={content.ownerName}
                   fill
                   sizes="(max-width: 768px) 250px, 300px"
-                  className="object-cover"
+                  className="object-cover object-center"
                   priority={false}
+                  unoptimized
                 />
               </div>
             </div>
@@ -144,10 +150,18 @@ export default function AboutSection() {
 
             <motion.p
               variants={itemVariants}
-              className="text-muted text-base leading-[1.9] mb-8 
+              className="text-muted text-base leading-[1.9] mb-5 
                          text-bangla-safe"
             >
               {content.paragraph2}
+            </motion.p>
+
+            <motion.p
+              variants={itemVariants}
+              className="text-muted text-base leading-[1.9] mb-8 
+                         text-bangla-safe"
+            >
+              {content.paragraph3}
             </motion.p>
 
             <motion.div variants={itemVariants}>
