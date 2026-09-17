@@ -13,8 +13,6 @@ import {
   Globe,
   Clock,
   Loader2,
-  FileText,
-  TrendingUp,
 } from 'lucide-react';
 import { getDemoUser, clearDemoUser, DemoUser } from '@/lib/auth';
 import DashboardLayout from './DashboardLayout';
@@ -57,13 +55,13 @@ export default function DashboardPage() {
 
     deedsChart_bn: 'দলিল পরিসংখ্যান',
     deedsChart_en: 'Deeds Statistics',
-    deedsChartSub_bn: 'বছর ভিত্তিক দলিল',
-    deedsChartSub_en: 'Yearly deeds overview',
+    deedsChartSub_bn: 'সর্বশেষ ৭ বছরের দলিল',
+    deedsChartSub_en: 'Deeds over last 7 years',
 
     khatianChart_bn: 'খতিয়ান পরিসংখ্যান',
     khatianChart_en: 'Khatian Statistics',
-    khatianChartSub_bn: 'বছর ভিত্তিক খতিয়ান',
-    khatianChartSub_en: 'Yearly khatian overview',
+    khatianChartSub_bn: 'সর্বশেষ ৭ বছরের খতিয়ান',
+    khatianChartSub_en: 'Khatian over last 7 years',
 
     approved_bn: 'অনুমোদিত',
     approved_en: 'Approved',
@@ -106,58 +104,62 @@ export default function DashboardPage() {
     );
   }
 
-  // ===== Stats Data =====
+  // ===== Stats Data — Transparent Icon BG =====
   const statsData = [
     {
       icon: CheckCircle2,
       label_bn: content.approvedDeeds_bn,
       label_en: content.approvedDeeds_en,
       value: '566',
-      color: 'bg-[#1F7A3F]',
+      iconColor: 'text-[#1F7A3F]',
+      iconBg: 'bg-[#1F7A3F]/10',
     },
     {
       icon: Hourglass,
       label_bn: content.pendingDeeds_bn,
       label_en: content.pendingDeeds_en,
       value: '0',
-      color: 'bg-orange-500',
+      iconColor: 'text-orange-500',
+      iconBg: 'bg-orange-500/10',
     },
     {
       icon: CheckCircle2,
       label_bn: content.approvedKhatian_bn,
       label_en: content.approvedKhatian_en,
       value: '342',
-      color: 'bg-[#1F7A3F]',
+      iconColor: 'text-[#1F7A3F]',
+      iconBg: 'bg-[#1F7A3F]/10',
     },
     {
       icon: Hourglass,
       label_bn: content.pendingKhatian_bn,
       label_en: content.pendingKhatian_en,
       value: '18',
-      color: 'bg-orange-500',
+      iconColor: 'text-orange-500',
+      iconBg: 'bg-orange-500/10',
     },
   ];
 
-  // ===== Chart 1: Deeds =====
+  // ===== Chart 1: Deeds — Demo Data =====
   const deedsChartData = [
-    { year: '2020', approved: 0, pending: 0 },
-    { year: '2021', approved: 20, pending: 5 },
-    { year: '2022', approved: 50, pending: 12 },
-    { year: '2023', approved: 8, pending: 2 },
-    { year: '2024', approved: 140, pending: 15 },
-    { year: '2025', approved: 210, pending: 20 },
-    { year: '2026', approved: 120, pending: 8 },
+    { year: '2019', approved: 42, pending: 8 },
+    { year: '2020', approved: 68, pending: 12 },
+    { year: '2021', approved: 95, pending: 18 },
+    { year: '2022', approved: 124, pending: 24 },
+    { year: '2023', approved: 178, pending: 32 },
+    { year: '2024', approved: 245, pending: 28 },
+    { year: '2025', approved: 312, pending: 42 },
   ];
 
-  // ===== Chart 2: Khatian =====
+  // ===== Chart 2: Khatian — Demo Data =====
   const khatianChartData = [
-    { year: '2020', approved: 0, pending: 0 },
-    { year: '2021', approved: 15, pending: 3 },
-    { year: '2022', approved: 42, pending: 8 },
-    { year: '2023', approved: 10, pending: 2 },
-    { year: '2024', approved: 105, pending: 12 },
-    { year: '2025', approved: 180, pending: 18 },
-    { year: '2026', approved: 95, pending: 6 },
+    { year: '2019', approved: 28, pending: 5 },
+    { year: '2020', approved: 45, pending: 9 },
+    { year: '2021', approved: 72, pending: 14 },
+    { year: '2022', approved: 98, pending: 19 },
+    { year: '2023', approved: 145, pending: 26 },
+    { year: '2024', approved: 198, pending: 22 },
+    { year: '2025', approved: 256, pending: 34 },
   ];
 
   const profileFields = [
@@ -180,6 +182,16 @@ export default function DashboardPage() {
     const maxVal = Math.max(
       ...data.map((d) => Math.max(d.approved, d.pending))
     );
+    // Round up to nearest 50 for clean Y-axis
+    const yMax = Math.ceil(maxVal / 50) * 50;
+
+    const yLabels = [
+      yMax,
+      Math.round(yMax * 0.75),
+      Math.round(yMax * 0.5),
+      Math.round(yMax * 0.25),
+      0,
+    ];
 
     return (
       <motion.div
@@ -189,102 +201,128 @@ export default function DashboardPage() {
         className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden"
       >
         <div className="p-4 sm:p-5 lg:p-6">
-          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+          {/* Header */}
+          <div className="flex items-start sm:items-center justify-between mb-5 flex-col sm:flex-row gap-3">
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-[#1F2937] 
-                             text-bangla-heading pt-1 pb-0.5">
+              <h3 className="text-base sm:text-lg font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5">
                 {t(titleKey)}
               </h3>
-              <p className="text-[11px] sm:text-xs text-[#6B7280] 
-                            text-bangla-safe">
+              <p className="text-[11px] sm:text-xs text-[#6B7280] text-bangla-safe">
                 {t(subKey)}
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 sm:gap-4">
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-[#1F7A3F]" />
-                <span className="text-[10px] sm:text-xs font-medium 
-                                 text-[#6B7280] text-bangla-safe">
+                <span className="w-3 h-3 rounded-sm bg-[#1F7A3F]" />
+                <span className="text-[10px] sm:text-xs font-medium text-[#6B7280] text-bangla-safe">
                   {t('approved')}
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-orange-500" />
-                <span className="text-[10px] sm:text-xs font-medium 
-                                 text-[#6B7280] text-bangla-safe">
+                <span className="w-3 h-3 rounded-sm bg-orange-400" />
+                <span className="text-[10px] sm:text-xs font-medium text-[#6B7280] text-bangla-safe">
                   {t('pending')}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="relative h-48 sm:h-56 flex items-end gap-2 sm:gap-3 
-                          pt-6 pb-8">
-            {/* Y-axis */}
-            <div className="absolute left-0 top-0 bottom-8 flex flex-col 
-                            justify-between text-[10px] sm:text-xs 
-                            text-[#9CA3AF] pr-2">
-              {[maxVal, Math.round(maxVal * 0.75), Math.round(maxVal * 0.5), Math.round(maxVal * 0.25), 0].map(
-                (v, i) => (
-                  <span key={i} className="h-0 leading-none">
-                    {v}
-                  </span>
-                )
-              )}
+          {/* Chart */}
+          <div className="relative h-52 sm:h-64 flex items-end">
+            {/* Y-axis labels */}
+            <div className="w-10 sm:w-12 flex flex-col justify-between h-full pb-8 text-[10px] sm:text-xs text-[#9CA3AF] font-medium">
+              {yLabels.map((v, i) => (
+                <span key={i} className="leading-none text-right pr-1">
+                  {v}
+                </span>
+              ))}
             </div>
 
-            {/* Bars */}
-            <div className="flex-1 flex items-end justify-around gap-1 
-                            sm:gap-2 pl-8 h-full border-l border-b 
-                            border-[#E5E7EB]">
-              {data.map((d, i) => {
-                const approvedH = (d.approved / maxVal) * 100;
-                const pendingH = (d.pending / maxVal) * 100;
-                return (
+            {/* Grid + Bars */}
+            <div className="flex-1 relative h-full">
+              {/* Horizontal grid lines */}
+              <div className="absolute inset-0 bottom-8 flex flex-col justify-between">
+                {yLabels.map((_, i) => (
                   <div
                     key={i}
-                    className="flex-1 flex flex-col items-center gap-1 
-                               max-w-[60px]"
-                  >
-                    <div className="w-full flex items-end justify-center 
-                                    gap-0.5 h-full">
+                    className="w-full border-t border-dashed border-[#E5E7EB]"
+                  />
+                ))}
+              </div>
+
+              {/* Bars container */}
+              <div className="absolute inset-0 bottom-8 flex items-end justify-around gap-1 sm:gap-2">
+                {data.map((d, i) => {
+                  const approvedH = (d.approved / yMax) * 100;
+                  const pendingH = (d.pending / yMax) * 100;
+                  return (
+                    <div
+                      key={i}
+                      className="flex-1 flex items-end justify-center gap-0.5 h-full max-w-[60px] relative group"
+                    >
                       {/* Approved bar */}
                       <motion.div
                         initial={{ height: 0 }}
                         animate={{ height: `${approvedH}%` }}
                         transition={{
-                          duration: 0.8,
-                          delay: 0.4 + i * 0.06,
+                          duration: 0.9,
+                          delay: 0.3 + i * 0.07,
                           ease: 'easeOut',
                         }}
-                        className="w-1/2 rounded-t-md 
-                                   bg-gradient-to-t from-[#1F7A3F] to-[#22C55E]
-                                   shadow-sm min-h-[2px]"
+                        className="w-[45%] rounded-t-md bg-gradient-to-t 
+                                   from-[#1F7A3F] to-[#22C55E]
+                                   shadow-sm min-h-[3px] relative"
                         title={`Approved ${d.year}: ${d.approved}`}
-                      />
+                      >
+                        <span className="absolute -top-6 left-1/2 
+                                        -translate-x-1/2 text-[9px] 
+                                        font-bold text-[#1F7A3F] 
+                                        opacity-0 group-hover:opacity-100 
+                                        transition-opacity whitespace-nowrap">
+                          {d.approved}
+                        </span>
+                      </motion.div>
+
                       {/* Pending bar */}
                       <motion.div
                         initial={{ height: 0 }}
                         animate={{ height: `${pendingH}%` }}
                         transition={{
-                          duration: 0.8,
-                          delay: 0.5 + i * 0.06,
+                          duration: 0.9,
+                          delay: 0.4 + i * 0.07,
                           ease: 'easeOut',
                         }}
-                        className="w-1/2 rounded-t-md 
-                                   bg-gradient-to-t from-orange-500 to-orange-400
-                                   shadow-sm min-h-[2px]"
+                        className="w-[45%] rounded-t-md bg-gradient-to-t 
+                                   from-orange-500 to-orange-400
+                                   shadow-sm min-h-[3px] relative"
                         title={`Pending ${d.year}: ${d.pending}`}
-                      />
+                      >
+                        <span className="absolute -top-6 left-1/2 
+                                        -translate-x-1/2 text-[9px] 
+                                        font-bold text-orange-500 
+                                        opacity-0 group-hover:opacity-100 
+                                        transition-opacity whitespace-nowrap">
+                          {d.pending}
+                        </span>
+                      </motion.div>
                     </div>
-                    <span className="text-[9px] sm:text-[10px] 
-                                     text-[#9CA3AF] -rotate-45 sm:rotate-0 
-                                     origin-center whitespace-nowrap">
+                  );
+                })}
+              </div>
+
+              {/* X-axis labels */}
+              <div className="absolute bottom-0 left-0 right-0 h-8 flex items-end justify-around gap-1 sm:gap-2">
+                {data.map((d, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 text-center max-w-[60px]"
+                  >
+                    <span className="text-[9px] sm:text-[10px] text-[#9CA3AF] font-medium">
                       {d.year}
                     </span>
                   </div>
-                );
-              })}
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -301,9 +339,7 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold 
-                         text-[#1F2937] text-bangla-heading 
-                         pt-1 pb-1 leading-tight">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1 leading-tight">
             {t('welcome')}, {user.username}!
           </h2>
           <p className="text-xs sm:text-sm text-[#6B7280] text-bangla-safe">
@@ -317,7 +353,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* ===== Stats Grid — 4 Cards ===== */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {statsData.map((stat, index) => {
             const Icon = stat.icon;
             return (
@@ -331,21 +367,25 @@ export default function DashboardPage() {
                            hover:-translate-y-1 transition-all duration-300 
                            group"
               >
+                {/* Icon — Transparent BG */}
                 <div
-                  className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${stat.color} 
+                  className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl 
+                               ${stat.iconBg} border border-current/10
                                flex items-center justify-center mb-3
-                               shadow-md group-hover:scale-110 
+                               group-hover:scale-110 
                                transition-transform duration-300`}
                 >
-                  <Icon size={20} className="text-white" />
+                  <Icon
+                    size={22}
+                    strokeWidth={2}
+                    className={stat.iconColor}
+                  />
                 </div>
-                <p className="text-[11px] sm:text-xs font-semibold 
-                              text-[#6B7280] uppercase tracking-wider 
-                              text-bangla-safe mb-1">
+
+                <p className="text-[11px] sm:text-xs font-semibold text-[#6B7280] uppercase tracking-wider text-bangla-safe mb-1">
                   {isBn ? stat.label_bn : stat.label_en}
                 </p>
-                <p className="text-2xl sm:text-3xl font-bold text-[#1F2937] 
-                              leading-tight">
+                <p className="text-2xl sm:text-3xl font-bold text-[#1F2937] leading-tight">
                   {stat.value}
                 </p>
               </motion.div>
@@ -375,8 +415,7 @@ export default function DashboardPage() {
           className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm"
         >
           <div className="p-4 sm:p-5 lg:p-6">
-            <h3 className="text-base sm:text-lg font-bold text-[#1F2937] 
-                           text-bangla-heading pt-1 pb-2 mb-3">
+            <h3 className="text-base sm:text-lg font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-3">
               {t('profile')}
             </h3>
 
@@ -389,18 +428,14 @@ export default function DashboardPage() {
                     className="flex items-start gap-3 p-3 rounded-xl 
                                bg-[#F8FAF9] border border-[#E5E7EB]"
                   >
-                    <div className="w-9 h-9 rounded-lg bg-[#1F7A3F]/10 
-                                    flex items-center justify-center 
-                                    flex-shrink-0">
+                    <div className="w-9 h-9 rounded-lg bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
                       <Icon size={16} className="text-[#1F7A3F]" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-[10px] uppercase tracking-wider 
-                                    text-[#6B7280] font-bold mb-0.5">
+                      <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-0.5">
                         {field.label}
                       </p>
-                      <p className="text-sm text-[#1F2937] font-semibold 
-                                    text-bangla-safe break-all">
+                      <p className="text-sm text-[#1F2937] font-semibold text-bangla-safe break-all">
                         {field.value}
                       </p>
                     </div>
@@ -408,17 +443,12 @@ export default function DashboardPage() {
                 );
               })}
 
-              <div className="flex items-start gap-3 p-3 rounded-xl 
-                              bg-[#F8FAF9] border border-[#E5E7EB] 
-                              sm:col-span-2">
-                <div className="w-9 h-9 rounded-lg bg-[#1F7A3F]/10 
-                                flex items-center justify-center 
-                                flex-shrink-0">
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB] sm:col-span-2">
+                <div className="w-9 h-9 rounded-lg bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
                   <Clock size={16} className="text-[#1F7A3F]" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] uppercase tracking-wider 
-                                text-[#6B7280] font-bold mb-0.5">
+                  <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-0.5">
                     {t('loginTime')}
                   </p>
                   <p className="text-sm text-[#1F2937] font-semibold">
