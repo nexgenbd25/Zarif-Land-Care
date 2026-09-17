@@ -3,8 +3,7 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Noto_Sans_Bengali, Inter } from 'next/font/google';
 import { locales, type Locale } from '@/i18n';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import LayoutContent from './LayoutContent';
 
 const notoSansBengali = Noto_Sans_Bengali({
   subsets: ['bengali', 'latin'],
@@ -82,11 +81,7 @@ export default async function LocaleLayout({
               : 'var(--font-inter), system-ui, sans-serif',
         }}
       >
-        <Header />
-
-        <main className="flex-1">{children}</main>
-
-        <Footer />
+        <LayoutContent>{children}</LayoutContent>
       </div>
     </NextIntlClientProvider>
   );
