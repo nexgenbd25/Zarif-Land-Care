@@ -14,9 +14,6 @@ import {
   LucideIcon,
 } from 'lucide-react';
 
-// ============================================
-// Service Type
-// ============================================
 interface Service {
   id: number;
   title_bn: string;
@@ -26,9 +23,6 @@ interface Service {
   icon: LucideIcon;
 }
 
-// ============================================
-// ডিফল্ট ৬টি সার্ভিস (পরে Database থেকে আসবে)
-// ============================================
 const SERVICES: Service[] = [
   {
     id: 1,
@@ -84,17 +78,11 @@ export default function ServicesSection() {
   const t = useTranslations();
   const locale = useLocale();
 
-  // ============================================
-  // URL Helper
-  // ============================================
   const getUrl = (path: string) => {
     const prefix = locale === 'bn' ? '' : `/${locale}`;
     return path === '/' ? prefix || '/' : `${prefix}${path}`;
   };
 
-  // ============================================
-  // Framer Motion Variants
-  // ============================================
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -113,21 +101,20 @@ export default function ServicesSection() {
       y: 0,
       transition: {
         duration: 0.6,
-        ease: [0.25, 0.4, 0.25, 1] as const,
+        ease: 'easeOut' as const,
       },
     },
   };
 
   return (
     <section className="relative overflow-hidden section-padding bg-navy">
-      {/* Background Decorative */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 
-                      w-[600px] h-[600px] bg-gold/5 rounded-full blur-[140px] -z-0" />
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2 
+                   w-[600px] h-[600px] bg-gold/5 rounded-full 
+                   blur-[140px] -z-0"
+      />
 
       <div className="container-custom relative z-10">
-        {/* ============================================
-            Section Header
-            ============================================ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -135,33 +122,30 @@ export default function ServicesSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 lg:mb-16"
         >
-          {/* Small Badge */}
-          <span className="inline-flex items-center gap-2 
-                          px-4 py-1.5 rounded-full
-                          bg-gold/10 border border-gold/30
-                          text-gold text-xs font-medium mb-4">
+          <span
+            className="inline-flex items-center gap-2 
+                       px-4 py-1.5 rounded-full
+                       bg-gold/10 border border-gold/30
+                       text-gold text-xs font-medium mb-4"
+          >
             <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
             <span className="text-bangla-safe">সেবাসমূহ</span>
           </span>
 
-          {/* Title */}
           <h2 className="heading-2 mb-4 text-bangla-safe">
             {t('services.title')}
           </h2>
 
-          {/* Subtitle */}
-          <p className="text-muted text-base sm:text-lg max-w-2xl mx-auto 
-                        leading-[1.9] text-bangla-safe">
+          <p
+            className="text-muted text-base sm:text-lg max-w-2xl mx-auto 
+                       leading-[1.9] text-bangla-safe"
+          >
             {t('services.subtitle')}
           </p>
 
-          {/* Decorative Line */}
           <div className="w-20 h-1 bg-gradient-gold mx-auto rounded-full mt-6" />
         </motion.div>
 
-        {/* ============================================
-            Services Grid
-            ============================================ */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -182,64 +166,65 @@ export default function ServicesSection() {
                 variants={cardVariants}
                 className="group relative"
               >
-                <Link
-                  href={getUrl('/services')}
-                  className="block h-full"
-                >
+                <Link href={getUrl('/services')} className="block h-full">
                   <div
                     className="relative h-full p-6 lg:p-7 rounded-xl
                                bg-navy-dark border border-navy-border
                                transition-all duration-500 ease-out
                                hover:border-gold hover:bg-navy-dark/95
                                hover:-translate-y-2 hover:shadow-2xl
-                               overflow-hidden"
+                               overflow-hidden text-center"
                   >
-                    {/* Gradient Overlay on Hover */}
-                    <div className="absolute inset-0 opacity-0 
-                                    group-hover:opacity-100 
-                                    transition-opacity duration-500
-                                    bg-gradient-to-br from-gold/5 to-transparent
-                                    pointer-events-none" />
+                    <div
+                      className="absolute inset-0 opacity-0 
+                                 group-hover:opacity-100 
+                                 transition-opacity duration-500
+                                 bg-gradient-to-br from-gold/5 to-transparent
+                                 pointer-events-none"
+                    />
 
-                    {/* Top Gold Line */}
-                    <div className="absolute top-0 left-0 right-0 h-0.5 
-                                    bg-gradient-to-r from-transparent via-gold to-transparent
-                                    opacity-0 group-hover:opacity-100
-                                    transition-opacity duration-500" />
+                    <div
+                      className="absolute top-0 left-0 right-0 h-0.5 
+                                 bg-gradient-to-r from-transparent via-gold to-transparent
+                                 opacity-0 group-hover:opacity-100
+                                 transition-opacity duration-500"
+                    />
 
-                    {/* Content */}
-                    <div className="relative z-10">
-                      {/* Icon Circle */}
+                    <div className="relative z-10 flex flex-col items-center">
                       <div
-                        className="w-14 h-14 rounded-xl mb-5
-                                   bg-gradient-to-br from-brand-orange to-brand-red
-                                   flex items-center justify-center
-                                   shadow-lg shadow-brand-orange/20
+                        className="mb-5 flex items-center justify-center
                                    transition-all duration-500
                                    group-hover:scale-110 group-hover:rotate-3"
                       >
-                        <Icon size={26} className="text-white" strokeWidth={2} />
+                        <Icon
+                          size={48}
+                          strokeWidth={1.5}
+                          className="text-gold"
+                        />
                       </div>
 
-                      {/* Title */}
-                      <h3 className="text-lg lg:text-xl font-bold text-white mb-3 
-                                     transition-colors duration-300
-                                     group-hover:text-gold text-bangla-safe 
-                                     leading-[1.6] pt-[0.15em]">
+                      <h3
+                        className="text-lg lg:text-xl font-bold text-white mb-3 
+                                   transition-colors duration-300
+                                   group-hover:text-gold text-bangla-safe 
+                                   leading-[1.6] pt-[0.15em]"
+                      >
                         {title}
                       </h3>
 
-                      {/* Description */}
-                      <p className="text-sm text-muted leading-[1.9] mb-5 
-                                    text-bangla-safe line-clamp-3">
+                      <p
+                        className="text-sm text-muted leading-[1.9] mb-5 
+                                   text-bangla-safe line-clamp-3"
+                      >
                         {description}
                       </p>
 
-                      {/* Learn More Link */}
-                      <div className="flex items-center gap-2 text-gold 
-                                      text-sm font-medium
-                                      transition-all duration-300
-                                      group-hover:gap-3">
+                      <div
+                        className="flex items-center gap-2 text-gold 
+                                   text-sm font-medium
+                                   transition-all duration-300
+                                   group-hover:gap-3"
+                      >
                         <span className="text-bangla-safe">আরও জানুন</span>
                         <ArrowRight
                           size={16}
@@ -255,9 +240,6 @@ export default function ServicesSection() {
           })}
         </motion.div>
 
-        {/* ============================================
-            Bottom CTA
-            ============================================ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
