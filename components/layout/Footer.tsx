@@ -174,7 +174,7 @@ export default function Footer() {
             </Link>
 
             <p
-              className="text-gray-200 text-sm lg:text-base leading-[1.9] 
+              className="text-gray-200 text-sm lg:text-base 
                          text-bangla-safe mb-6 max-w-md"
             >
               {description}
@@ -207,11 +207,12 @@ export default function Footer() {
           <motion.div variants={itemVariants} className="lg:col-span-2">
             <h3
               className="text-white font-bold text-base lg:text-lg mb-4 
-                         text-bangla-safe relative inline-block"
+                         text-bangla-heading relative inline-block
+                         pt-1 pb-2"
             >
               {usefulLinksLabel}
               <span
-                className="absolute -bottom-1.5 left-0 w-10 h-0.5 
+                className="absolute bottom-0 left-0 w-10 h-0.5 
                            bg-[#22C55E] rounded-full"
               />
             </h3>
@@ -241,11 +242,12 @@ export default function Footer() {
           <motion.div variants={itemVariants} className="lg:col-span-2">
             <h3
               className="text-white font-bold text-base lg:text-lg mb-4 
-                         text-bangla-safe relative inline-block"
+                         text-bangla-heading relative inline-block
+                         pt-1 pb-2"
             >
               {policyPagesLabel}
               <span
-                className="absolute -bottom-1.5 left-0 w-10 h-0.5 
+                className="absolute bottom-0 left-0 w-10 h-0.5 
                            bg-[#22C55E] rounded-full"
               />
             </h3>
@@ -275,11 +277,12 @@ export default function Footer() {
           <motion.div variants={itemVariants} className="lg:col-span-4">
             <h3
               className="text-white font-bold text-base lg:text-lg mb-4 
-                         text-bangla-safe relative inline-block"
+                         text-bangla-heading relative inline-block
+                         pt-1 pb-2"
             >
               {contactUsLabel}
               <span
-                className="absolute -bottom-1.5 left-0 w-10 h-0.5 
+                className="absolute bottom-0 left-0 w-10 h-0.5 
                            bg-[#22C55E] rounded-full"
               />
             </h3>
@@ -289,13 +292,13 @@ export default function Footer() {
                 const text = isBn ? contact.text_bn : contact.text_en;
                 return (
                   <li key={index} className="flex items-start gap-2.5">
-                    <div className="flex-shrink-0 mt-0.5">
+                    <div className="flex-shrink-0 mt-1">
                       <MapPin size={16} className="text-[#22C55E]" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p
                         className="text-gray-200 text-sm lg:text-base 
-                                   leading-[1.7] text-bangla-safe break-words"
+                                   text-bangla-safe break-words"
                       >
                         {text}
                       </p>
@@ -305,7 +308,7 @@ export default function Footer() {
                           className="inline-flex items-center gap-1.5 
                                      text-[#22C55E] hover:text-[#4ADE80] 
                                      transition-colors text-sm lg:text-base 
-                                     font-medium mt-1"
+                                     font-medium mt-1 text-bangla-safe"
                         >
                           <Phone size={13} />
                           {contact.phone}
