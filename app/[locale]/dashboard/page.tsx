@@ -55,18 +55,16 @@ export default function DashboardPage() {
 
     deedsChart_bn: 'দলিল পরিসংখ্যান',
     deedsChart_en: 'Deeds Statistics',
-    deedsChartSub_bn: 'সর্বশেষ ৭ বছরের দলিল',
-    deedsChartSub_en: 'Deeds over last 7 years',
+    deedsChartSub_bn: 'বছর ভিত্তিক অনুমোদিত দলিল',
+    deedsChartSub_en: 'Yearly approved deeds',
 
     khatianChart_bn: 'খতিয়ান পরিসংখ্যান',
     khatianChart_en: 'Khatian Statistics',
-    khatianChartSub_bn: 'সর্বশেষ ৭ বছরের খতিয়ান',
-    khatianChartSub_en: 'Khatian over last 7 years',
+    khatianChartSub_bn: 'বছর ভিত্তিক অনুমোদিত খতিয়ান',
+    khatianChartSub_en: 'Yearly approved khatian',
 
     approved_bn: 'অনুমোদিত',
     approved_en: 'Approved',
-    pending_bn: 'অপেক্ষমাণ',
-    pending_en: 'Pending',
 
     profile_bn: 'প্রোফাইল তথ্য',
     profile_en: 'Profile Information',
@@ -104,7 +102,7 @@ export default function DashboardPage() {
     );
   }
 
-  // ===== Stats Data — Transparent Icon BG =====
+  // ===== Stats Data =====
   const statsData = [
     {
       icon: CheckCircle2,
@@ -113,6 +111,7 @@ export default function DashboardPage() {
       value: '566',
       iconColor: 'text-[#1F7A3F]',
       iconBg: 'bg-[#1F7A3F]/10',
+      borderColor: 'border-[#1F7A3F]/20',
     },
     {
       icon: Hourglass,
@@ -121,6 +120,7 @@ export default function DashboardPage() {
       value: '0',
       iconColor: 'text-orange-500',
       iconBg: 'bg-orange-500/10',
+      borderColor: 'border-orange-500/20',
     },
     {
       icon: CheckCircle2,
@@ -129,6 +129,7 @@ export default function DashboardPage() {
       value: '342',
       iconColor: 'text-[#1F7A3F]',
       iconBg: 'bg-[#1F7A3F]/10',
+      borderColor: 'border-[#1F7A3F]/20',
     },
     {
       icon: Hourglass,
@@ -137,29 +138,30 @@ export default function DashboardPage() {
       value: '18',
       iconColor: 'text-orange-500',
       iconBg: 'bg-orange-500/10',
+      borderColor: 'border-orange-500/20',
     },
   ];
 
-  // ===== Chart 1: Deeds — Demo Data =====
+  // ===== Chart 1: Approved Deeds Only =====
   const deedsChartData = [
-    { year: '2019', approved: 42, pending: 8 },
-    { year: '2020', approved: 68, pending: 12 },
-    { year: '2021', approved: 95, pending: 18 },
-    { year: '2022', approved: 124, pending: 24 },
-    { year: '2023', approved: 178, pending: 32 },
-    { year: '2024', approved: 245, pending: 28 },
-    { year: '2025', approved: 312, pending: 42 },
+    { year: '2019', value: 42 },
+    { year: '2020', value: 68 },
+    { year: '2021', value: 95 },
+    { year: '2022', value: 124 },
+    { year: '2023', value: 178 },
+    { year: '2024', value: 245 },
+    { year: '2025', value: 312 },
   ];
 
-  // ===== Chart 2: Khatian — Demo Data =====
+  // ===== Chart 2: Approved Khatian Only =====
   const khatianChartData = [
-    { year: '2019', approved: 28, pending: 5 },
-    { year: '2020', approved: 45, pending: 9 },
-    { year: '2021', approved: 72, pending: 14 },
-    { year: '2022', approved: 98, pending: 19 },
-    { year: '2023', approved: 145, pending: 26 },
-    { year: '2024', approved: 198, pending: 22 },
-    { year: '2025', approved: 256, pending: 34 },
+    { year: '2019', value: 28 },
+    { year: '2020', value: 45 },
+    { year: '2021', value: 72 },
+    { year: '2022', value: 98 },
+    { year: '2023', value: 145 },
+    { year: '2024', value: 198 },
+    { year: '2025', value: 256 },
   ];
 
   const profileFields = [
@@ -169,20 +171,17 @@ export default function DashboardPage() {
     { icon: Phone, label: t('phone'), value: user.phone },
   ];
 
-  // ===== Chart Component =====
+  // ===== Chart Component — Approved Only =====
   const RenderChart = ({
     data,
     titleKey,
     subKey,
   }: {
-    data: { year: string; approved: number; pending: number }[];
+    data: { year: string; value: number }[];
     titleKey: string;
     subKey: string;
   }) => {
-    const maxVal = Math.max(
-      ...data.map((d) => Math.max(d.approved, d.pending))
-    );
-    // Round up to nearest 50 for clean Y-axis
+    const maxVal = Math.max(...data.map((d) => d.value));
     const yMax = Math.ceil(maxVal / 50) * 50;
 
     const yLabels = [
@@ -211,19 +210,11 @@ export default function DashboardPage() {
                 {t(subKey)}
               </p>
             </div>
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-sm bg-[#1F7A3F]" />
-                <span className="text-[10px] sm:text-xs font-medium text-[#6B7280] text-bangla-safe">
-                  {t('approved')}
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-sm bg-orange-400" />
-                <span className="text-[10px] sm:text-xs font-medium text-[#6B7280] text-bangla-safe">
-                  {t('pending')}
-                </span>
-              </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-sm bg-[#1F7A3F]" />
+              <span className="text-[10px] sm:text-xs font-medium text-[#6B7280] text-bangla-safe">
+                {t('approved')}
+              </span>
             </div>
           </div>
 
@@ -240,7 +231,7 @@ export default function DashboardPage() {
 
             {/* Grid + Bars */}
             <div className="flex-1 relative h-full">
-              {/* Horizontal grid lines */}
+              {/* Grid lines */}
               <div className="absolute inset-0 bottom-8 flex flex-col justify-between">
                 {yLabels.map((_, i) => (
                   <div
@@ -250,59 +241,28 @@ export default function DashboardPage() {
                 ))}
               </div>
 
-              {/* Bars container */}
+              {/* Bars */}
               <div className="absolute inset-0 bottom-8 flex items-end justify-around gap-1 sm:gap-2">
                 {data.map((d, i) => {
-                  const approvedH = (d.approved / yMax) * 100;
-                  const pendingH = (d.pending / yMax) * 100;
+                  const heightPct = (d.value / yMax) * 100;
                   return (
                     <div
                       key={i}
-                      className="flex-1 flex items-end justify-center gap-0.5 h-full max-w-[60px] relative group"
+                      className="flex-1 flex items-end justify-center h-full max-w-[60px] relative group"
                     >
-                      {/* Approved bar */}
                       <motion.div
                         initial={{ height: 0 }}
-                        animate={{ height: `${approvedH}%` }}
+                        animate={{ height: `${heightPct}%` }}
                         transition={{
                           duration: 0.9,
                           delay: 0.3 + i * 0.07,
                           ease: 'easeOut',
                         }}
-                        className="w-[45%] rounded-t-md bg-gradient-to-t 
-                                   from-[#1F7A3F] to-[#22C55E]
-                                   shadow-sm min-h-[3px] relative"
-                        title={`Approved ${d.year}: ${d.approved}`}
+                        className="w-[70%] rounded-t-md bg-gradient-to-t from-[#1F7A3F] to-[#22C55E] shadow-sm min-h-[3px] relative"
+                        title={`${d.year}: ${d.value}`}
                       >
-                        <span className="absolute -top-6 left-1/2 
-                                        -translate-x-1/2 text-[9px] 
-                                        font-bold text-[#1F7A3F] 
-                                        opacity-0 group-hover:opacity-100 
-                                        transition-opacity whitespace-nowrap">
-                          {d.approved}
-                        </span>
-                      </motion.div>
-
-                      {/* Pending bar */}
-                      <motion.div
-                        initial={{ height: 0 }}
-                        animate={{ height: `${pendingH}%` }}
-                        transition={{
-                          duration: 0.9,
-                          delay: 0.4 + i * 0.07,
-                          ease: 'easeOut',
-                        }}
-                        className="w-[45%] rounded-t-md bg-gradient-to-t 
-                                   from-orange-500 to-orange-400
-                                   shadow-sm min-h-[3px] relative"
-                        title={`Pending ${d.year}: ${d.pending}`}
-                      >
-                        <span className="absolute -top-6 left-1/2 
-                                        -translate-x-1/2 text-[9px] 
-                                        font-bold text-orange-500 
-                                        opacity-0 group-hover:opacity-100 
-                                        transition-opacity whitespace-nowrap">
-                          {d.pending}
+                        <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-[#1F7A3F] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                          {d.value}
                         </span>
                       </motion.div>
                     </div>
@@ -313,10 +273,7 @@ export default function DashboardPage() {
               {/* X-axis labels */}
               <div className="absolute bottom-0 left-0 right-0 h-8 flex items-end justify-around gap-1 sm:gap-2">
                 {data.map((d, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 text-center max-w-[60px]"
-                  >
+                  <div key={i} className="flex-1 text-center max-w-[60px]">
                     <span className="text-[9px] sm:text-[10px] text-[#9CA3AF] font-medium">
                       {d.year}
                     </span>
@@ -352,7 +309,7 @@ export default function DashboardPage() {
           </p>
         </motion.div>
 
-        {/* ===== Stats Grid — 4 Cards ===== */}
+        {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {statsData.map((stat, index) => {
             const Icon = stat.icon;
@@ -362,18 +319,10 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.08 }}
-                className="bg-white rounded-2xl border border-[#E5E7EB] 
-                           p-4 sm:p-5 shadow-sm hover:shadow-lg 
-                           hover:-translate-y-1 transition-all duration-300 
-                           group"
+                className="bg-white rounded-2xl border border-[#E5E7EB] p-4 sm:p-5 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
               >
-                {/* Icon — Transparent BG */}
                 <div
-                  className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl 
-                               ${stat.iconBg} border border-current/10
-                               flex items-center justify-center mb-3
-                               group-hover:scale-110 
-                               transition-transform duration-300`}
+                  className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${stat.iconBg} border ${stat.borderColor} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300`}
                 >
                   <Icon
                     size={22}
@@ -381,7 +330,6 @@ export default function DashboardPage() {
                     className={stat.iconColor}
                   />
                 </div>
-
                 <p className="text-[11px] sm:text-xs font-semibold text-[#6B7280] uppercase tracking-wider text-bangla-safe mb-1">
                   {isBn ? stat.label_bn : stat.label_en}
                 </p>
@@ -393,21 +341,21 @@ export default function DashboardPage() {
           })}
         </div>
 
-        {/* ===== Chart 1: Deeds ===== */}
+        {/* Chart 1: Approved Deeds Only */}
         <RenderChart
           data={deedsChartData}
           titleKey="deedsChart"
           subKey="deedsChartSub"
         />
 
-        {/* ===== Chart 2: Khatian ===== */}
+        {/* Chart 2: Approved Khatian Only */}
         <RenderChart
           data={khatianChartData}
           titleKey="khatianChart"
           subKey="khatianChartSub"
         />
 
-        {/* ===== Profile Info ===== */}
+        {/* Profile Info */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -425,8 +373,7 @@ export default function DashboardPage() {
                 return (
                   <div
                     key={i}
-                    className="flex items-start gap-3 p-3 rounded-xl 
-                               bg-[#F8FAF9] border border-[#E5E7EB]"
+                    className="flex items-start gap-3 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]"
                   >
                     <div className="w-9 h-9 rounded-lg bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
                       <Icon size={16} className="text-[#1F7A3F]" />
