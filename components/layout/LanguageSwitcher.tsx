@@ -4,7 +4,7 @@ import { useLocale } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useRef, useEffect, useTransition } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, Check, Loader2 } from 'lucide-react';
+import { Globe, Check, Loader2, ChevronDown } from 'lucide-react';
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
@@ -14,9 +14,6 @@ export default function LanguageSwitcher() {
   const [isPending, startTransition] = useTransition();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // ============================================
-  // বাইরে ক্লিক করলে ড্রপডাউন বন্ধ
-  // ============================================
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -31,9 +28,6 @@ export default function LanguageSwitcher() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // ============================================
-  // ভাষা পরিবর্তন (Improved Logic)
-  // ============================================
   const switchLanguage = (newLocale: 'bn' | 'en') => {
     if (newLocale === locale) {
       setIsOpen(false);
@@ -42,32 +36,20 @@ export default function LanguageSwitcher() {
 
     setIsOpen(false);
 
-    // ============================================
-    // নতুন URL তৈরি করুন
-    // ============================================
     let newPath: string;
-
-    // বর্তমান pathname থেকে locale অংশ সরান
-    // যেমন: /en/services → /services
-    //       /en → /
     const pathWithoutLocale = pathname.replace(/^\/(bn|en)/, '') || '/';
 
-    // নতুন locale অনুযায়ী URL তৈরি করুন
     if (newLocale === 'bn') {
-      // বাংলা: কোনো prefix নেই
       newPath = pathWithoutLocale === '/' ? '/' : pathWithoutLocale;
     } else {
-      // ইংরেজি: /en prefix
       newPath = pathWithoutLocale === '/' ? '/en' : `/en${pathWithoutLocale}`;
     }
 
-    // localStorage এ সেভ করুন
     if (typeof window !== 'undefined') {
       localStorage.setItem('preferred-locale', newLocale);
       document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
     }
 
-    // Navigate with transition
     startTransition(() => {
       router.push(newPath);
       router.refresh();
@@ -88,20 +70,30 @@ export default function LanguageSwitcher() {
         onClick={() => setIsOpen(!isOpen)}
         disabled={isPending}
         className="flex items-center gap-2 px-3 py-2 rounded-lg
-                   text-gray-300 hover:text-gold hover:bg-navy-dark
+                   bg-white border border-[#E5E7EB]
+                   text-[#1F2937] font-medium
+                   hover:border-[#1F7A3F] hover:text-[#1F7A3F] hover:bg-[#F8FAF9]
                    transition-all duration-200
-                   focus:outline-none focus:ring-2 focus:ring-gold/20
-                   disabled:opacity-50 disabled:cursor-wait"
+                   focus:outline-none focus:ring-2 focus:ring-[#1F7A3F]/20
+                   disabled:opacity-50 disabled:cursor-wait
+                   shadow-sm"
         aria-label="Change language"
+        aria-expanded={isOpen}
       >
         {isPending ? (
-          <Loader2 size={18} className="animate-spin" />
+          <Loader2 size={18} className="animate-spin text-[#1F7A3F]" />
         ) : (
-          <Globe size={18} />
+          <Globe size={18} className="text-[#1F7A3F]" />
         )}
-        <span className="hidden sm:inline text-sm font-medium">
+        <span className="hidden sm:inline text-sm">
           {currentLanguage?.label}
         </span>
+        <ChevronDown
+          size={14}
+          className={`hidden sm:block transition-transform duration-200 ${
+            isOpen ? 'rotate-180' : ''
+          }`}
+        />
       </button>
 
       {/* Dropdown */}
@@ -112,9 +104,10 @@ export default function LanguageSwitcher() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-44 z-50
-                       bg-navy-dark border border-navy-border
-                       rounded-lg shadow-xl overflow-hidden"
+            className="absolute right-0 mt-2 w-44 z-[100]
+                       bg-white border border-[#E5E7EB]
+                       rounded-lg shadow-2xl overflow-hidden
+                       ring-1 ring-black/5"
           >
             {languages.map((lang) => (
               <button
@@ -125,8 +118,8 @@ export default function LanguageSwitcher() {
                             transition-colors duration-150
                             ${
                               locale === lang.code
-                                ? 'bg-gold/10 text-gold font-semibold'
-                                : 'text-gray-300 hover:bg-navy hover:text-white'
+                                ? 'bg-[#1F7A3F]/10 text-[#1F7A3F] font-semibold'
+                                : 'text-[#1F2937] hover:bg-[#F8FAF9] hover:text-[#1F7A3F]'
                             }`}
               >
                 <div className="flex items-center gap-3">
@@ -134,7 +127,7 @@ export default function LanguageSwitcher() {
                   <span>{lang.label}</span>
                 </div>
                 {locale === lang.code && (
-                  <Check size={16} className="text-gold" />
+                  <Check size={16} className="text-[#1F7A3F]" />
                 )}
               </button>
             ))}
