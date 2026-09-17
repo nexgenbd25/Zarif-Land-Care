@@ -175,8 +175,8 @@ export default function HeroCarousel() {
       <div
         ref={containerRef}
         className="relative w-full rounded-2xl overflow-hidden
-                   shadow-lg select-none group
-                   aspect-[16/13] sm:aspect-[16/9] lg:aspect-[327/121]"
+                   shadow-lg select-none group"
+        style={{ aspectRatio: '327 / 121' }}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
