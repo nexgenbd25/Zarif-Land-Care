@@ -4,9 +4,9 @@ import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import { Phone, ArrowRight, FileText, Users } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import HeroCarousel from './HeroCarousel';
 import CountUpNumber from '@/components/ui/CountUp';
-import AnimatedBackground from './AnimatedBackground';
 
 const HERO_BG_IMAGE = 'https://i.postimg.cc/cHg8hVSB/file-0000000076f48211bea028ad9978bf68.png';
 
@@ -57,16 +57,30 @@ export default function HeroSection() {
     <section
       className="relative overflow-hidden bg-navy
                  pt-4 pb-8 sm:pt-8 sm:pb-12 lg:py-20"
-      style={{
-        backgroundImage: `url(${HERO_BG_IMAGE})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
     >
-      <div className="absolute inset-0 bg-navy/70 z-0" />
+      <div className="absolute inset-0 z-0">
+        <Image
+          src={HERO_BG_IMAGE}
+          alt="Hero Background"
+          fill
+          priority
+          unoptimized
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-navy/75" />
+      </div>
 
-      <AnimatedBackground />
+      <div
+        className="absolute inset-0 z-[1] opacity-30"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)
+          `,
+          backgroundSize: '100px 100px',
+        }}
+      />
 
       <div className="container-custom relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-5 sm:gap-8 lg:gap-12 xl:gap-16">
@@ -88,7 +102,7 @@ export default function HeroSection() {
 
             <motion.p
               variants={itemVariants}
-              className="text-gray-300 text-sm sm:text-base lg:text-lg 
+              className="text-gray-200 text-sm sm:text-base lg:text-lg 
                          mb-5 sm:mb-7 lg:mb-8 leading-[1.85] 
                          max-w-2xl mx-auto lg:mx-0 text-bangla-safe"
             >
@@ -111,7 +125,7 @@ export default function HeroSection() {
                            active:scale-95
                            w-full sm:w-auto
                            leading-[1.7] pt-[0.8rem] pb-[0.6rem]
-                           text-sm sm:text-base"
+                           text-sm sm:text-base group"
               >
                 <Phone size={18} className="group-hover:scale-110 transition-transform" />
                 <span className="text-bangla-safe">{t('hero.cta1')}</span>
@@ -122,7 +136,7 @@ export default function HeroSection() {
                 className="inline-flex items-center justify-center gap-2
                            px-6 py-3 sm:py-3.5 rounded-lg font-semibold
                            border-2 border-gold text-gold
-                           bg-navy/50 backdrop-blur-sm
+                           bg-navy/60 backdrop-blur-sm
                            transition-all duration-300
                            hover:bg-gold hover:text-navy
                            active:scale-95
@@ -141,35 +155,37 @@ export default function HeroSection() {
             <motion.div
               variants={itemVariants}
               className="hidden lg:flex items-center gap-8 mt-12 pt-8 
-                         border-t border-navy-border"
+                         border-t border-white/10"
             >
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gold/10 
-                                border border-gold/30 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-gold/15 
+                                border border-gold/40 flex items-center justify-center
+                                backdrop-blur-sm">
                   <FileText size={22} className="text-gold" />
                 </div>
                 <div className="text-left">
                   <div className="text-2xl font-bold text-gold">
                     <CountUpNumber end={1000} suffix="+" duration={2} />
                   </div>
-                  <div className="text-xs text-gray-300 text-bangla-safe">
+                  <div className="text-xs text-gray-200 text-bangla-safe">
                     দলিল সম্পন্ন
                   </div>
                 </div>
               </div>
 
-              <div className="w-px h-12 bg-navy-border" />
+              <div className="w-px h-12 bg-white/10" />
 
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gold/10 
-                                border border-gold/30 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-gold/15 
+                                border border-gold/40 flex items-center justify-center
+                                backdrop-blur-sm">
                   <Users size={22} className="text-gold" />
                 </div>
                 <div className="text-left">
                   <div className="text-2xl font-bold text-gold">
                     <CountUpNumber end={500} suffix="+" duration={2} delay={0.2} />
                   </div>
-                  <div className="text-xs text-gray-300 text-bangla-safe">
+                  <div className="text-xs text-gray-200 text-bangla-safe">
                     সন্তুষ্ট ক্লায়েন্ট
                   </div>
                 </div>
@@ -193,35 +209,37 @@ export default function HeroSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
           className="lg:hidden flex items-center justify-center gap-4 mt-6 pt-5 
-                     border-t border-navy-border"
+                     border-t border-white/10"
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-11 h-11 rounded-full bg-gold/10 
-                            border border-gold/30 flex items-center justify-center">
+            <div className="w-11 h-11 rounded-full bg-gold/15 
+                            border border-gold/40 flex items-center justify-center
+                            backdrop-blur-sm">
               <FileText size={20} className="text-gold" />
             </div>
             <div className="text-left">
               <div className="text-xl font-bold text-gold leading-tight">
                 <CountUpNumber end={1000} suffix="+" duration={2} />
               </div>
-              <div className="text-[11px] text-gray-300 text-bangla-safe leading-tight">
+              <div className="text-[11px] text-gray-200 text-bangla-safe leading-tight">
                 দলিল সম্পন্ন
               </div>
             </div>
           </div>
 
-          <div className="w-px h-10 bg-navy-border" />
+          <div className="w-px h-10 bg-white/10" />
 
           <div className="flex items-center gap-2.5">
-            <div className="w-11 h-11 rounded-full bg-gold/10 
-                            border border-gold/30 flex items-center justify-center">
+            <div className="w-11 h-11 rounded-full bg-gold/15 
+                            border border-gold/40 flex items-center justify-center
+                            backdrop-blur-sm">
               <Users size={20} className="text-gold" />
             </div>
             <div className="text-left">
               <div className="text-xl font-bold text-gold leading-tight">
                 <CountUpNumber end={500} suffix="+" duration={2} delay={0.2} />
               </div>
-              <div className="text-[11px] text-gray-300 text-bangla-safe leading-tight">
+              <div className="text-[11px] text-gray-200 text-bangla-safe leading-tight">
                 সন্তুষ্ট ক্লায়েন্ট
               </div>
             </div>
