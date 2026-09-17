@@ -122,28 +122,11 @@ export default function ServicesSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 lg:mb-16"
         >
-          <span
-            className="inline-flex items-center gap-2 
-                       px-4 py-1.5 rounded-full
-                       bg-gold/10 border border-gold/30
-                       text-gold text-xs font-medium mb-4"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
-            <span className="text-bangla-safe">সেবাসমূহ</span>
-          </span>
-
-          <h2 className="heading-2 mb-4 text-bangla-safe">
+          <h2 className="heading-2 mb-6 text-bangla-safe">
             {t('services.title')}
           </h2>
 
-          <p
-            className="text-muted text-base sm:text-lg max-w-2xl mx-auto 
-                       leading-[1.9] text-bangla-safe"
-          >
-            {t('services.subtitle')}
-          </p>
-
-          <div className="w-20 h-1 bg-gradient-gold mx-auto rounded-full mt-6" />
+          <div className="w-20 h-1 bg-gradient-gold mx-auto rounded-full" />
         </motion.div>
 
         <motion.div
