@@ -138,14 +138,10 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative overflow-hidden bg-navy">
+    <footer className="relative overflow-hidden bg-[#0F3D1F] text-white">
       <div
         className="absolute top-0 left-0 right-0 h-px 
-                   bg-gradient-to-r from-transparent via-gold/40 to-transparent"
-      />
-      <div
-        className="absolute top-0 left-1/4 w-[400px] h-[400px] 
-                   bg-gold/5 rounded-full blur-[140px] -z-0"
+                   bg-gradient-to-r from-transparent via-[#1F7A3F] to-transparent"
       />
 
       <div className="container-custom relative z-10 pt-12 pb-6 lg:pt-16 lg:pb-6">
@@ -163,10 +159,7 @@ export default function Footer() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 
                      gap-8 md:gap-10 lg:gap-6"
         >
-          <motion.div
-            variants={itemVariants}
-            className="lg:col-span-4"
-          >
+          <motion.div variants={itemVariants} className="lg:col-span-4">
             <Link href={getUrl('/')} className="inline-block mb-5 group">
               <Image
                 src={LOGO_URL}
@@ -181,7 +174,7 @@ export default function Footer() {
             </Link>
 
             <p
-              className="text-gray-300 text-sm lg:text-base leading-[1.9] 
+              className="text-gray-200 text-sm lg:text-base leading-[1.9] 
                          text-bangla-safe mb-6 max-w-md"
             >
               {description}
@@ -198,9 +191,9 @@ export default function Footer() {
                     rel="noopener noreferrer"
                     aria-label={social.label}
                     className={`w-11 h-11 lg:w-12 lg:h-12 rounded-full 
-                               bg-navy-dark border border-gold/30
+                               bg-white/10 border border-white/20
                                flex items-center justify-center
-                               text-gold transition-all duration-300
+                               text-white transition-all duration-300
                                hover:text-white hover:border-transparent
                                hover:scale-110 ${social.color}`}
                   >
@@ -211,10 +204,7 @@ export default function Footer() {
             </div>
           </motion.div>
 
-          <motion.div
-            variants={itemVariants}
-            className="lg:col-span-2"
-          >
+          <motion.div variants={itemVariants} className="lg:col-span-2">
             <h3
               className="text-white font-bold text-base lg:text-lg mb-4 
                          text-bangla-safe relative inline-block"
@@ -222,7 +212,7 @@ export default function Footer() {
               {usefulLinksLabel}
               <span
                 className="absolute -bottom-1.5 left-0 w-10 h-0.5 
-                           bg-gradient-gold rounded-full"
+                           bg-[#22C55E] rounded-full"
               />
             </h3>
 
@@ -232,15 +222,14 @@ export default function Footer() {
                   <Link
                     href={link.href}
                     className="group flex items-center gap-2 
-                               text-gray-300 hover:text-gold 
+                               text-gray-200 hover:text-[#22C55E] 
                                transition-all duration-300 
                                text-sm lg:text-base"
                   >
                     <ArrowRight
                       size={14}
-                      className="text-gold transition-transform 
-                                 group-hover:translate-x-1 
-                                 flex-shrink-0"
+                      className="text-[#22C55E] transition-transform 
+                                 group-hover:translate-x-1 flex-shrink-0"
                     />
                     <span className="text-bangla-safe">{link.name}</span>
                   </Link>
@@ -249,10 +238,7 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          <motion.div
-            variants={itemVariants}
-            className="lg:col-span-2"
-          >
+          <motion.div variants={itemVariants} className="lg:col-span-2">
             <h3
               className="text-white font-bold text-base lg:text-lg mb-4 
                          text-bangla-safe relative inline-block"
@@ -260,7 +246,7 @@ export default function Footer() {
               {policyPagesLabel}
               <span
                 className="absolute -bottom-1.5 left-0 w-10 h-0.5 
-                           bg-gradient-gold rounded-full"
+                           bg-[#22C55E] rounded-full"
               />
             </h3>
 
@@ -270,15 +256,14 @@ export default function Footer() {
                   <Link
                     href={link.href}
                     className="group flex items-center gap-2 
-                               text-gray-300 hover:text-gold 
+                               text-gray-200 hover:text-[#22C55E] 
                                transition-all duration-300 
                                text-sm lg:text-base"
                   >
                     <ArrowRight
                       size={14}
-                      className="text-gold transition-transform 
-                                 group-hover:translate-x-1 
-                                 flex-shrink-0"
+                      className="text-[#22C55E] transition-transform 
+                                 group-hover:translate-x-1 flex-shrink-0"
                     />
                     <span className="text-bangla-safe">{link.name}</span>
                   </Link>
@@ -287,10 +272,7 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          <motion.div
-            variants={itemVariants}
-            className="lg:col-span-4"
-          >
+          <motion.div variants={itemVariants} className="lg:col-span-4">
             <h3
               className="text-white font-bold text-base lg:text-lg mb-4 
                          text-bangla-safe relative inline-block"
@@ -298,7 +280,7 @@ export default function Footer() {
               {contactUsLabel}
               <span
                 className="absolute -bottom-1.5 left-0 w-10 h-0.5 
-                           bg-gradient-gold rounded-full"
+                           bg-[#22C55E] rounded-full"
               />
             </h3>
 
@@ -308,13 +290,12 @@ export default function Footer() {
                 return (
                   <li key={index} className="flex items-start gap-2.5">
                     <div className="flex-shrink-0 mt-0.5">
-                      <MapPin size={16} className="text-gold" />
+                      <MapPin size={16} className="text-[#22C55E]" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p
-                        className="text-gray-300 text-sm lg:text-base 
-                                   leading-[1.7] text-bangla-safe 
-                                   break-words"
+                        className="text-gray-200 text-sm lg:text-base 
+                                   leading-[1.7] text-bangla-safe break-words"
                       >
                         {text}
                       </p>
@@ -322,7 +303,7 @@ export default function Footer() {
                         <a
                           href={`tel:${contact.phone}`}
                           className="inline-flex items-center gap-1.5 
-                                     text-gold hover:text-gold-light 
+                                     text-[#22C55E] hover:text-[#4ADE80] 
                                      transition-colors text-sm lg:text-base 
                                      font-medium mt-1"
                         >
@@ -336,16 +317,16 @@ export default function Footer() {
               })}
             </ul>
 
-            <div className="flex flex-col gap-3 mt-5 pt-5 border-t border-gold/10">
+            <div className="flex flex-col gap-3 mt-5 pt-5 border-t border-white/10">
               <a
                 href="mailto:zariflandcare@gmail.com"
-                className="flex items-center gap-2.5 text-gray-300 
-                           hover:text-gold transition-colors 
+                className="flex items-center gap-2.5 text-gray-200 
+                           hover:text-[#22C55E] transition-colors 
                            text-sm lg:text-base group"
               >
                 <Mail
                   size={16}
-                  className="text-gold flex-shrink-0 
+                  className="text-[#22C55E] flex-shrink-0 
                              transition-transform duration-300
                              group-hover:scale-110"
                 />
@@ -356,27 +337,25 @@ export default function Footer() {
 
               <a
                 href="tel:+8801788766735"
-                className="flex items-center gap-2.5 text-gray-300 
-                           hover:text-gold transition-colors 
+                className="flex items-center gap-2.5 text-gray-200 
+                           hover:text-[#22C55E] transition-colors 
                            text-sm lg:text-base group"
               >
                 <Phone
                   size={16}
-                  className="text-gold flex-shrink-0 
+                  className="text-[#22C55E] flex-shrink-0 
                              transition-transform duration-300
                              group-hover:scale-110"
                 />
-                <span className="text-bangla-safe">
-                  +8801788766735
-                </span>
+                <span className="text-bangla-safe">+8801788766735</span>
               </a>
             </div>
           </motion.div>
         </motion.div>
 
-        <div className="mt-8 lg:mt-10 pt-5 border-t border-gold/10">
+        <div className="mt-8 lg:mt-10 pt-5 border-t border-white/10">
           <p
-            className="text-gray-400 text-xs lg:text-sm text-center
+            className="text-gray-300 text-xs lg:text-sm text-center
                        text-bangla-safe"
           >
             © {new Date().getFullYear()} Zarif Land Care Center. {copyrightText}
