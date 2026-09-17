@@ -3,12 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
-import {
-  FileText,
-  Monitor,
-  Printer,
-  Smartphone,
-} from 'lucide-react';
+import { FileText, Monitor, Printer, Smartphone } from 'lucide-react';
 
 const HERO_BG =
   'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&q=80';
@@ -81,10 +76,10 @@ export default function HeroSection() {
             <div className="absolute inset-0 bg-black/45" />
           </div>
 
-          <div className="container-custom relative z-10 pt-12 sm:pt-16 lg:pt-20 pb-28 sm:pb-32 lg:pb-40">
+          <div className="container-custom relative z-10 pt-12 sm:pt-16 lg:pt-20 pb-32 sm:pb-40 lg:pb-48">
             <div className="max-w-4xl mx-auto text-center">
               <h1
-                className="text-2xl sm:text-3xl lg:text-4xl xl:text-[2.5rem] 
+                className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl 
                            font-bold text-white mb-6 sm:mb-8 
                            leading-[1.5] pt-[0.2em] pb-[0.05em]
                            text-bangla-safe drop-shadow-lg"
@@ -92,16 +87,15 @@ export default function HeroSection() {
                 {headline}
               </h1>
 
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+              <div className="flex flex-row gap-3 justify-center items-center">
                 <Link
                   href={getUrl('/contact')}
                   className="inline-flex items-center justify-center
-                             px-6 sm:px-7 py-3 sm:py-3.5 rounded-md font-bold
+                             px-5 sm:px-6 py-2.5 sm:py-3 rounded-md font-bold
                              bg-brand text-white
                              transition-all duration-300
                              hover:bg-brand-dark
                              active:scale-95
-                             w-full sm:w-auto
                              text-sm sm:text-base"
                 >
                   <span className="text-bangla-safe">{cta1}</span>
@@ -110,12 +104,11 @@ export default function HeroSection() {
                 <Link
                   href={getUrl('/services')}
                   className="inline-flex items-center justify-center
-                             px-6 sm:px-7 py-3 sm:py-3.5 rounded-md font-bold
+                             px-5 sm:px-6 py-2.5 sm:py-3 rounded-md font-bold
                              bg-white text-brand
                              transition-all duration-300
                              hover:bg-gray-100
                              active:scale-95
-                             w-full sm:w-auto
                              text-sm sm:text-base"
                 >
                   <span className="text-bangla-safe">{cta2}</span>
@@ -125,9 +118,9 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <div className="relative z-20 bg-white">
-          <div className="container-custom -mt-20 sm:-mt-24 lg:-mt-28">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+        <div className="absolute bottom-0 left-0 right-0 z-20">
+          <div className="container-custom">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 translate-y-16 sm:translate-y-20 lg:translate-y-24">
               {FEATURES.map((feature) => {
                 const Icon = feature.icon;
                 const title = isBn ? feature.title_bn : feature.title_en;
@@ -135,24 +128,22 @@ export default function HeroSection() {
                 return (
                   <div
                     key={feature.id}
-                    className="group bg-white rounded-lg sm:rounded-xl 
-                               p-4 sm:p-5 lg:p-7 text-center
-                               border border-neutral-light
-                               shadow-[0_4px_20px_rgba(0,0,0,0.08)]
+                    className="group bg-white rounded-xl 
+                               p-4 sm:p-5 lg:p-6 text-center
+                               shadow-[0_4px_25px_rgba(0,0,0,0.1)]
+                               border-b-4 border-transparent
                                transition-all duration-300
                                hover:-translate-y-1 
-                               hover:shadow-[0_8px_30px_rgba(31,122,63,0.15)]
-                               hover:border-[#1F7A3F]/40"
+                               hover:shadow-[0_8px_30px_rgba(31,122,63,0.2)]
+                               hover:border-brand"
                   >
                     <div
-                      className="w-12 h-12 sm:w-14 sm:h-14 lg:w-20 lg:h-20 
-                                 mx-auto mb-3 lg:mb-4 
-                                 flex items-center justify-center
+                      className="mx-auto mb-3 flex items-center justify-center
                                  transition-transform duration-300
                                  group-hover:scale-110"
                     >
                       <Icon
-                        size={38}
+                        size={44}
                         strokeWidth={1.5}
                         className="text-brand lg:hidden"
                       />
@@ -177,9 +168,9 @@ export default function HeroSection() {
               })}
             </div>
           </div>
-
-          <div className="pb-10 sm:pb-12 lg:pb-16" />
         </div>
+
+        <div className="bg-white h-24 sm:h-28 lg:h-32" />
       </div>
     </section>
   );
