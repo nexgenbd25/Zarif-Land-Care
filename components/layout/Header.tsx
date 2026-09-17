@@ -87,7 +87,7 @@ export default function Header() {
                   }`}
     >
       <div className="container-custom">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+        <div className="flex items-center justify-between h-14 sm:h-16 lg:h-24">
           <Link
             href={`/${locale === 'bn' ? '' : locale}`}
             className="flex items-center gap-2 group z-50"
@@ -95,17 +95,17 @@ export default function Header() {
             <Image
               src={LOGO_URL}
               alt="Zarif Landcare Center"
-              width={200}
-              height={60}
+              width={240}
+              height={72}
               priority
               unoptimized
-              className="h-10 sm:h-12 lg:h-14 w-auto object-contain 
+              className="h-8 sm:h-11 lg:h-16 w-auto object-contain 
                          transition-transform duration-300 
                          group-hover:scale-105"
             />
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-2">
             {menuItems.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.href);
@@ -114,8 +114,8 @@ export default function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative flex items-center gap-2 
-                              px-4 py-2 rounded-lg text-sm font-medium
+                  className={`relative flex items-center gap-2.5 
+                              px-5 py-3 rounded-lg text-base font-semibold
                               transition-all duration-200
                               ${
                                 active
@@ -123,12 +123,12 @@ export default function Header() {
                                   : 'text-gray-300 hover:text-gold hover:bg-navy-dark'
                               }`}
                 >
-                  <Icon size={16} strokeWidth={2} />
+                  <Icon size={20} strokeWidth={2} />
                   <span>{item.name}</span>
                   {active && (
                     <motion.div
                       layoutId="activeNav"
-                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-gold rounded-full"
+                      className="absolute bottom-0 left-3 right-3 h-0.5 bg-gold rounded-full"
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -137,20 +137,20 @@ export default function Header() {
             })}
           </nav>
 
-          <div className="flex items-center gap-2 lg:gap-3 z-50">
+          <div className="flex items-center gap-3 lg:gap-4 z-50">
             <LanguageSwitcher />
 
             <Link
               href={`/${locale === 'bn' ? '' : locale + '/'}login`}
-              className="hidden lg:inline-flex items-center gap-2 
-                         px-5 py-2.5 rounded-lg
+              className="hidden lg:inline-flex items-center gap-2.5 
+                         px-6 py-3 rounded-lg
                          bg-gradient-to-r from-gold to-gold-light
-                         text-navy font-semibold text-sm
+                         text-navy font-bold text-base
                          shadow-lg shadow-gold/20
                          transition-all duration-200
                          hover:shadow-xl hover:shadow-gold/30 hover:scale-105"
             >
-              <LogIn size={16} />
+              <LogIn size={20} />
               {t('login')}
             </Link>
 
@@ -176,7 +176,7 @@ export default function Header() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={() => setIsMenuOpen(false)}
-              className="lg:hidden fixed inset-0 top-16 bg-black/60 backdrop-blur-sm z-40"
+              className="lg:hidden fixed inset-0 top-14 sm:top-16 bg-black/60 backdrop-blur-sm z-40"
             />
 
             <motion.div
@@ -186,7 +186,7 @@ export default function Header() {
               transition={{ duration: 0.25 }}
               className="lg:hidden absolute top-full left-0 right-0 
                          bg-navy-dark border-t border-b border-navy-border
-                         shadow-2xl z-50 max-h-[calc(100vh-4rem)] overflow-y-auto"
+                         shadow-2xl z-50 max-h-[calc(100vh-3.5rem)] overflow-y-auto"
             >
               <nav className="container-custom py-6 flex flex-col gap-1">
                 {menuItems.map((item, index) => {
