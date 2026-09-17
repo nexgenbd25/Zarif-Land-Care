@@ -29,8 +29,8 @@ const TEAM: TeamMember[] = [
     designation_en: 'Government Licensed Deed Writer',
     father_bn: 'মোঃ জহিরুল ইসলাম',
     father_en: 'Md. Zahirul Islam',
-    address_bn: 'গ্রামঃ বড়াইল, ডাকঘরঃ স্বর্ণগ্রাম, থানাঃ টংগীবাড়ী, জেলাঃ মুন্সিগঞ্জ। সনদ নং- ২৭৪, সাব রেজিষ্টার অফিস টংগীবাড়ী।',
-    address_en: 'Village: Borail, Post: Swarnagram, Thana: Tongibari, District: Munshiganj. Certificate No: 274, Sub-Registrar Office, Tongibari.',
+    address_bn: 'গ্রামঃ বড়াইল, ডাকঘরঃ স্বর্ণগ্রাম, থানাঃ টংগীবাড়ী, জেলাঃ মুন্সিগঞ্জ।',
+    address_en: 'Village: Borail, Post: Swarnagram, Thana: Tongibari, District: Munshiganj.',
     phone: '+880 1788-766735',
     image_url: 'https://i.postimg.cc/wx0q1tz9/20260917-044318.jpg',
   },
@@ -75,7 +75,7 @@ const TEAM: TeamMember[] = [
   },
 ];
 
-const AUTO_SLIDE_INTERVAL = 5000;
+const AUTO_SLIDE_INTERVAL = 4000;
 
 export default function TeamSection() {
   const locale = useLocale();
@@ -83,7 +83,7 @@ export default function TeamSection() {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [slideWidth, setSlideWidth] = useState(100);
+  const [cardsPerView, setCardsPerView] = useState(1);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -105,12 +105,13 @@ export default function TeamSection() {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 1024) {
-        setSlideWidth(100);
-      } else if (window.innerWidth >= 640) {
-        setSlideWidth(100);
+      const width = window.innerWidth;
+      if (width >= 1024) {
+        setCardsPerView(3);
+      } else if (width >= 640) {
+        setCardsPerView(2);
       } else {
-        setSlideWidth(100);
+        setCardsPerView(1);
       }
     };
 
@@ -119,17 +120,25 @@ export default function TeamSection() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const maxIndex = Math.max(0, TEAM.length - cardsPerView);
+
   const goToNext = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % TEAM.length);
-  }, []);
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+  }, [maxIndex]);
 
   const goToPrev = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + TEAM.length) % TEAM.length);
-  }, []);
+    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
+  }, [maxIndex]);
 
   const goToSlide = (index: number) => {
-    setCurrentIndex(index);
+    setCurrentIndex(Math.min(index, maxIndex));
   };
+
+  useEffect(() => {
+    if (currentIndex > maxIndex) {
+      setCurrentIndex(maxIndex);
+    }
+  }, [cardsPerView, currentIndex, maxIndex]);
 
   useEffect(() => {
     if (!isPaused) {
@@ -145,6 +154,8 @@ export default function TeamSection() {
 
   const handleMouseEnter = () => setIsPaused(true);
   const handleMouseLeave = () => setIsPaused(false);
+
+  const totalDots = maxIndex + 1;
 
   return (
     <section className="relative overflow-hidden section-padding bg-navy
@@ -174,7 +185,7 @@ export default function TeamSection() {
           <div className="w-20 h-1 bg-gradient-gold mx-auto rounded-full" />
         </motion.div>
 
-        <div className="relative max-w-5xl mx-auto">
+        <div className="relative">
           <div
             ref={containerRef}
             className="overflow-hidden"
@@ -184,11 +195,11 @@ export default function TeamSection() {
             <motion.div
               className="flex"
               animate={{
-                x: `-${currentIndex * 100}%`,
+                x: `-${currentIndex * (100 / cardsPerView)}%`,
               }}
               transition={{
                 type: 'spring',
-                stiffness: 300,
+                stiffness: 260,
                 damping: 30,
               }}
             >
@@ -203,21 +214,23 @@ export default function TeamSection() {
                 return (
                   <div
                     key={member.id}
-                    className="flex-shrink-0 w-full px-2 sm:px-4"
+                    className="flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 
+                               px-2 sm:px-3"
                   >
                     <div
-                      className="relative max-w-md mx-auto
+                      className="relative h-full
                                  bg-navy-dark border border-navy-border 
-                                 rounded-2xl p-6 lg:p-8 text-center
+                                 rounded-2xl p-5 lg:p-6 text-center
                                  transition-all duration-500
                                  hover:border-gold hover:shadow-2xl"
                     >
                       <div
                         className="absolute top-0 left-0 right-0 h-0.5 
-                                   bg-gradient-to-r from-transparent via-gold to-transparent"
+                                   bg-gradient-to-r from-transparent via-gold to-transparent 
+                                   rounded-t-2xl"
                       />
 
-                      <div className="relative w-28 h-28 lg:w-32 lg:h-32 mx-auto mb-5">
+                      <div className="relative w-24 h-24 lg:w-28 lg:h-28 mx-auto mb-4">
                         <div
                           className="relative w-full h-full rounded-full 
                                      overflow-hidden border-4 border-gold/30 
@@ -235,32 +248,33 @@ export default function TeamSection() {
                       </div>
 
                       <h3
-                        className="text-lg lg:text-xl font-bold text-white 
-                                   mb-2 text-bangla-safe leading-[1.6]"
+                        className="text-base lg:text-lg font-bold text-white 
+                                   mb-1.5 text-bangla-safe leading-[1.6]"
                       >
                         {name}
                       </h3>
 
                       <p
-                        className="text-gold text-sm lg:text-base font-semibold 
-                                   mb-5 text-bangla-safe leading-[1.8]"
+                        className="text-gold text-xs lg:text-sm font-semibold 
+                                   mb-4 text-bangla-safe leading-[1.8]"
                       >
                         {designation}
                       </p>
 
-                      <div className="space-y-2.5 text-left mb-5">
+                      <div className="space-y-2 text-left">
                         <div className="flex items-start gap-2">
                           <User
-                            size={16}
+                            size={14}
                             className="text-gold flex-shrink-0 mt-1"
                           />
-                          <div>
-                            <span className="text-xs text-muted block">
+                          <div className="min-w-0">
+                            <span className="text-[10px] text-muted block leading-tight">
                               {fatherLabel}
                             </span>
                             <span
-                              className="text-sm text-gray-200 
-                                         text-bangla-safe leading-[1.8]"
+                              className="text-xs lg:text-sm text-gray-200 
+                                         text-bangla-safe leading-[1.7] 
+                                         break-words"
                             >
                               {father}
                             </span>
@@ -269,16 +283,17 @@ export default function TeamSection() {
 
                         <div className="flex items-start gap-2">
                           <MapPin
-                            size={16}
+                            size={14}
                             className="text-gold flex-shrink-0 mt-1"
                           />
-                          <div>
-                            <span className="text-xs text-muted block">
+                          <div className="min-w-0">
+                            <span className="text-[10px] text-muted block leading-tight">
                               {addressLabel}
                             </span>
                             <span
-                              className="text-sm text-gray-200 
-                                         text-bangla-safe leading-[1.8]"
+                              className="text-xs lg:text-sm text-gray-200 
+                                         text-bangla-safe leading-[1.7] 
+                                         break-words"
                             >
                               {address}
                             </span>
@@ -287,12 +302,13 @@ export default function TeamSection() {
 
                         <div className="flex items-center gap-2">
                           <Phone
-                            size={16}
+                            size={14}
                             className="text-gold flex-shrink-0"
                           />
                           <a
                             href={`tel:${member.phone.replace(/\s/g, '')}`}
-                            className="text-sm text-gold hover:text-gold-light 
+                            className="text-xs lg:text-sm text-gold 
+                                       hover:text-gold-light 
                                        transition-colors font-medium"
                           >
                             {member.phone}
@@ -308,10 +324,8 @@ export default function TeamSection() {
 
           <button
             onClick={goToPrev}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 
-                       sm:-translate-x-4 lg:-translate-x-12 z-20
+            className="absolute left-0 top-1/2 -translate-y-1/2 
+                       -translate-x-2 sm:-translate-x-4 lg:-translate-x-5 z-20
                        w-10 h-10 lg:w-12 lg:h-12 rounded-full 
                        bg-navy-dark border border-gold/30
                        flex items-center justify-center
@@ -324,10 +338,8 @@ export default function TeamSection() {
 
           <button
             onClick={goToNext}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 
-                       sm:translate-x-4 lg:translate-x-12 z-20
+            className="absolute right-0 top-1/2 -translate-y-1/2 
+                       translate-x-2 sm:translate-x-4 lg:translate-x-5 z-20
                        w-10 h-10 lg:w-12 lg:h-12 rounded-full 
                        bg-navy-dark border border-gold/30
                        flex items-center justify-center
@@ -339,12 +351,10 @@ export default function TeamSection() {
           </button>
 
           <div className="flex items-center justify-center gap-2 mt-8">
-            {TEAM.map((_, index) => (
+            {Array.from({ length: totalDots }).map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
                 className={`transition-all duration-300 rounded-full
                             ${
                               index === currentIndex
