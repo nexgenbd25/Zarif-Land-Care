@@ -30,7 +30,7 @@ export default function AboutSection() {
     cta: isBn ? 'আরও জানুন' : 'Learn More',
     ownerName: isBn ? 'মোঃ জাহিদুল ইসলাম' : 'Md. Zahidul Islam',
     ownerRole: isBn
-      ? 'সরকারী লইসেন্স প্রাপ্ত দলিল লেখক'
+      ? 'সরকারী লাইসেন্স প্রাপ্ত দলিল লেখক'
       : 'Government Licensed Deed Writer',
   };
 
@@ -72,8 +72,7 @@ export default function AboutSection() {
   };
 
   return (
-    <section className="relative overflow-hidden section-padding bg-navy
-                        border-b border-navy-border">
+    <section className="relative overflow-hidden section-padding bg-white">
       <div className="container-custom relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -82,11 +81,11 @@ export default function AboutSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 lg:mb-16"
         >
-          <h2 className="heading-2 mb-6 text-bangla-safe">
+          <h2 className="heading-2 mb-6 text-[#1F2937] text-bangla-safe">
             {content.heading}
           </h2>
 
-          <div className="w-20 h-1 bg-gradient-gold mx-auto rounded-full" />
+          <div className="w-20 h-1 bg-[#1F7A3F] mx-auto rounded-full" />
         </motion.div>
 
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
@@ -98,10 +97,7 @@ export default function AboutSection() {
             className="w-full lg:w-5/12 flex flex-col items-center justify-center"
           >
             <div className="relative w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72">
-              <div
-                className="relative w-full h-full rounded-full 
-                           overflow-hidden shadow-2xl"
-              >
+              <div className="relative w-full h-full rounded-full overflow-hidden shadow-2xl border-4 border-[#1F7A3F]/20">
                 <Image
                   src={profileImage}
                   alt={content.ownerName}
@@ -115,16 +111,10 @@ export default function AboutSection() {
             </div>
 
             <div className="text-center mt-6">
-              <div
-                className="text-white text-lg sm:text-xl font-bold 
-                           text-bangla-safe leading-[1.6] mb-1"
-              >
+              <div className="text-[#1F2937] text-lg sm:text-xl font-bold text-bangla-safe leading-[1.6] mb-1">
                 {content.ownerName}
               </div>
-              <div
-                className="text-gold text-xs sm:text-sm font-medium 
-                           text-bangla-safe leading-[1.8]"
-              >
+              <div className="text-[#1F7A3F] text-xs sm:text-sm font-semibold text-bangla-safe leading-[1.8]">
                 {content.ownerRole}
               </div>
             </div>
@@ -139,24 +129,21 @@ export default function AboutSection() {
           >
             <motion.p
               variants={itemVariants}
-              className="text-muted text-base leading-[1.9] mb-5 
-                         text-bangla-safe"
+              className="text-[#6B7280] text-base leading-[1.9] mb-5 text-bangla-safe"
             >
               {content.paragraph1}
             </motion.p>
 
             <motion.p
               variants={itemVariants}
-              className="text-muted text-base leading-[1.9] mb-5 
-                         text-bangla-safe"
+              className="text-[#6B7280] text-base leading-[1.9] mb-5 text-bangla-safe"
             >
               {content.paragraph2}
             </motion.p>
 
             <motion.p
               variants={itemVariants}
-              className="text-muted text-base leading-[1.9] mb-8 
-                         text-bangla-safe"
+              className="text-[#6B7280] text-base leading-[1.9] mb-8 text-bangla-safe"
             >
               {content.paragraph3}
             </motion.p>
@@ -164,12 +151,17 @@ export default function AboutSection() {
             <motion.div variants={itemVariants}>
               <Link
                 href={getUrl('/about')}
-                className="btn-secondary group inline-flex"
+                className="group inline-flex items-center gap-2 
+                           px-6 py-3 rounded-lg font-semibold
+                           bg-[#1F7A3F] text-white
+                           shadow-md shadow-[#1F7A3F]/20
+                           transition-all duration-300
+                           hover:bg-[#155E30] hover:shadow-lg hover:scale-105"
               >
                 <span className="text-bangla-safe">{content.cta}</span>
                 <ArrowRight
                   size={18}
-                  className="group-hover:translate-x-1 transition-transform"
+                  className="transition-transform group-hover:translate-x-1"
                 />
               </Link>
             </motion.div>
