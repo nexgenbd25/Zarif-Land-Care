@@ -7,48 +7,38 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      // ============================================
-      // ZARIF BRAND COLORS
-      // ============================================
       colors: {
-        navy: {
-          DEFAULT: '#0B132B',
-          dark: '#0F172A',
-          light: '#1E293B',
-          border: '#1E293B',
-        },
-        gold: {
-          DEFAULT: '#D4AF37',
-          light: '#F59E0B',
-          dark: '#B8941F',
+        green: {
+          50: '#F0FDF4',
+          100: '#DCFCE7',
+          200: '#BBF7D0',
+          300: '#86EFAC',
+          400: '#4ADE80',
+          500: '#22C55E',
+          600: '#16A34A',
+          700: '#15803D',
+          800: '#166534',
+          900: '#14532D',
         },
         brand: {
-          orange: '#EA580C',
-          red: '#DC2626',
+          DEFAULT: '#1F7A3F',
+          dark: '#155E30',
+          light: '#22C55E',
+          forest: '#0F3D1F',
         },
-        status: {
-          success: '#22C55E',
-          warning: '#EAB308',
-          error: '#EF4444',
-          info: '#3B82F6',
-        },
-        muted: {
-          DEFAULT: '#94A3B8',
-          dark: '#64748B',
+        neutral: {
+          offwhite: '#F8FAF9',
+          light: '#E5E7EB',
+          dark: '#1F2937',
+          muted: '#6B7280',
         },
       },
 
-      // ============================================
-      // FONTS
-      // ============================================
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
         bangla: ['var(--font-hind)', 'sans-serif'],
       },
 
-      // ============================================
-      // FONT SIZES (বাংলার জন্য line-height বাড়ানো)
-      // ============================================
       fontSize: {
         xs: ['0.75rem', { lineHeight: '1.6' }],
         sm: ['0.875rem', { lineHeight: '1.65' }],
@@ -61,15 +51,11 @@ const config: Config = {
         '5xl': ['3rem', { lineHeight: '1.4' }],
       },
 
-      // ============================================
-      // ANIMATIONS
-      // ============================================
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
         'slide-up': 'slideUp 0.5s ease-out',
         'slide-down': 'slideDown 0.3s ease-out',
         'float': 'float 3s ease-in-out infinite',
-        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
 
       keyframes: {
@@ -91,9 +77,6 @@ const config: Config = {
         },
       },
 
-      // ============================================
-      // SPACING
-      // ============================================
       spacing: {
         '18': '4.5rem',
         '88': '22rem',
@@ -105,14 +88,9 @@ const config: Config = {
         '9xl': '96rem',
       },
 
-      borderRadius: {
-        '4xl': '2rem',
-      },
-
       boxShadow: {
-        'glow-gold': '0 0 30px rgba(212, 175, 55, 0.3)',
-        'glow-orange': '0 0 30px rgba(234, 88, 12, 0.3)',
-        'inner-gold': 'inset 0 0 20px rgba(212, 175, 55, 0.1)',
+        'green-glow': '0 0 30px rgba(31, 122, 63, 0.3)',
+        'green-soft': '0 4px 20px rgba(31, 122, 63, 0.15)',
       },
     },
   },
