@@ -8,7 +8,6 @@ import {
   Monitor,
   Printer,
   Smartphone,
-  ArrowRight,
 } from 'lucide-react';
 
 const HERO_BG =
@@ -55,10 +54,10 @@ export default function HeroSection() {
       'একই ছাদের নিচে জমির নির্ভুল দলিল লেখন ও আধুনিক ডিজিটাল সেবা',
     headline_en:
       'Accurate Land Deed Writing & Modern Digital Services Under One Roof',
-    cta1_bn: 'যোগাযোগ',
-    cta1_en: 'Contact',
-    cta2_bn: 'সার্ভিস দেখুন',
-    cta2_en: 'View Services',
+    cta1_bn: 'যোগাযোগ করুন',
+    cta1_en: 'Contact Us',
+    cta2_bn: 'কল করুন',
+    cta2_en: 'Call Now',
   };
 
   const headline = isBn ? content.headline_bn : content.headline_en;
@@ -68,25 +67,25 @@ export default function HeroSection() {
   return (
     <section className="relative">
       <div className="relative w-full">
-        <div className="relative overflow-hidden">
-          <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="relative">
+          <div className="absolute inset-0 z-0">
             <Image
               src={HERO_BG}
               alt="Green Nature Background"
               fill
               priority
               sizes="100vw"
-              className="object-cover object-center scale-110 blur-md"
+              className="object-cover object-center"
               unoptimized
             />
-            <div className="absolute inset-0 bg-black/50" />
+            <div className="absolute inset-0 bg-black/45" />
           </div>
 
-          <div className="container-custom relative z-10 py-20 sm:py-24 lg:py-32">
+          <div className="container-custom relative z-10 pt-12 sm:pt-16 lg:pt-20 pb-28 sm:pb-32 lg:pb-40">
             <div className="max-w-4xl mx-auto text-center">
               <h1
                 className="text-2xl sm:text-3xl lg:text-4xl xl:text-[2.5rem] 
-                           font-bold text-white mb-8 
+                           font-bold text-white mb-6 sm:mb-8 
                            leading-[1.5] pt-[0.2em] pb-[0.05em]
                            text-bangla-safe drop-shadow-lg"
               >
@@ -96,50 +95,39 @@ export default function HeroSection() {
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
                 <Link
                   href={getUrl('/contact')}
-                  className="group inline-flex items-center justify-center gap-2
-                             px-7 py-3.5 rounded-md font-bold
+                  className="inline-flex items-center justify-center
+                             px-6 sm:px-7 py-3 sm:py-3.5 rounded-md font-bold
                              bg-brand text-white
                              transition-all duration-300
                              hover:bg-brand-dark
                              active:scale-95
                              w-full sm:w-auto
-                             text-base"
+                             text-sm sm:text-base"
                 >
                   <span className="text-bangla-safe">{cta1}</span>
-                  <ArrowRight
-                    size={20}
-                    className="transition-transform duration-300 
-                               group-hover:translate-x-1"
-                  />
                 </Link>
 
                 <Link
                   href={getUrl('/services')}
-                  className="group inline-flex items-center justify-center gap-2
-                             px-7 py-3.5 rounded-md font-bold
-                             border-2 border-white text-white
-                             bg-white/5 backdrop-blur-sm
+                  className="inline-flex items-center justify-center
+                             px-6 sm:px-7 py-3 sm:py-3.5 rounded-md font-bold
+                             bg-white text-brand
                              transition-all duration-300
-                             hover:bg-white hover:text-brand
+                             hover:bg-gray-100
                              active:scale-95
                              w-full sm:w-auto
-                             text-base"
+                             text-sm sm:text-base"
                 >
                   <span className="text-bangla-safe">{cta2}</span>
-                  <ArrowRight
-                    size={20}
-                    className="transition-transform duration-300 
-                               group-hover:translate-x-1"
-                  />
                 </Link>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white pt-12 lg:pt-16 pb-16 lg:pb-20">
-          <div className="container-custom">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <div className="relative z-20 bg-white">
+          <div className="container-custom -mt-20 sm:-mt-24 lg:-mt-28">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
               {FEATURES.map((feature) => {
                 const Icon = feature.icon;
                 const title = isBn ? feature.title_bn : feature.title_en;
@@ -147,8 +135,9 @@ export default function HeroSection() {
                 return (
                   <div
                     key={feature.id}
-                    className="group bg-white rounded-xl p-5 lg:p-7 
-                               text-center border border-neutral-light
+                    className="group bg-white rounded-lg sm:rounded-xl 
+                               p-4 sm:p-5 lg:p-7 text-center
+                               border border-neutral-light
                                shadow-[0_4px_20px_rgba(0,0,0,0.08)]
                                transition-all duration-300
                                hover:-translate-y-1 
@@ -156,22 +145,21 @@ export default function HeroSection() {
                                hover:border-[#1F7A3F]/40"
                   >
                     <div
-                      className="w-14 h-14 lg:w-20 lg:h-20 mx-auto mb-3 lg:mb-4 
-                                 rounded-full bg-[#1F7A3F] 
+                      className="w-12 h-12 sm:w-14 sm:h-14 lg:w-20 lg:h-20 
+                                 mx-auto mb-3 lg:mb-4 
                                  flex items-center justify-center
-                                 shadow-lg
                                  transition-transform duration-300
                                  group-hover:scale-110"
                     >
                       <Icon
-                        size={28}
-                        strokeWidth={1.8}
-                        className="text-white lg:hidden"
+                        size={38}
+                        strokeWidth={1.5}
+                        className="text-brand lg:hidden"
                       />
                       <Icon
-                        size={38}
-                        strokeWidth={1.8}
-                        className="text-white hidden lg:block"
+                        size={56}
+                        strokeWidth={1.5}
+                        className="text-brand hidden lg:block"
                       />
                     </div>
 
@@ -189,6 +177,8 @@ export default function HeroSection() {
               })}
             </div>
           </div>
+
+          <div className="pb-10 sm:pb-12 lg:pb-16" />
         </div>
       </div>
     </section>
