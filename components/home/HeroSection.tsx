@@ -53,7 +53,8 @@ export default function HeroSection() {
 
   return (
     <section className="relative overflow-hidden bg-gradient-navy
-                        pt-4 pb-8 sm:pt-8 sm:pb-12 lg:py-20">
+                        pt-4 pb-8 sm:pt-8 sm:pb-12 lg:py-20
+                        border-b border-navy-border">
       <AnimatedBackground />
 
       <div className="container-custom relative z-10">
