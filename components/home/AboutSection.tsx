@@ -17,6 +17,7 @@ export default function AboutSection() {
   const isBn = locale === 'bn';
 
   const content = {
+    heading: isBn ? 'আমাদের পরিচিতি' : 'Our Introduction',
     paragraph1: isBn
       ? 'অভিজ্ঞ দলিল লেখক দল হিসেবে ভূমি ও সম্পত্তি লেনদেনের দলিল তৈরির নির্ভরযোগ্য ও পেশাদার সেবা প্রদান করে থাকি। আপনার জমি বা সম্পত্তির ক্রয়-বিক্রয়ের প্রতিটি ধাপকে সহজ, নির্ভুল ও নিরাপদ করতে আমরা সর্বোচ্চ গুরুত্ব দিয়ে কাজ করি।'
       : 'As an experienced deed writers team, we provide reliable and professional services for land and property transaction documentation. We give our highest priority to making every step of your land or property transactions simple, accurate, and safe.',
@@ -72,6 +73,20 @@ export default function AboutSection() {
     <section className="relative overflow-hidden section-padding bg-navy
                         border-b border-navy-border">
       <div className="container-custom relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12 lg:mb-16"
+        >
+          <h2 className="heading-2 mb-6 text-bangla-safe">
+            {content.heading}
+          </h2>
+
+          <div className="w-20 h-1 bg-gradient-gold mx-auto rounded-full" />
+        </motion.div>
+
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           <motion.div
             variants={imageVariants}
