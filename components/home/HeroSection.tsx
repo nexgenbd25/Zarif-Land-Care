@@ -6,7 +6,7 @@ import { useLocale } from 'next-intl';
 import { FileText, Monitor, Printer, Smartphone } from 'lucide-react';
 
 const HERO_BG =
-  'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&q=80';
+  'https://i.postimg.cc/cHg8hVSB/file-0000000076f48211bea028ad9978bf68.png';
 
 const FEATURES = [
   {
