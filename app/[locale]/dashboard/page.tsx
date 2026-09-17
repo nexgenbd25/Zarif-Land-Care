@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
@@ -14,8 +13,8 @@ import {
   Globe,
   Clock,
   Loader2,
-  TrendingUp,
   FileText,
+  TrendingUp,
 } from 'lucide-react';
 import { getDemoUser, clearDemoUser, DemoUser } from '@/lib/auth';
 import DashboardLayout from './DashboardLayout';
@@ -46,14 +45,31 @@ export default function DashboardPage() {
   const content = {
     welcome_bn: 'স্বাগতম',
     welcome_en: 'Welcome',
+
     approvedDeeds_bn: 'অনুমোদিত দলিল',
     approvedDeeds_en: 'Approved Deeds',
     pendingDeeds_bn: 'অপেক্ষমাণ দলিল',
     pendingDeeds_en: 'Pending Deeds',
-    totalDeeds_bn: 'মোট দলিল',
-    totalDeeds_en: 'Total Deeds',
-    thisMonth_bn: 'এই মাসে',
-    thisMonth_en: 'This Month',
+    approvedKhatian_bn: 'অনুমোদিত খতিয়ান',
+    approvedKhatian_en: 'Approved Khatian',
+    pendingKhatian_bn: 'অপেক্ষমাণ খতিয়ান',
+    pendingKhatian_en: 'Pending Khatian',
+
+    deedsChart_bn: 'দলিল পরিসংখ্যান',
+    deedsChart_en: 'Deeds Statistics',
+    deedsChartSub_bn: 'বছর ভিত্তিক দলিল',
+    deedsChartSub_en: 'Yearly deeds overview',
+
+    khatianChart_bn: 'খতিয়ান পরিসংখ্যান',
+    khatianChart_en: 'Khatian Statistics',
+    khatianChartSub_bn: 'বছর ভিত্তিক খতিয়ান',
+    khatianChartSub_en: 'Yearly khatian overview',
+
+    approved_bn: 'অনুমোদিত',
+    approved_en: 'Approved',
+    pending_bn: 'অপেক্ষমাণ',
+    pending_en: 'Pending',
+
     profile_bn: 'প্রোফাইল তথ্য',
     profile_en: 'Profile Information',
     username_bn: 'ইউজারনেম',
@@ -66,12 +82,7 @@ export default function DashboardPage() {
     phone_en: 'Mobile',
     loginTime_bn: 'লগইন সময়',
     loginTime_en: 'Login Time',
-    chart_bn: 'দলিল পরিসংখ্যান',
-    chart_en: 'Deeds Statistics',
-    chartSubtitle_bn: 'বছর ভিত্তিক অনুমোদিত দলিল',
-    chartSubtitle_en: 'Yearly approved deeds',
-    approved_bn: 'অনুমোদিত',
-    approved_en: 'Approved',
+
     loading_bn: 'লোড হচ্ছে...',
     loading_en: 'Loading...',
   };
@@ -95,6 +106,7 @@ export default function DashboardPage() {
     );
   }
 
+  // ===== Stats Data =====
   const statsData = [
     {
       icon: CheckCircle2,
@@ -111,31 +123,42 @@ export default function DashboardPage() {
       color: 'bg-orange-500',
     },
     {
-      icon: FileText,
-      label_bn: content.totalDeeds_bn,
-      label_en: content.totalDeeds_en,
-      value: '566',
-      color: 'bg-blue-500',
+      icon: CheckCircle2,
+      label_bn: content.approvedKhatian_bn,
+      label_en: content.approvedKhatian_en,
+      value: '342',
+      color: 'bg-[#1F7A3F]',
     },
     {
-      icon: TrendingUp,
-      label_bn: content.thisMonth_bn,
-      label_en: content.thisMonth_en,
-      value: '14',
-      color: 'bg-purple-500',
+      icon: Hourglass,
+      label_bn: content.pendingKhatian_bn,
+      label_en: content.pendingKhatian_en,
+      value: '18',
+      color: 'bg-orange-500',
     },
   ];
 
-  const chartData = [
-    { year: '2020', value: 0 },
-    { year: '2021', value: 20 },
-    { year: '2022', value: 50 },
-    { year: '2023', value: 8 },
-    { year: '2024', value: 140 },
-    { year: '2025', value: 210 },
-    { year: '2026', value: 120 },
+  // ===== Chart 1: Deeds =====
+  const deedsChartData = [
+    { year: '2020', approved: 0, pending: 0 },
+    { year: '2021', approved: 20, pending: 5 },
+    { year: '2022', approved: 50, pending: 12 },
+    { year: '2023', approved: 8, pending: 2 },
+    { year: '2024', approved: 140, pending: 15 },
+    { year: '2025', approved: 210, pending: 20 },
+    { year: '2026', approved: 120, pending: 8 },
   ];
-  const maxValue = Math.max(...chartData.map((d) => d.value));
+
+  // ===== Chart 2: Khatian =====
+  const khatianChartData = [
+    { year: '2020', approved: 0, pending: 0 },
+    { year: '2021', approved: 15, pending: 3 },
+    { year: '2022', approved: 42, pending: 8 },
+    { year: '2023', approved: 10, pending: 2 },
+    { year: '2024', approved: 105, pending: 12 },
+    { year: '2025', approved: 180, pending: 18 },
+    { year: '2026', approved: 95, pending: 6 },
+  ];
 
   const profileFields = [
     { icon: User, label: t('username'), value: user.username },
@@ -143,6 +166,131 @@ export default function DashboardPage() {
     { icon: Globe, label: t('country'), value: user.country },
     { icon: Phone, label: t('phone'), value: user.phone },
   ];
+
+  // ===== Chart Component =====
+  const RenderChart = ({
+    data,
+    titleKey,
+    subKey,
+  }: {
+    data: { year: string; approved: number; pending: number }[];
+    titleKey: string;
+    subKey: string;
+  }) => {
+    const maxVal = Math.max(
+      ...data.map((d) => Math.max(d.approved, d.pending))
+    );
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden"
+      >
+        <div className="p-4 sm:p-5 lg:p-6">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div>
+              <h3 className="text-base sm:text-lg font-bold text-[#1F2937] 
+                             text-bangla-heading pt-1 pb-0.5">
+                {t(titleKey)}
+              </h3>
+              <p className="text-[11px] sm:text-xs text-[#6B7280] 
+                            text-bangla-safe">
+                {t(subKey)}
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-full bg-[#1F7A3F]" />
+                <span className="text-[10px] sm:text-xs font-medium 
+                                 text-[#6B7280] text-bangla-safe">
+                  {t('approved')}
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-full bg-orange-500" />
+                <span className="text-[10px] sm:text-xs font-medium 
+                                 text-[#6B7280] text-bangla-safe">
+                  {t('pending')}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative h-48 sm:h-56 flex items-end gap-2 sm:gap-3 
+                          pt-6 pb-8">
+            {/* Y-axis */}
+            <div className="absolute left-0 top-0 bottom-8 flex flex-col 
+                            justify-between text-[10px] sm:text-xs 
+                            text-[#9CA3AF] pr-2">
+              {[maxVal, Math.round(maxVal * 0.75), Math.round(maxVal * 0.5), Math.round(maxVal * 0.25), 0].map(
+                (v, i) => (
+                  <span key={i} className="h-0 leading-none">
+                    {v}
+                  </span>
+                )
+              )}
+            </div>
+
+            {/* Bars */}
+            <div className="flex-1 flex items-end justify-around gap-1 
+                            sm:gap-2 pl-8 h-full border-l border-b 
+                            border-[#E5E7EB]">
+              {data.map((d, i) => {
+                const approvedH = (d.approved / maxVal) * 100;
+                const pendingH = (d.pending / maxVal) * 100;
+                return (
+                  <div
+                    key={i}
+                    className="flex-1 flex flex-col items-center gap-1 
+                               max-w-[60px]"
+                  >
+                    <div className="w-full flex items-end justify-center 
+                                    gap-0.5 h-full">
+                      {/* Approved bar */}
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: `${approvedH}%` }}
+                        transition={{
+                          duration: 0.8,
+                          delay: 0.4 + i * 0.06,
+                          ease: 'easeOut',
+                        }}
+                        className="w-1/2 rounded-t-md 
+                                   bg-gradient-to-t from-[#1F7A3F] to-[#22C55E]
+                                   shadow-sm min-h-[2px]"
+                        title={`Approved ${d.year}: ${d.approved}`}
+                      />
+                      {/* Pending bar */}
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: `${pendingH}%` }}
+                        transition={{
+                          duration: 0.8,
+                          delay: 0.5 + i * 0.06,
+                          ease: 'easeOut',
+                        }}
+                        className="w-1/2 rounded-t-md 
+                                   bg-gradient-to-t from-orange-500 to-orange-400
+                                   shadow-sm min-h-[2px]"
+                        title={`Pending ${d.year}: ${d.pending}`}
+                      />
+                    </div>
+                    <span className="text-[9px] sm:text-[10px] 
+                                     text-[#9CA3AF] -rotate-45 sm:rotate-0 
+                                     origin-center whitespace-nowrap">
+                      {d.year}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    );
+  };
 
   return (
     <DashboardLayout user={user} onLogout={handleLogout}>
@@ -168,7 +316,7 @@ export default function DashboardPage() {
           </p>
         </motion.div>
 
-        {/* Stats Grid */}
+        {/* ===== Stats Grid — 4 Cards ===== */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {statsData.map((stat, index) => {
             const Icon = stat.icon;
@@ -205,89 +353,21 @@ export default function DashboardPage() {
           })}
         </div>
 
-        {/* Chart */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="bg-white rounded-2xl border border-[#E5E7EB] 
-                     shadow-sm overflow-hidden"
-        >
-          <div className="p-4 sm:p-5 lg:p-6">
-            <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-              <div>
-                <h3 className="text-base sm:text-lg font-bold text-[#1F2937] 
-                               text-bangla-heading pt-1 pb-0.5">
-                  {t('chart')}
-                </h3>
-                <p className="text-[11px] sm:text-xs text-[#6B7280] 
-                              text-bangla-safe">
-                  {t('chartSubtitle')}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-[#1F7A3F]" />
-                <span className="text-xs font-medium text-[#6B7280] 
-                                 text-bangla-safe">
-                  {t('approved')}
-                </span>
-              </div>
-            </div>
+        {/* ===== Chart 1: Deeds ===== */}
+        <RenderChart
+          data={deedsChartData}
+          titleKey="deedsChart"
+          subKey="deedsChartSub"
+        />
 
-            <div className="relative h-48 sm:h-56 flex items-end gap-2 sm:gap-3 
-                            pt-6 pb-8">
-              {/* Y-axis labels */}
-              <div className="absolute left-0 top-0 bottom-8 flex flex-col 
-                              justify-between text-[10px] sm:text-xs 
-                              text-[#9CA3AF] pr-2">
-                {[250, 200, 150, 100, 50, 0].map((v) => (
-                  <span key={v} className="h-0 leading-none">
-                    {v}
-                  </span>
-                ))}
-              </div>
+        {/* ===== Chart 2: Khatian ===== */}
+        <RenderChart
+          data={khatianChartData}
+          titleKey="khatianChart"
+          subKey="khatianChartSub"
+        />
 
-              {/* Bars */}
-              <div className="flex-1 flex items-end justify-around gap-1 
-                              sm:gap-2 pl-8 h-full border-l border-b 
-                              border-[#E5E7EB]">
-                {chartData.map((d, i) => {
-                  const heightPct = (d.value / maxValue) * 100;
-                  return (
-                    <div
-                      key={i}
-                      className="flex-1 flex flex-col items-center gap-1 
-                                 max-w-[50px]"
-                    >
-                      <motion.div
-                        initial={{ height: 0 }}
-                        animate={{ height: `${heightPct}%` }}
-                        transition={{
-                          duration: 0.8,
-                          delay: 0.4 + i * 0.08,
-                          ease: 'easeOut',
-                        }}
-                        className="w-full rounded-t-md 
-                                   bg-gradient-to-t from-[#1F7A3F] to-[#22C55E]
-                                   shadow-sm hover:from-[#155E30] 
-                                   hover:to-[#1F7A3F] transition-colors 
-                                   min-h-[2px]"
-                        title={`${d.year}: ${d.value}`}
-                      />
-                      <span className="text-[9px] sm:text-[10px] 
-                                       text-[#9CA3AF] -rotate-45 sm:rotate-0 
-                                       origin-center whitespace-nowrap">
-                        {d.year}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Profile Info */}
+        {/* ===== Profile Info ===== */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
