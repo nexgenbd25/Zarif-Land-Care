@@ -66,127 +66,118 @@ export default function HeroSection() {
   const cta2 = isBn ? content.cta2_bn : content.cta2_en;
 
   return (
-    <section className="relative">
+    <section className="relative w-full">
       <div className="relative w-full">
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          <Image
-            src={HERO_BG}
-            alt="Green Nature Background"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center scale-110 blur-md"
-            unoptimized
-          />
-          <div className="absolute inset-0 bg-black/50" />
-        </div>
+        <div className="relative w-full">
+          <div className="absolute inset-0 z-0">
+            <Image
+              src={HERO_BG}
+              alt="Green Nature Background"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-center"
+              unoptimized
+            />
+            <div className="absolute inset-0 bg-black/45" />
+          </div>
 
-        <div className="container-custom relative z-10 py-16 sm:py-20 lg:py-24">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1
-              className="text-2xl sm:text-3xl lg:text-4xl xl:text-[2.5rem] 
-                         font-bold text-white mb-8 
-                         leading-[1.5] pt-[0.2em] pb-[0.05em]
-                         text-bangla-safe drop-shadow-lg"
-            >
-              {headline}
-            </h1>
-
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-              <Link
-                href={getUrl('/contact')}
-                className="group inline-flex items-center justify-center gap-2
-                           px-7 py-3.5 rounded-md font-bold
-                           bg-brand text-white
-                           transition-all duration-300
-                           hover:bg-brand-dark
-                           active:scale-95
-                           w-full sm:w-auto
-                           text-base"
+          <div className="container-custom relative z-10 pt-16 sm:pt-20 lg:pt-24 pb-40 sm:pb-48 lg:pb-56">
+            <div className="max-w-4xl mx-auto text-center">
+              <h1
+                className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl 
+                           font-bold text-white mb-6 sm:mb-8 
+                           leading-[1.5] pt-[0.2em] pb-[0.05em]
+                           text-bangla-safe drop-shadow-lg"
               >
-                <span className="text-bangla-safe">{cta1}</span>
-                <ArrowRight
-                  size={20}
-                  className="transition-transform duration-300 
-                             group-hover:translate-x-1"
-                />
-              </Link>
+                {headline}
+              </h1>
 
-              <Link
-                href={getUrl('/services')}
-                className="group inline-flex items-center justify-center gap-2
-                           px-7 py-3.5 rounded-md font-bold
-                           border-2 border-white text-white
-                           bg-white/5 backdrop-blur-sm
-                           transition-all duration-300
-                           hover:bg-white hover:text-brand
-                           active:scale-95
-                           w-full sm:w-auto
-                           text-base"
-              >
-                <span className="text-bangla-safe">{cta2}</span>
-                <ArrowRight
-                  size={20}
-                  className="transition-transform duration-300 
-                             group-hover:translate-x-1"
-                />
-              </Link>
+              <div className="flex flex-row gap-3 sm:gap-4 justify-center items-center">
+                <Link
+                  href={getUrl('/contact')}
+                  className="inline-flex items-center justify-center gap-2
+                             px-5 sm:px-6 py-2.5 sm:py-3 rounded-md font-bold
+                             bg-brand text-white
+                             transition-all duration-300
+                             hover:bg-brand-dark
+                             active:scale-95
+                             text-sm sm:text-base"
+                >
+                  <span className="text-bangla-safe">{cta1}</span>
+                </Link>
+
+                <Link
+                  href={getUrl('/services')}
+                  className="inline-flex items-center justify-center gap-2
+                             px-5 sm:px-6 py-2.5 sm:py-3 rounded-md font-bold
+                             bg-white text-brand
+                             transition-all duration-300
+                             hover:bg-gray-100
+                             active:scale-95
+                             text-sm sm:text-base"
+                >
+                  <span className="text-bangla-safe">{cta2}</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="container-custom relative z-20 pb-12 lg:pb-16 -mt-12 sm:-mt-16 lg:-mt-20">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-            {FEATURES.map((feature) => {
-              const Icon = feature.icon;
-              const title = isBn ? feature.title_bn : feature.title_en;
+        <div className="absolute left-0 right-0 bottom-0 z-20 translate-y-1/2">
+          <div className="container-custom">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+              {FEATURES.map((feature) => {
+                const Icon = feature.icon;
+                const title = isBn ? feature.title_bn : feature.title_en;
 
-              return (
-                <div
-                  key={feature.id}
-                  className="group rounded-xl p-5 lg:p-7 text-center
-                             bg-white/10 backdrop-blur-md
-                             border border-white/20
-                             shadow-[0_4px_20px_rgba(0,0,0,0.15)]
-                             transition-all duration-300
-                             hover:-translate-y-1 
-                             hover:bg-white/15
-                             hover:border-white/40
-                             hover:shadow-[0_8px_30px_rgba(0,0,0,0.25)]"
-                >
+                return (
                   <div
-                    className="w-14 h-14 lg:w-20 lg:h-20 mx-auto mb-3 lg:mb-4 
-                               rounded-full bg-brand flex items-center justify-center
-                               shadow-lg
-                               transition-transform duration-300
-                               group-hover:scale-110"
+                    key={feature.id}
+                    className="group bg-white rounded-xl 
+                               p-4 sm:p-5 lg:p-6 text-center
+                               shadow-[0_8px_30px_rgba(0,0,0,0.12)]
+                               border-b-4 border-transparent
+                               transition-all duration-300
+                               hover:-translate-y-1 
+                               hover:shadow-[0_12px_35px_rgba(31,122,63,0.2)]
+                               hover:border-brand"
                   >
-                    <Icon
-                      size={28}
-                      strokeWidth={1.8}
-                      className="text-white lg:hidden"
-                    />
-                    <Icon
-                      size={38}
-                      strokeWidth={1.8}
-                      className="text-white hidden lg:block"
-                    />
-                  </div>
+                    <div
+                      className="mx-auto mb-3 flex items-center justify-center
+                                 transition-transform duration-300
+                                 group-hover:scale-110"
+                    >
+                      <Icon
+                        size={40}
+                        strokeWidth={1.5}
+                        className="text-brand lg:hidden"
+                      />
+                      <Icon
+                        size={52}
+                        strokeWidth={1.5}
+                        className="text-brand hidden lg:block"
+                      />
+                    </div>
 
-                  <h3
-                    className="text-xs sm:text-sm lg:text-base font-bold 
-                               text-white leading-[1.5] 
-                               text-bangla-safe whitespace-pre-line
-                               drop-shadow-md"
-                  >
-                    {title}
-                  </h3>
-                </div>
-              );
-            })}
+                    <h3
+                      className="text-xs sm:text-sm lg:text-base font-bold 
+                                 text-black leading-[1.5] 
+                                 text-bangla-safe whitespace-pre-line 
+                                 transition-colors duration-300
+                                 group-hover:text-[#1F7A3F]"
+                    >
+                      {title}
+                    </h3>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
+
+      <div className="h-32 sm:h-40 lg:h-48 bg-white" />
     </section>
   );
 }
