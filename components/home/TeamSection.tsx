@@ -212,57 +212,49 @@ export default function TeamSection() {
                 <div
                   key={`${member.id}-${index}`}
                   className="flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 
-                             px-2.5 sm:px-3 py-2"
+                             px-3 sm:px-4 lg:px-5 py-3"
                 >
                   <div
-                    className="group relative h-full 
+                    className="relative mx-auto max-w-sm h-full
                                transition-all duration-500
                                hover:-translate-y-2"
                   >
                     <div
-                      className="relative h-full
-                                 bg-gradient-to-br from-navy-dark via-navy to-navy-dark
+                      className="relative h-full overflow-hidden
+                                 rounded-[2.5rem] 
+                                 bg-gradient-to-b from-navy-dark via-navy-dark to-navy
                                  border border-gold/20
                                  transition-all duration-500
                                  group-hover:border-gold/60
-                                 group-hover:shadow-2xl
-                                 group-hover:shadow-gold/20"
-                      style={{
-                        clipPath:
-                          'polygon(0 0, calc(100% - 30px) 0, 100% 30px, 100% 100%, 30px 100%, 0 calc(100% - 30px))',
-                      }}
+                                 hover:border-gold/60
+                                 hover:shadow-2xl
+                                 hover:shadow-gold/20"
                     >
                       <div
-                        className="absolute top-0 left-0 w-8 h-8 
-                                   border-t-2 border-l-2 border-gold/40
-                                   transition-all duration-500
-                                   group-hover:border-gold"
-                      />
-                      <div
-                        className="absolute bottom-0 right-0 w-8 h-8 
-                                   border-b-2 border-r-2 border-gold/40
-                                   transition-all duration-500
-                                   group-hover:border-gold"
+                        className="absolute top-0 left-1/2 -translate-x-1/2 
+                                   w-20 h-1 rounded-b-full
+                                   bg-gradient-to-r from-transparent via-gold to-transparent"
                       />
 
                       <div
-                        className="absolute -top-16 -right-16 w-32 h-32 
+                        className="absolute -top-20 -right-20 w-40 h-40 
                                    bg-gold/10 rounded-full blur-3xl
                                    opacity-0 group-hover:opacity-100
                                    transition-opacity duration-700"
                       />
 
-                      <div className="relative p-6 lg:p-7">
+                      <div className="relative p-5 lg:p-6">
                         <div className="relative w-24 h-24 lg:w-28 lg:h-28 mx-auto mb-5">
                           <div
                             className="absolute inset-0 rounded-full 
                                        bg-gradient-to-br from-gold/40 to-transparent 
-                                       blur-md transition-all duration-500
+                                       blur-lg transition-all duration-500
                                        group-hover:from-gold/70"
                           />
                           <div
                             className="relative w-full h-full rounded-full 
-                                       overflow-hidden border-4 border-gold/40 
+                                       overflow-hidden 
+                                       border-4 border-gold/40 
                                        shadow-xl
                                        transition-all duration-500
                                        group-hover:border-gold
@@ -286,7 +278,7 @@ export default function TeamSection() {
                                        flex items-center justify-center
                                        shadow-lg
                                        transition-transform duration-500
-                                       group-hover:scale-110"
+                                       hover:scale-110"
                           >
                             <BadgeCheck size={14} className="text-navy" />
                           </div>
@@ -294,8 +286,8 @@ export default function TeamSection() {
 
                         <div className="text-center mb-5">
                           <h3
-                            className="text-lg lg:text-xl font-bold text-white 
-                                       mb-1.5 text-bangla-safe leading-[1.6] 
+                            className="text-base lg:text-lg font-bold text-white 
+                                       mb-1.5 text-bangla-safe leading-[1.5] 
                                        transition-colors duration-300
                                        group-hover:text-gold"
                           >
@@ -304,7 +296,7 @@ export default function TeamSection() {
 
                           <p
                             className="text-gold text-xs lg:text-sm font-medium 
-                                       text-bangla-safe leading-[1.8]
+                                       text-bangla-safe leading-[1.7]
                                        transition-colors duration-300"
                           >
                             {designation}
@@ -316,7 +308,7 @@ export default function TeamSection() {
                         <div className="space-y-3 pt-4 border-t border-gold/10">
                           <div className="flex items-start gap-2.5">
                             <div
-                              className="w-7 h-7 rounded-lg bg-gold/10 
+                              className="w-7 h-7 rounded-full bg-gold/10 
                                          border border-gold/20
                                          flex items-center justify-center 
                                          flex-shrink-0
@@ -341,7 +333,7 @@ export default function TeamSection() {
 
                           <div className="flex items-start gap-2.5">
                             <div
-                              className="w-7 h-7 rounded-lg bg-gold/10 
+                              className="w-7 h-7 rounded-full bg-gold/10 
                                          border border-gold/20
                                          flex items-center justify-center 
                                          flex-shrink-0
@@ -369,7 +361,7 @@ export default function TeamSection() {
                             className="flex items-center gap-2.5 pt-1 group/phone"
                           >
                             <div
-                              className="w-7 h-7 rounded-lg 
+                              className="w-7 h-7 rounded-full 
                                          bg-gradient-to-br from-gold to-gold-light
                                          flex items-center justify-center 
                                          flex-shrink-0
