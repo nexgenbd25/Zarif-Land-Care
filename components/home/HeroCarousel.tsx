@@ -5,37 +5,30 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, FileCheck, Award } from 'lucide-react';
 
-// ============================================
-// ডেমো ছবি (পরে Database থেকে আসবে)
-// ============================================
 const HERO_IMAGES = [
   {
     id: 1,
     url: 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=1600&q=80',
     alt_bn: 'জমির দলিল প্রস্তুতি',
-    alt_en: 'Land deed preparation',
   },
   {
     id: 2,
     url: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1600&q=80',
     alt_bn: 'সম্পত্তির কাগজপত্র',
-    alt_en: 'Property documents',
   },
   {
     id: 3,
     url: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1600&q=80',
     alt_bn: 'আইনি পরামর্শ',
-    alt_en: 'Legal consultation',
   },
   {
     id: 4,
     url: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80',
     alt_bn: 'হ্যান্ডশেক - চুক্তি',
-    alt_en: 'Handshake - Agreement',
   },
 ];
 
-const AUTO_SLIDE_INTERVAL = 5000; // ৫ সেকেন্ড
+const AUTO_SLIDE_INTERVAL = 5000;
 
 export default function HeroCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -135,10 +128,6 @@ export default function HeroCarousel() {
 
   return (
     <div className="relative w-full">
-      {/* ============================================
-          FLOATING CARDS (Carousel-এর বাইরে)
-          ============================================ */}
-      {/* Floating Card 1 - Top Left */}
       <motion.div
         initial={{ opacity: 0, x: -30, y: -20 }}
         animate={{ opacity: 1, x: 0, y: 0 }}
@@ -161,7 +150,6 @@ export default function HeroCarousel() {
         </div>
       </motion.div>
 
-      {/* Floating Card 2 - Bottom Right */}
       <motion.div
         initial={{ opacity: 0, x: 30, y: 20 }}
         animate={{ opacity: 1, x: 0, y: 0 }}
@@ -184,15 +172,11 @@ export default function HeroCarousel() {
         </div>
       </motion.div>
 
-      {/* ============================================
-          CAROUSEL CONTAINER - 16:9 ratio
-          (মোবাইল ও ডেস্কটপ - দুই জায়গায় একই)
-          ============================================ */}
       <div
         ref={containerRef}
         className="relative w-full rounded-2xl overflow-hidden
                    shadow-lg select-none group"
-        style={{ aspectRatio: '16 / 9' }}
+        style={{ aspectRatio: '327 / 121' }}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
@@ -200,7 +184,6 @@ export default function HeroCarousel() {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Images */}
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={currentIndex}
@@ -224,7 +207,6 @@ export default function HeroCarousel() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Prev Button */}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -242,7 +224,6 @@ export default function HeroCarousel() {
           <ChevronLeft size={20} />
         </button>
 
-        {/* Next Button */}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -260,7 +241,6 @@ export default function HeroCarousel() {
           <ChevronRight size={20} />
         </button>
 
-        {/* Dots */}
         <div className="absolute bottom-3 lg:bottom-4 left-1/2 -translate-x-1/2 z-20
                         flex items-center gap-1.5 lg:gap-2">
           {HERO_IMAGES.map((_, index) => (
@@ -282,7 +262,6 @@ export default function HeroCarousel() {
           ))}
         </div>
 
-        {/* Progress Bar */}
         {!isPaused && (
           <motion.div
             key={currentIndex}
@@ -296,11 +275,6 @@ export default function HeroCarousel() {
           />
         )}
       </div>
-
-      {/* ============================================
-          VERIFIED BADGES - সরানো হয়েছে ❌
-          (আগে ছিল: সরকার অনুমোদিত, নিরাপদ সেবা, আইনসম্মত)
-          ============================================ */}
     </div>
   );
 }
