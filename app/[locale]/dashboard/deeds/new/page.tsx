@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
@@ -39,7 +39,6 @@ interface FormData {
 }
 
 interface FormErrors {
-  serialNo?: string;
   deedNo?: string;
   date?: string;
   donorName?: string;
@@ -59,9 +58,27 @@ const DEED_TYPES = [
   { value: 'partition', label_bn: 'বাটোয়ারা দলিল', label_en: 'Partition Deed' },
   { value: 'lease', label_bn: 'ইজারা দলিল', label_en: 'Lease Deed' },
   { value: 'mortgage', label_bn: 'বন্ধকী দলিল', label_en: 'Mortgage Deed' },
-  { value: 'power', label_bn: 'পাওয়ার অব অ্যাটর্নি', label_en: 'Power of Attorney' },
+  {
+    value: 'power',
+    label_bn: 'পাওয়ার অব অ্যাটর্নি',
+    label_en: 'Power of Attorney',
+  },
   { value: 'other', label_bn: 'অন্যান্য', label_en: 'Other' },
 ];
+
+function generateSerialNo(existingSerials: string[]): string {
+  if (!existingSerials || existingSerials.length === 0) {
+    return '01';
+  }
+
+  const lastSerial = existingSerials
+    .map((s) => parseInt(s, 10))
+    .filter((n) => !isNaN(n))
+    .sort((a, b) => b - a)[0];
+
+  const nextSerial = (lastSerial || 0) + 1;
+  return nextSerial.toString().padStart(2, '0');
+}
 
 export default function NewDeedPage() {
   const locale = useLocale();
@@ -73,6 +90,7 @@ export default function NewDeedPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [success, setSuccess] = useState('');
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [serialLoading, setSerialLoading] = useState(true);
 
   const [formData, setFormData] = useState<FormData>({
     serialNo: '',
@@ -89,16 +107,48 @@ export default function NewDeedPage() {
     remarks: '',
   });
 
+  useEffect(() => {
+    const fetchAndGenerateSerial = async () => {
+      setSerialLoading(true);
+
+      // TODO: Replace with actual API call
+      // const res = await fetch('/api/deeds/all-serials');
+      // const data = await res.json();
+      // const existingSerials = data.serials;
+
+      const existingSerials = ['01', '02', '03', '04', '05'];
+
+      setTimeout(() => {
+        const newSerial = generateSerialNo(existingSerials);
+        setFormData((prev) => ({ ...prev, serialNo: newSerial }));
+        setSerialLoading(false);
+      }, 400);
+    };
+
+    fetchAndGenerateSerial();
+  }, []);
+
   const content = {
     pageTitle_bn: 'নতুন দলিল এন্ট্রি',
     pageTitle_en: 'New Deed Entry',
     pageSub_bn: 'নতুন দলিলের তথ্য পূরণ করুন',
     pageSub_en: 'Fill in the new deed information',
 
+    sectionBasic_bn: 'দলিলের মূল তথ্য',
+    sectionBasic_en: 'Deed Information',
+    sectionParty_bn: 'দাতা ও গ্রহীতার তথ্য',
+    sectionParty_en: 'Donor & Recipient Info',
+    sectionContact_bn: 'যোগাযোগ ও মন্তব্য',
+    sectionContact_en: 'Contact & Notes',
+    sectionPdf_bn: 'দলিল PDF',
+    sectionPdf_en: 'Deed PDF',
+
     serialNo_bn: 'ক্রমিক নং',
     serialNo_en: 'Serial No',
-    serialNoPh_bn: 'যেমন: ০১',
-    serialNoPh_en: 'e.g. 01',
+    serialAuto_bn: 'স্বয়ংক্রিয়ভাবে তৈরি হয়েছে',
+    serialAuto_en: 'Auto-generated',
+    serialLoading_bn: 'তৈরি হচ্ছে...',
+    serialLoading_en: 'Generating...',
 
     deedNo_bn: 'দলিল নং',
     deedNo_en: 'Deed No',
@@ -159,8 +209,6 @@ export default function NewDeedPage() {
     pdfUpload_en: 'Upload PDF',
     pdfHint_bn: 'শুধুমাত্র PDF, সর্বোচ্চ 10MB',
     pdfHint_en: 'PDF only, max 10MB',
-    pdfSelected_bn: 'নির্বাচিত',
-    pdfSelected_en: 'Selected',
 
     save_bn: 'সংরক্ষণ করুন',
     save_en: 'Save Deed',
@@ -212,11 +260,11 @@ export default function NewDeedPage() {
 
   const validate = () => {
     const newErrors: FormErrors = {};
-    if (!formData.serialNo.trim()) newErrors.serialNo = t('required');
     if (!formData.deedNo.trim()) newErrors.deedNo = t('required');
     if (!formData.date) newErrors.date = t('required');
     if (!formData.donorName.trim()) newErrors.donorName = t('required');
-    if (!formData.recipientName.trim()) newErrors.recipientName = t('required');
+    if (!formData.recipientName.trim())
+      newErrors.recipientName = t('required');
     if (!formData.mouzaName.trim()) newErrors.mouzaName = t('required');
     if (!formData.deedType) newErrors.deedType = t('required');
     if (!formData.value.trim()) newErrors.value = t('required');
@@ -234,7 +282,6 @@ export default function NewDeedPage() {
     e.preventDefault();
     setSuccess('');
     if (!validate()) {
-      // Scroll to top on error
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -306,10 +353,10 @@ export default function NewDeedPage() {
       {/* Header */}
       <div className="mb-5 sm:mb-6">
         <div className="flex items-center gap-3 mb-1">
-          <div className="w-11 h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center">
+          <div className="w-11 h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
             <FilePlus2 size={22} className="text-[#1F7A3F]" />
           </div>
-          <div>
+          <div className="min-w-0">
             <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5 leading-tight">
               {t('pageTitle')}
             </h1>
@@ -327,30 +374,51 @@ export default function NewDeedPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-4 flex items-start gap-2 p-3 rounded-lg bg-[#DCFCE7] border border-[#22C55E]/30"
         >
-          <CheckCircle size={18} className="text-[#15803D] flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-[#166534] text-bangla-safe">
-            {success}
-          </p>
+          <CheckCircle
+            size={18}
+            className="text-[#15803D] flex-shrink-0 mt-0.5"
+          />
+          <p className="text-sm text-[#166534] text-bangla-safe">{success}</p>
         </motion.div>
       )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
         {/* Section 1: Deed Basic Info */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5 lg:p-6">
           <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
             <Hash size={16} className="text-[#1F7A3F]" />
-            {isBn ? 'দলিলের মূল তথ্য' : 'Deed Information'}
+            {t('sectionBasic')}
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {renderField({
-              icon: Hash,
-              label: t('serialNo'),
-              field: 'serialNo',
-              placeholder: t('serialNoPh'),
-              required: true,
-            })}
+            {/* Serial No — Auto Generated */}
+            <div>
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                {t('serialNo')}
+                <span className="text-red-500 ml-0.5">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                  <Hash size={16} />
+                </div>
+                <input
+                  type="text"
+                  value={serialLoading ? t('serialLoading') : formData.serialNo}
+                  readOnly
+                  disabled
+                  className="w-full pl-10 pr-16 py-2.5 rounded-lg border border-[#E5E7EB] bg-[#F8FAF9] text-sm text-[#1F7A3F] font-bold text-bangla-safe cursor-not-allowed focus:outline-none"
+                />
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#1F7A3F]/10 text-[#1F7A3F] text-[9px] font-bold uppercase tracking-wider">
+                  <CheckCircle size={9} />
+                  Auto
+                </div>
+              </div>
+              <p className="mt-1 text-[10px] text-[#6B7280] text-bangla-safe">
+                {t('serialAuto')}
+              </p>
+            </div>
+
             {renderField({
               icon: FileText,
               label: t('deedNo'),
@@ -358,6 +426,7 @@ export default function NewDeedPage() {
               placeholder: t('deedNoPh'),
               required: true,
             })}
+
             {renderField({
               icon: Calendar,
               label: t('date'),
@@ -365,6 +434,7 @@ export default function NewDeedPage() {
               type: 'date',
               required: true,
             })}
+
             {/* Deed Type */}
             <div>
               <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
@@ -410,6 +480,7 @@ export default function NewDeedPage() {
                 </p>
               )}
             </div>
+
             {renderField({
               icon: MapPin,
               label: t('mouzaName'),
@@ -417,6 +488,7 @@ export default function NewDeedPage() {
               placeholder: t('mouzaNamePh'),
               required: true,
             })}
+
             {renderField({
               icon: DollarSign,
               label: t('value'),
@@ -431,7 +503,7 @@ export default function NewDeedPage() {
         <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5 lg:p-6">
           <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
             <Users size={16} className="text-[#1F7A3F]" />
-            {isBn ? 'দাতা ও গ্রহীতার তথ্য' : 'Donor & Recipient Info'}
+            {t('sectionParty')}
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -468,7 +540,7 @@ export default function NewDeedPage() {
         <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5 lg:p-6">
           <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
             <Phone size={16} className="text-[#1F7A3F]" />
-            {isBn ? 'যোগাযোগ ও মন্তব্য' : 'Contact & Notes'}
+            {t('sectionContact')}
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -504,7 +576,7 @@ export default function NewDeedPage() {
         <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5 lg:p-6">
           <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
             <FileText size={16} className="text-[#1F7A3F]" />
-            {t('pdf')}
+            {t('sectionPdf')}
           </h2>
 
           <input
@@ -526,11 +598,11 @@ export default function NewDeedPage() {
             }`}
           >
             {pdfFile ? (
-              <div className="flex items-center justify-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center">
+              <div className="flex items-center justify-center gap-3 flex-wrap sm:flex-nowrap">
+                <div className="w-12 h-12 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
                   <FileText size={22} className="text-[#1F7A3F]" />
                 </div>
-                <div className="text-left">
+                <div className="text-left min-w-0 flex-1">
                   <p className="text-sm font-semibold text-[#1F2937] text-bangla-safe break-all max-w-[200px] sm:max-w-md">
                     {pdfFile.name}
                   </p>
@@ -545,7 +617,7 @@ export default function NewDeedPage() {
                     setPdfFile(null);
                     if (fileInputRef.current) fileInputRef.current.value = '';
                   }}
-                  className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors"
+                  className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors flex-shrink-0"
                   aria-label="Remove file"
                 >
                   <X size={14} />
@@ -575,7 +647,7 @@ export default function NewDeedPage() {
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-end pt-2">
+        <div className="flex flex-col sm:flex-row gap-3 sm:justify-end pt-2 sticky bottom-0 sm:static bg-[#F8FAF9] sm:bg-transparent p-3 sm:p-0 -mx-4 sm:mx-0 border-t sm:border-0 border-[#E5E7EB]">
           <button
             type="button"
             onClick={() => router.back()}
