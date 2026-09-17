@@ -171,8 +171,8 @@ export default function TeamSection() {
   const totalDots = maxIndex + 1;
 
   return (
-    <section className="relative overflow-hidden section-padding bg-[#F0F8F1]">
-      <div className="absolute top-0 left-0 w-48 h-48 sm:w-64 sm:h-64 opacity-40 pointer-events-none">
+    <section className="relative overflow-hidden section-padding bg-white">
+      <div className="absolute top-0 left-0 w-48 h-48 sm:w-64 sm:h-64 opacity-30 pointer-events-none">
         <svg viewBox="0 0 200 200" className="w-full h-full">
           <path
             d="M20,60 Q40,20 80,30 Q100,35 90,60 Q80,80 50,75 Q30,70 20,60 Z"
@@ -187,7 +187,7 @@ export default function TeamSection() {
         </svg>
       </div>
 
-      <div className="absolute top-10 right-0 w-48 h-48 sm:w-64 sm:h-64 opacity-40 pointer-events-none">
+      <div className="absolute top-10 right-0 w-48 h-48 sm:w-64 sm:h-64 opacity-30 pointer-events-none">
         <svg viewBox="0 0 200 200" className="w-full h-full">
           <path
             d="M180,60 Q160,20 120,30 Q100,35 110,60 Q120,80 150,75 Q170,70 180,60 Z"
@@ -281,7 +281,6 @@ export default function TeamSection() {
                                hover:shadow-[0_25px_60px_-15px_rgba(31,122,63,0.25)]
                                hover:-translate-y-1"
                   >
-                    {/* Leaf decoration corner */}
                     <div className="absolute bottom-0 right-0 w-24 h-24 sm:w-28 sm:h-28 opacity-90 pointer-events-none">
                       <svg
                         viewBox="0 0 100 100"
@@ -317,38 +316,22 @@ export default function TeamSection() {
                       </svg>
                     </div>
 
-                    {/* Top section with wavy photo + badge + actions */}
                     <div className="relative pt-5 px-5 lg:px-6">
                       <div className="flex items-start justify-between gap-3">
-                        {/* Photo with wavy blob shape */}
-                        <div className="relative w-28 h-28 sm:w-32 sm:h-32 flex-shrink-0">
-                          <div
-                            className="absolute inset-0 overflow-hidden"
-                            style={{
-                              borderRadius: '58% 42% 55% 45% / 48% 55% 45% 52%',
-                            }}
-                          >
+                        <div className="relative w-28 h-28 sm:w-32 sm:h-32 flex-shrink-0 aspect-square">
+                          <div className="absolute inset-0 rounded-full overflow-hidden border-[3px] border-white ring-2 ring-[#1F7A3F]/20 group-hover:ring-[#1F7A3F] transition-all duration-500 shadow-lg">
                             <Image
                               src={member.image_url}
                               alt={name}
                               fill
                               sizes="140px"
-                              className="object-cover object-center"
+                              className="object-cover object-center rounded-full"
                               unoptimized
                             />
                           </div>
-                          <div
-                            className="absolute inset-0 border-2 border-white pointer-events-none"
-                            style={{
-                              borderRadius: '58% 42% 55% 45% / 48% 55% 45% 52%',
-                              boxShadow: '0 4px 20px rgba(31,122,63,0.15)',
-                            }}
-                          />
                         </div>
 
-                        {/* Right side: badge + actions */}
                         <div className="flex flex-col items-end gap-3 pt-1">
-                          {/* Badge */}
                           <div className="inline-flex items-center gap-1.5 
                                          px-3 py-1.5 rounded-full
                                          bg-[#1F7A3F] text-white
@@ -360,7 +343,6 @@ export default function TeamSection() {
                             </span>
                           </div>
 
-                          {/* Action buttons */}
                           <div className="flex flex-col gap-2">
                             <a
                               href={`tel:${member.phone.replace(/\s/g, '')}`}
@@ -407,7 +389,6 @@ export default function TeamSection() {
                         </div>
                       </div>
 
-                      {/* Name + Designation */}
                       <div className="mt-4">
                         <h3 className="text-xl sm:text-2xl font-bold text-[#1F2937] 
                                       text-bangla-heading pt-1 pb-1
@@ -421,14 +402,12 @@ export default function TeamSection() {
                         </p>
                       </div>
 
-                      {/* Description */}
                       <p className="text-[#4B5563] text-xs sm:text-sm 
                                    text-bangla-safe mt-2 mb-4">
                         {description}
                       </p>
                     </div>
 
-                    {/* Info grid: Address + Phone */}
                     <div className="relative px-5 lg:px-6 pb-5">
                       <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
                         <div className="flex items-start gap-2">
@@ -474,7 +453,6 @@ export default function TeamSection() {
                         </div>
                       </div>
 
-                      {/* Bottom dots decoration */}
                       <div className="flex gap-1 mt-4">
                         {[0, 1, 2, 3, 4].map((i) => (
                           <span
@@ -493,7 +471,6 @@ export default function TeamSection() {
           </motion.div>
         </div>
 
-        {/* Dots */}
         <div className="flex items-center justify-center gap-2 mt-10">
           {Array.from({ length: totalDots }).map((_, index) => (
             <button
