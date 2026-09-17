@@ -3,10 +3,16 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
-import { FileText, Monitor, Printer, Smartphone } from 'lucide-react';
+import {
+  FileText,
+  Monitor,
+  Printer,
+  Smartphone,
+  ArrowRight,
+} from 'lucide-react';
 
 const HERO_BG =
-  'https://i.postimg.cc/cHg8hVSB/file-0000000076f48211bea028ad9978bf68.png';
+  'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&q=80';
 
 const FEATURES = [
   {
@@ -49,10 +55,10 @@ export default function HeroSection() {
       'একই ছাদের নিচে জমির নির্ভুল দলিল লেখন ও আধুনিক ডিজিটাল সেবা',
     headline_en:
       'Accurate Land Deed Writing & Modern Digital Services Under One Roof',
-    cta1_bn: 'যোগাযোগ করুন',
-    cta1_en: 'Contact Us',
-    cta2_bn: 'কল করুন',
-    cta2_en: 'Call Now',
+    cta1_bn: 'যোগাযোগ',
+    cta1_en: 'Contact',
+    cta2_bn: 'সার্ভিস দেখুন',
+    cta2_en: 'View Services',
   };
 
   const headline = isBn ? content.headline_bn : content.headline_en;
@@ -89,7 +95,7 @@ export default function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
               <Link
                 href={getUrl('/contact')}
-                className="inline-flex items-center justify-center
+                className="group inline-flex items-center justify-center gap-2
                            px-7 py-3.5 rounded-md font-bold
                            bg-brand text-white
                            transition-all duration-300
@@ -99,11 +105,16 @@ export default function HeroSection() {
                            text-base"
               >
                 <span className="text-bangla-safe">{cta1}</span>
+                <ArrowRight
+                  size={20}
+                  className="transition-transform duration-300 
+                             group-hover:translate-x-1"
+                />
               </Link>
 
-              <a
-                href="tel:+8801788766735"
-                className="inline-flex items-center justify-center
+              <Link
+                href={getUrl('/services')}
+                className="group inline-flex items-center justify-center gap-2
                            px-7 py-3.5 rounded-md font-bold
                            border-2 border-white text-white
                            bg-white/5 backdrop-blur-sm
@@ -114,7 +125,12 @@ export default function HeroSection() {
                            text-base"
               >
                 <span className="text-bangla-safe">{cta2}</span>
-              </a>
+                <ArrowRight
+                  size={20}
+                  className="transition-transform duration-300 
+                             group-hover:translate-x-1"
+                />
+              </Link>
             </div>
           </div>
         </div>
