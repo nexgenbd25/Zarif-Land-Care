@@ -75,7 +75,7 @@ const TEAM: TeamMember[] = [
   },
 ];
 
-const AUTO_SLIDE_INTERVAL = 3500;
+const AUTO_SLIDE_INTERVAL = 4000;
 
 export default function TeamSection() {
   const locale = useLocale();
@@ -83,7 +83,7 @@ export default function TeamSection() {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [cardsPerView, setCardsPerView] = useState(3);
+  const [cardsPerView, setCardsPerView] = useState(1);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const content = {
@@ -119,9 +119,17 @@ export default function TeamSection() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const maxIndex = Math.max(0, TEAM.length - cardsPerView);
+
   const goToNext = useCallback(() => {
-    setCurrentIndex((prev) => prev + 1);
-  }, []);
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+  }, [maxIndex]);
+
+  useEffect(() => {
+    if (currentIndex > maxIndex) {
+      setCurrentIndex(0);
+    }
+  }, [cardsPerView, currentIndex, maxIndex]);
 
   useEffect(() => {
     if (!isPaused) {
@@ -138,19 +146,7 @@ export default function TeamSection() {
   const handleMouseEnter = () => setIsPaused(true);
   const handleMouseLeave = () => setIsPaused(false);
 
-  const extendedTeam = [...TEAM, ...TEAM, ...TEAM, ...TEAM, ...TEAM];
-  const startOffset = TEAM.length * 2;
-
-  useEffect(() => {
-    if (currentIndex >= TEAM.length * 2) {
-      const timer = setTimeout(() => {
-        setCurrentIndex(TEAM.length);
-      }, 800);
-      return () => clearTimeout(timer);
-    }
-  }, [currentIndex]);
-
-  const displayIndex = startOffset + currentIndex;
+  const totalDots = maxIndex + 1;
 
   return (
     <section className="relative overflow-hidden section-padding bg-navy
@@ -158,10 +154,6 @@ export default function TeamSection() {
       <div
         className="absolute top-0 right-0 w-[500px] h-[500px] 
                    bg-gold/5 rounded-full blur-[140px] -z-0"
-      />
-      <div
-        className="absolute bottom-0 left-0 w-[400px] h-[400px] 
-                   bg-blue-500/5 rounded-full blur-[140px] -z-0"
       />
 
       <div className="container-custom relative z-10">
@@ -192,15 +184,14 @@ export default function TeamSection() {
           <motion.div
             className="flex items-stretch"
             animate={{
-              x: `-${displayIndex * (100 / cardsPerView)}%`,
+              x: `-${currentIndex * (100 / cardsPerView)}%`,
             }}
             transition={{
-              type: 'spring',
-              stiffness: 200,
-              damping: 30,
+              duration: 0.6,
+              ease: 'easeInOut',
             }}
           >
-            {extendedTeam.map((member, index) => {
+            {TEAM.map((member) => {
               const name = isBn ? member.name_bn : member.name_en;
               const designation = isBn
                 ? member.designation_bn
@@ -210,176 +201,127 @@ export default function TeamSection() {
 
               return (
                 <div
-                  key={`${member.id}-${index}`}
+                  key={member.id}
                   className="flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 
-                             px-3 sm:px-4 lg:px-5 py-3"
+                             px-2.5 sm:px-3"
                 >
                   <div
-                    className="relative mx-auto max-w-sm h-full
-                               transition-all duration-500
-                               hover:-translate-y-2"
+                    className="group relative h-full
+                               bg-gradient-to-b from-navy-dark to-navy
+                               border border-navy-border 
+                               rounded-3xl overflow-hidden
+                               transition-all duration-300
+                               hover:border-gold hover:shadow-xl"
                   >
                     <div
-                      className="relative h-full overflow-hidden
-                                 rounded-[2.5rem] 
-                                 bg-gradient-to-b from-navy-dark via-navy-dark to-navy
-                                 border border-gold/20
-                                 transition-all duration-500
-                                 group-hover:border-gold/60
-                                 hover:border-gold/60
-                                 hover:shadow-2xl
-                                 hover:shadow-gold/20"
-                    >
-                      <div
-                        className="absolute top-0 left-1/2 -translate-x-1/2 
-                                   w-20 h-1 rounded-b-full
-                                   bg-gradient-to-r from-transparent via-gold to-transparent"
-                      />
+                      className="absolute top-0 left-1/2 -translate-x-1/2 
+                                 w-16 h-0.5 rounded-b-full
+                                 bg-gradient-to-r from-transparent via-gold to-transparent"
+                    />
 
-                      <div
-                        className="absolute -top-20 -right-20 w-40 h-40 
-                                   bg-gold/10 rounded-full blur-3xl
-                                   opacity-0 group-hover:opacity-100
-                                   transition-opacity duration-700"
-                      />
-
-                      <div className="relative p-5 lg:p-6">
-                        <div className="relative w-24 h-24 lg:w-28 lg:h-28 mx-auto mb-5">
-                          <div
-                            className="absolute inset-0 rounded-full 
-                                       bg-gradient-to-br from-gold/40 to-transparent 
-                                       blur-lg transition-all duration-500
-                                       group-hover:from-gold/70"
+                    <div className="relative p-5 lg:p-6">
+                      <div className="relative w-24 h-24 lg:w-28 lg:h-28 mx-auto mb-4">
+                        <div
+                          className="relative w-full h-full rounded-full 
+                                     overflow-hidden border-4 border-gold/40
+                                     group-hover:border-gold
+                                     transition-all duration-300"
+                        >
+                          <Image
+                            src={member.image_url}
+                            alt={name}
+                            fill
+                            sizes="120px"
+                            className="object-cover object-center"
+                            unoptimized
                           />
-                          <div
-                            className="relative w-full h-full rounded-full 
-                                       overflow-hidden 
-                                       border-4 border-gold/40 
-                                       shadow-xl
-                                       transition-all duration-500
-                                       group-hover:border-gold
-                                       group-hover:scale-105"
-                          >
-                            <Image
-                              src={member.image_url}
-                              alt={name}
-                              fill
-                              sizes="150px"
-                              className="object-cover object-center"
-                              unoptimized
-                            />
-                          </div>
-
-                          <div
-                            className="absolute -bottom-1 -right-1 
-                                       w-8 h-8 rounded-full 
-                                       bg-gradient-to-br from-gold to-gold-light
-                                       border-4 border-navy-dark
-                                       flex items-center justify-center
-                                       shadow-lg
-                                       transition-transform duration-500
-                                       hover:scale-110"
-                          >
-                            <BadgeCheck size={14} className="text-navy" />
-                          </div>
                         </div>
 
-                        <div className="text-center mb-5">
-                          <h3
-                            className="text-base lg:text-lg font-bold text-white 
-                                       mb-1.5 text-bangla-safe leading-[1.5] 
-                                       transition-colors duration-300
-                                       group-hover:text-gold"
-                          >
-                            {name}
-                          </h3>
-
-                          <p
-                            className="text-gold text-xs lg:text-sm font-medium 
-                                       text-bangla-safe leading-[1.7]
-                                       transition-colors duration-300"
-                          >
-                            {designation}
-                          </p>
-
-                          <div className="w-10 h-0.5 bg-gradient-gold mx-auto rounded-full mt-3" />
+                        <div
+                          className="absolute -bottom-1 -right-1 
+                                     w-7 h-7 rounded-full 
+                                     bg-gradient-to-br from-gold to-gold-light
+                                     border-4 border-navy
+                                     flex items-center justify-center"
+                        >
+                          <BadgeCheck size={12} className="text-navy" />
                         </div>
+                      </div>
 
-                        <div className="space-y-3 pt-4 border-t border-gold/10">
-                          <div className="flex items-start gap-2.5">
-                            <div
-                              className="w-7 h-7 rounded-full bg-gold/10 
-                                         border border-gold/20
-                                         flex items-center justify-center 
-                                         flex-shrink-0
-                                         transition-colors duration-300
-                                         group-hover:bg-gold/20"
-                            >
-                              <User size={13} className="text-gold" />
-                            </div>
-                            <div className="min-w-0 flex-1 pt-0.5">
-                              <span className="text-[10px] text-muted block leading-tight mb-0.5">
-                                {fatherLabel}
-                              </span>
-                              <span
-                                className="text-xs lg:text-sm text-gray-200 
-                                           text-bangla-safe leading-[1.7] 
-                                           break-words"
-                              >
-                                {father}
-                              </span>
-                            </div>
-                          </div>
+                      <div className="text-center mb-4">
+                        <h3
+                          className="text-base lg:text-lg font-bold text-white 
+                                     mb-1.5 text-bangla-safe leading-[1.6] 
+                                     group-hover:text-gold transition-colors"
+                        >
+                          {name}
+                        </h3>
 
-                          <div className="flex items-start gap-2.5">
-                            <div
-                              className="w-7 h-7 rounded-full bg-gold/10 
-                                         border border-gold/20
-                                         flex items-center justify-center 
-                                         flex-shrink-0
-                                         transition-colors duration-300
-                                         group-hover:bg-gold/20"
-                            >
-                              <MapPin size={13} className="text-gold" />
-                            </div>
-                            <div className="min-w-0 flex-1 pt-0.5">
-                              <span className="text-[10px] text-muted block leading-tight mb-0.5">
-                                {addressLabel}
-                              </span>
-                              <span
-                                className="text-xs lg:text-sm text-gray-200 
-                                           text-bangla-safe leading-[1.7] 
-                                           break-words"
-                              >
-                                {address}
-                              </span>
-                            </div>
-                          </div>
+                        <p
+                          className="text-gold text-xs lg:text-sm font-medium 
+                                     text-bangla-safe leading-[1.7]"
+                        >
+                          {designation}
+                        </p>
 
-                          <a
-                            href={`tel:${member.phone.replace(/\s/g, '')}`}
-                            className="flex items-center gap-2.5 pt-1 group/phone"
-                          >
-                            <div
-                              className="w-7 h-7 rounded-full 
-                                         bg-gradient-to-br from-gold to-gold-light
-                                         flex items-center justify-center 
-                                         flex-shrink-0
-                                         shadow-md
-                                         transition-transform duration-300
-                                         group-hover/phone:scale-110"
-                            >
-                              <Phone size={13} className="text-navy" />
-                            </div>
-                            <span
-                              className="text-xs lg:text-sm text-gold 
-                                         group-hover/phone:text-gold-light
-                                         transition-colors font-semibold"
-                            >
-                              {member.phone}
+                        <div className="w-10 h-0.5 bg-gradient-gold mx-auto rounded-full mt-2.5" />
+                      </div>
+
+                      <div className="space-y-2.5 pt-3 border-t border-gold/10">
+                        <div className="flex items-start gap-2">
+                          <User
+                            size={14}
+                            className="text-gold flex-shrink-0 mt-1"
+                          />
+                          <div className="min-w-0 flex-1">
+                            <span className="text-[10px] text-muted block leading-tight">
+                              {fatherLabel}
                             </span>
-                          </a>
+                            <span
+                              className="text-xs lg:text-sm text-gray-200 
+                                         text-bangla-safe leading-[1.6] 
+                                         break-words"
+                            >
+                              {father}
+                            </span>
+                          </div>
                         </div>
+
+                        <div className="flex items-start gap-2">
+                          <MapPin
+                            size={14}
+                            className="text-gold flex-shrink-0 mt-1"
+                          />
+                          <div className="min-w-0 flex-1">
+                            <span className="text-[10px] text-muted block leading-tight">
+                              {addressLabel}
+                            </span>
+                            <span
+                              className="text-xs lg:text-sm text-gray-200 
+                                         text-bangla-safe leading-[1.6] 
+                                         break-words"
+                            >
+                              {address}
+                            </span>
+                          </div>
+                        </div>
+
+                        <a
+                          href={`tel:${member.phone.replace(/\s/g, '')}`}
+                          className="flex items-center gap-2 pt-1"
+                        >
+                          <Phone
+                            size={14}
+                            className="text-gold flex-shrink-0"
+                          />
+                          <span
+                            className="text-xs lg:text-sm text-gold 
+                                       hover:text-gold-light 
+                                       transition-colors font-medium"
+                          >
+                            {member.phone}
+                          </span>
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -389,24 +331,20 @@ export default function TeamSection() {
           </motion.div>
         </div>
 
-        <div className="flex items-center justify-center gap-2 mt-10">
-          {TEAM.map((_, index) => {
-            const activeDot =
-              ((currentIndex % TEAM.length) + TEAM.length) % TEAM.length;
-            return (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`transition-all duration-300 rounded-full
-                            ${
-                              index === activeDot
-                                ? 'w-8 h-2 bg-gradient-gold'
-                                : 'w-2 h-2 bg-white/30 hover:bg-white/60'
-                            }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            );
-          })}
+        <div className="flex items-center justify-center gap-2 mt-8">
+          {Array.from({ length: totalDots }).map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`transition-all duration-300 rounded-full
+                          ${
+                            index === currentIndex
+                              ? 'w-8 h-2 bg-gradient-gold'
+                              : 'w-2 h-2 bg-white/30 hover:bg-white/60'
+                          }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </div>
     </section>
