@@ -213,8 +213,8 @@ export default function TeamSection() {
 
                     <div className="absolute inset-0 bg-gradient-to-br from-[#1F7A3F]/[0.02] via-transparent to-[#22C55E]/[0.03] pointer-events-none" />
 
-                    <div className="relative pt-6 pb-4 px-5 lg:px-6">
-                      <div className="relative w-24 h-24 lg:w-28 lg:h-28 mx-auto">
+                    <div className="relative pt-6 pb-4 px-5 lg:px-6 flex justify-center">
+                      <div className="relative w-24 h-24 lg:w-28 lg:h-28 aspect-square rounded-full shrink-0">
                         <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#1F7A3F]/20 to-[#22C55E]/10 blur-md scale-105 pointer-events-none" />
 
                         <div className="absolute inset-0 rounded-full overflow-hidden border-[3px] border-white ring-2 ring-[#1F7A3F]/25 group-hover:ring-[#1F7A3F] transition-all duration-500 shadow-lg">
@@ -223,7 +223,7 @@ export default function TeamSection() {
                             alt={name}
                             fill
                             sizes="120px"
-                            className="object-cover object-center w-full h-full"
+                            className="object-cover object-center rounded-full"
                             unoptimized
                           />
                         </div>
