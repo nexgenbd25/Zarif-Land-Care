@@ -17,9 +17,6 @@ export default function AboutSection() {
   const isBn = locale === 'bn';
 
   const content = {
-    title: isBn
-      ? 'একটি নির্ভরযোগ্য প্রতিষ্ঠান'
-      : 'A Trusted Institution',
     paragraph1: isBn
       ? 'অভিজ্ঞ দলিল লেখক দল হিসেবে ভূমি ও সম্পত্তি লেনদেনের দলিল তৈরির নির্ভরযোগ্য ও পেশাদার সেবা প্রদান করে থাকি। আপনার জমি বা সম্পত্তির ক্রয়-বিক্রয়ের প্রতিটি ধাপকে সহজ, নির্ভুল ও নিরাপদ করতে আমরা সর্বোচ্চ গুরুত্ব দিয়ে কাজ করি।'
       : 'As an experienced deed writers team, we provide reliable and professional services for land and property transaction documentation. We give our highest priority to making every step of your land or property transactions simple, accurate, and safe.',
@@ -73,11 +70,6 @@ export default function AboutSection() {
 
   return (
     <section className="relative overflow-hidden section-padding bg-navy-dark">
-      <div
-        className="absolute top-0 left-0 w-[400px] h-[400px] 
-                   bg-gold/5 rounded-full blur-[160px] -z-0"
-      />
-
       <div className="container-custom relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           <motion.div
@@ -89,14 +81,8 @@ export default function AboutSection() {
           >
             <div className="relative w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72">
               <div
-                className="absolute -inset-3 rounded-full 
-                           bg-gradient-to-br from-gold/30 to-transparent 
-                           blur-xl"
-              />
-
-              <div
                 className="relative w-full h-full rounded-full 
-                           overflow-hidden border-4 border-gold/30 shadow-2xl"
+                           overflow-hidden shadow-2xl"
               >
                 <Image
                   src={profileImage}
@@ -133,13 +119,6 @@ export default function AboutSection() {
             viewport={{ once: true, margin: '-100px' }}
             className="w-full lg:w-7/12 text-center lg:text-left"
           >
-            <motion.h2
-              variants={itemVariants}
-              className="heading-2 mb-6 text-bangla-safe"
-            >
-              {content.title}
-            </motion.h2>
-
             <motion.p
               variants={itemVariants}
               className="text-muted text-base leading-[1.9] mb-5 
