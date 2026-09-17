@@ -3,17 +3,12 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { locales, type Locale } from '@/i18n';
 import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 
-// ============================================
-// Static Params (বাংলা + ইংরেজি প্রি-রেন্ডার)
-// ============================================
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-// ============================================
-// Metadata (ভাষা অনুযায়ী)
-// ============================================
 export async function generateMetadata({
   params: { locale },
 }: {
@@ -42,9 +37,6 @@ export async function generateMetadata({
   };
 }
 
-// ============================================
-// Locale Layout
-// ============================================
 export default async function LocaleLayout({
   children,
   params: { locale },
@@ -52,31 +44,22 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  // ভাষা ভ্যালিডেট করুন
   if (!locales.includes(locale as Locale)) {
     notFound();
   }
 
-  // Static rendering এনাবল করুন
   setRequestLocale(locale);
 
-  // অনুবাদ মেসেজ লোড করুন
   const messages = await getMessages();
 
   return (
     <NextIntlClientProvider messages={messages}>
       <div lang={locale} className="min-h-screen flex flex-col bg-navy">
-        {/* ============================================
-            HEADER (সব পেজে)
-            ============================================ */}
         <Header />
 
-        {/* ============================================
-            MAIN CONTENT
-            ============================================ */}
-        <main className="flex-1">
-          {children}
-        </main>
+        <main className="flex-1">{children}</main>
+
+        <Footer />
       </div>
     </NextIntlClientProvider>
   );
