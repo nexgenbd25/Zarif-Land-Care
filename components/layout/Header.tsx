@@ -142,15 +142,15 @@ export default function Header() {
 
             <Link
               href={`/${locale === 'bn' ? '' : locale + '/'}login`}
-              className="hidden lg:inline-flex items-center gap-2.5 
-                         px-6 py-3 rounded-lg
+              className="hidden lg:inline-flex items-center gap-2 
+                         px-5 py-2 rounded-lg
                          bg-gradient-to-r from-gold to-gold-light
-                         text-navy font-bold text-base
+                         text-navy font-bold text-sm
                          shadow-lg shadow-gold/20
                          transition-all duration-200
                          hover:shadow-xl hover:shadow-gold/30 hover:scale-105"
             >
-              <LogIn size={20} />
+              <LogIn size={18} />
               {t('login')}
             </Link>
 
