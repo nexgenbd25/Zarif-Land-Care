@@ -36,7 +36,14 @@ const config: Config = {
 
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
-        bangla: ['var(--font-hind)', 'sans-serif'],
+        english: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        bangla: [
+          'var(--font-hind)',
+          'Hind Siliguri',
+          'Noto Sans Bengali',
+          'SolaimanLipi',
+          'sans-serif',
+        ],
       },
 
       fontSize: {
@@ -51,11 +58,17 @@ const config: Config = {
         '5xl': ['3rem', { lineHeight: '1.4' }],
       },
 
+      lineHeight: {
+        bangla: '1.9',
+        'bangla-tight': '1.75',
+        'bangla-heading': '1.7',
+      },
+
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
         'slide-up': 'slideUp 0.5s ease-out',
         'slide-down': 'slideDown 0.3s ease-out',
-        'float': 'float 3s ease-in-out infinite',
+        float: 'float 3s ease-in-out infinite',
       },
 
       keyframes: {
@@ -91,6 +104,10 @@ const config: Config = {
       boxShadow: {
         'green-glow': '0 0 30px rgba(31, 122, 63, 0.3)',
         'green-soft': '0 4px 20px rgba(31, 122, 63, 0.15)',
+      },
+
+      screens: {
+        xs: '375px',
       },
     },
   },
