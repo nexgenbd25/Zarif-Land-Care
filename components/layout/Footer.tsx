@@ -14,7 +14,8 @@ import {
   ArrowRight,
 } from 'lucide-react';
 
-const LOGO_URL = 'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
+const LOGO_URL =
+  'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
 
 export default function Footer() {
   const locale = useLocale();
@@ -55,8 +56,12 @@ export default function Footer() {
   };
 
   const description = isBn ? content.description_bn : content.description_en;
-  const usefulLinksLabel = isBn ? content.usefulLinks_bn : content.usefulLinks_en;
-  const policyPagesLabel = isBn ? content.policyPages_bn : content.policyPages_en;
+  const usefulLinksLabel = isBn
+    ? content.usefulLinks_bn
+    : content.usefulLinks_en;
+  const policyPagesLabel = isBn
+    ? content.policyPages_bn
+    : content.policyPages_en;
   const contactUsLabel = isBn ? content.contactUs_bn : content.contactUs_en;
   const homeLabel = isBn ? content.home_bn : content.home_en;
   const serviceLabel = isBn ? content.service_bn : content.service_en;
@@ -138,10 +143,25 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative overflow-hidden bg-[#0F3D1F] text-white">
+    <footer className="relative overflow-hidden bg-gradient-to-b from-[#0F3D1F] via-[#0A2E17] to-[#061B0D] text-white">
+      {/* Top green accent line */}
       <div
         className="absolute top-0 left-0 right-0 h-px 
-                   bg-gradient-to-r from-transparent via-[#1F7A3F] to-transparent"
+                   bg-gradient-to-r from-transparent via-[#22C55E] to-transparent"
+      />
+
+      {/* Subtle radial glow — top center */}
+      <div
+        className="absolute -top-40 left-1/2 -translate-x-1/2 
+                   w-[600px] h-[600px] bg-[#1F7A3F]/10 rounded-full 
+                   blur-3xl pointer-events-none"
+      />
+
+      {/* Subtle radial glow — bottom right */}
+      <div
+        className="absolute -bottom-40 -right-20 
+                   w-[500px] h-[500px] bg-[#22C55E]/5 rounded-full 
+                   blur-3xl pointer-events-none"
       />
 
       <div className="container-custom relative z-10 pt-12 pb-6 lg:pt-16 lg:pb-6">
@@ -159,6 +179,7 @@ export default function Footer() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 
                      gap-8 md:gap-10 lg:gap-6"
         >
+          {/* Column 1 — Logo + Description + Social */}
           <motion.div variants={itemVariants} className="lg:col-span-4">
             <Link href={getUrl('/')} className="inline-block mb-5 group">
               <Image
@@ -174,7 +195,7 @@ export default function Footer() {
             </Link>
 
             <p
-              className="text-gray-200 text-sm lg:text-base 
+              className="text-gray-300 text-sm lg:text-base 
                          text-bangla-safe mb-6 max-w-md"
             >
               {description}
@@ -204,6 +225,7 @@ export default function Footer() {
             </div>
           </motion.div>
 
+          {/* Column 2 — Useful Links */}
           <motion.div variants={itemVariants} className="lg:col-span-2">
             <h3
               className="text-white font-bold text-base lg:text-lg mb-4 
@@ -223,7 +245,7 @@ export default function Footer() {
                   <Link
                     href={link.href}
                     className="group flex items-center gap-2 
-                               text-gray-200 hover:text-[#22C55E] 
+                               text-gray-300 hover:text-[#22C55E] 
                                transition-all duration-300 
                                text-sm lg:text-base"
                   >
@@ -239,6 +261,7 @@ export default function Footer() {
             </ul>
           </motion.div>
 
+          {/* Column 3 — Policy Pages */}
           <motion.div variants={itemVariants} className="lg:col-span-2">
             <h3
               className="text-white font-bold text-base lg:text-lg mb-4 
@@ -258,7 +281,7 @@ export default function Footer() {
                   <Link
                     href={link.href}
                     className="group flex items-center gap-2 
-                               text-gray-200 hover:text-[#22C55E] 
+                               text-gray-300 hover:text-[#22C55E] 
                                transition-all duration-300 
                                text-sm lg:text-base"
                   >
@@ -274,6 +297,7 @@ export default function Footer() {
             </ul>
           </motion.div>
 
+          {/* Column 4 — Contact */}
           <motion.div variants={itemVariants} className="lg:col-span-4">
             <h3
               className="text-white font-bold text-base lg:text-lg mb-4 
@@ -297,7 +321,7 @@ export default function Footer() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <p
-                        className="text-gray-200 text-sm lg:text-base 
+                        className="text-gray-300 text-sm lg:text-base 
                                    text-bangla-safe break-words"
                       >
                         {text}
@@ -323,7 +347,7 @@ export default function Footer() {
             <div className="flex flex-col gap-3 mt-5 pt-5 border-t border-white/10">
               <a
                 href="mailto:zariflandcare@gmail.com"
-                className="flex items-center gap-2.5 text-gray-200 
+                className="flex items-center gap-2.5 text-gray-300 
                            hover:text-[#22C55E] transition-colors 
                            text-sm lg:text-base group"
               >
@@ -340,7 +364,7 @@ export default function Footer() {
 
               <a
                 href="tel:+8801788766735"
-                className="flex items-center gap-2.5 text-gray-200 
+                className="flex items-center gap-2.5 text-gray-300 
                            hover:text-[#22C55E] transition-colors 
                            text-sm lg:text-base group"
               >
@@ -356,9 +380,10 @@ export default function Footer() {
           </motion.div>
         </motion.div>
 
+        {/* Bottom bar */}
         <div className="mt-8 lg:mt-10 pt-5 border-t border-white/10">
           <p
-            className="text-gray-300 text-xs lg:text-sm text-center
+            className="text-gray-400 text-xs lg:text-sm text-center
                        text-bangla-safe"
           >
             © {new Date().getFullYear()} Zarif Land Care Center. {copyrightText}
