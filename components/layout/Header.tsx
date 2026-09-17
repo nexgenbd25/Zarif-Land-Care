@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Home, Wrench, FileText, Phone, Info, LogIn } from 'lucide-react';
+import { Menu, X, LogIn } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 
 const LOGO_URL = 'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
@@ -47,27 +47,22 @@ export default function Header() {
     {
       name: t('home'),
       href: `/${isBn ? '' : locale}`,
-      icon: Home,
     },
     {
       name: t('services'),
       href: `/${isBn ? '' : locale + '/'}services`,
-      icon: Wrench,
     },
     {
       name: t('blog'),
       href: `/${isBn ? '' : locale + '/'}blog`,
-      icon: FileText,
     },
     {
       name: t('contact'),
       href: `/${isBn ? '' : locale + '/'}contact`,
-      icon: Phone,
     },
     {
       name: t('about'),
       href: `/${isBn ? '' : locale + '/'}about`,
-      icon: Info,
     },
   ];
 
@@ -119,14 +114,13 @@ export default function Header() {
 
           <nav className="hidden lg:flex items-center gap-1">
             {menuItems.map((item) => {
-              const Icon = item.icon;
               const active = isActive(item.href);
 
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative flex items-center gap-2.5 
+                  className={`relative flex items-center 
                               px-4 xl:px-5 py-3 rounded-md 
                               text-base xl:text-lg font-semibold
                               transition-all duration-200
@@ -136,7 +130,6 @@ export default function Header() {
                                   : 'text-black hover:text-[#1F7A3F]'
                               }`}
                 >
-                  <Icon size={20} strokeWidth={2.2} />
                   <span className="whitespace-nowrap">{item.name}</span>
                   {active && (
                     <motion.div
@@ -208,7 +201,6 @@ export default function Header() {
             >
               <nav className="container-custom py-6 flex flex-col gap-1">
                 {menuItems.map((item, index) => {
-                  const Icon = item.icon;
                   const active = isActive(item.href);
 
                   return (
@@ -221,7 +213,7 @@ export default function Header() {
                       <Link
                         href={item.href}
                         onClick={() => setIsMenuOpen(false)}
-                        className={`flex items-center gap-3 
+                        className={`flex items-center 
                                     px-4 py-3 rounded-md text-lg font-medium
                                     transition-all duration-200
                                     ${
@@ -230,7 +222,6 @@ export default function Header() {
                                         : 'text-black hover:text-[#1F7A3F] hover:bg-[#1F7A3F]/5'
                                     }`}
                       >
-                        <Icon size={22} strokeWidth={2.2} />
                         <span>{item.name}</span>
                       </Link>
                     </motion.div>
