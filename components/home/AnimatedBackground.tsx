@@ -1,10 +1,6 @@
 'use client';
 
 export default function AnimatedBackground() {
-  // ============================================
-  // Twinkling Stars - Static positions
-  // শুধু সাদা তারা, সোনালী নেই
-  // ============================================
   const stars = [
     { left: '8%', top: '15%', delay: '0s', size: 1.5 },
     { left: '22%', top: '45%', delay: '1.2s', size: 1 },
@@ -20,15 +16,8 @@ export default function AnimatedBackground() {
 
   return (
     <div className="absolute inset-0 overflow-hidden -z-0 pointer-events-none">
-      {/* ============================================
-          LAYER 1: Animated Gradient Background
-          (শুধু নেভি টোন, সোনালী/কমলা নেই)
-          ============================================ */}
       <div className="absolute inset-0 animated-bg-gradient" />
 
-      {/* ============================================
-          LAYER 2: Grid Pattern (Static)
-          ============================================ */}
       <div
         className="absolute inset-0 opacity-[0.015]"
         style={{
@@ -40,10 +29,6 @@ export default function AnimatedBackground() {
         }}
       />
 
-      {/* ============================================
-          LAYER 3: Subtle Blue Glow (Top Right)
-          (সোনালী এর বদলে নীল)
-          ============================================ */}
       <div
         className="absolute -top-40 -right-40 w-[500px] h-[500px] 
                    bg-blue-500 rounded-full blur-[160px] 
@@ -54,10 +39,6 @@ export default function AnimatedBackground() {
         }}
       />
 
-      {/* ============================================
-          LAYER 4: Subtle Indigo Glow (Bottom Left)
-          (কমলা এর বদলে ইন্ডিগো)
-          ============================================ */}
       <div
         className="absolute -bottom-40 -left-40 w-[500px] h-[500px] 
                    bg-indigo-500 rounded-full blur-[160px] 
@@ -69,10 +50,6 @@ export default function AnimatedBackground() {
         }}
       />
 
-      {/* ============================================
-          LAYER 5: Twinkling Stars
-          (সাদা তারা, সোনালী নয়)
-          ============================================ */}
       {stars.map((star, index) => (
         <div
           key={index}
@@ -88,15 +65,9 @@ export default function AnimatedBackground() {
         />
       ))}
 
-      {/* ============================================
-          LAYER 6: Top Gradient Fade
-          ============================================ */}
       <div className="absolute top-0 left-0 right-0 h-40 
                       bg-gradient-to-b from-navy via-navy/50 to-transparent" />
 
-      {/* ============================================
-          LAYER 7: Bottom Gradient Fade
-          ============================================ */}
       <div className="absolute bottom-0 left-0 right-0 h-40 
                       bg-gradient-to-t from-navy via-navy/50 to-transparent" />
     </div>
