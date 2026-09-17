@@ -40,6 +40,10 @@ export default function Footer() {
     home_en: 'Home',
     service_bn: 'সেবাসমূহ',
     service_en: 'Service',
+    blog_bn: 'ব্লগ',
+    blog_en: 'Blog',
+    about_bn: 'আমাদের সম্পর্কে',
+    about_en: 'About Us',
     privacy_bn: 'প্রাইভেসি পলিসি',
     privacy_en: 'Privacy Policy',
     terms_bn: 'শর্তাবলী',
@@ -56,6 +60,8 @@ export default function Footer() {
   const contactUsLabel = isBn ? content.contactUs_bn : content.contactUs_en;
   const homeLabel = isBn ? content.home_bn : content.home_en;
   const serviceLabel = isBn ? content.service_bn : content.service_en;
+  const blogLabel = isBn ? content.blog_bn : content.blog_en;
+  const aboutLabel = isBn ? content.about_bn : content.about_en;
   const privacyLabel = isBn ? content.privacy_bn : content.privacy_en;
   const termsLabel = isBn ? content.terms_bn : content.terms_en;
   const stakingLabel = isBn ? content.staking_bn : content.staking_en;
@@ -64,6 +70,8 @@ export default function Footer() {
   const usefulLinks = [
     { name: homeLabel, href: getUrl('/') },
     { name: serviceLabel, href: getUrl('/services') },
+    { name: blogLabel, href: getUrl('/blog') },
+    { name: aboutLabel, href: getUrl('/about') },
   ];
 
   const policyLinks = [
@@ -299,13 +307,8 @@ export default function Footer() {
                 const text = isBn ? contact.text_bn : contact.text_en;
                 return (
                   <li key={index} className="flex items-start gap-2.5">
-                    <div
-                      className="w-8 h-8 rounded-full bg-gold/10 
-                                 border border-gold/20
-                                 flex items-center justify-center 
-                                 flex-shrink-0 mt-0.5"
-                    >
-                      <MapPin size={14} className="text-gold" />
+                    <div className="flex-shrink-0 mt-0.5">
+                      <MapPin size={16} className="text-gold" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p
@@ -333,23 +336,19 @@ export default function Footer() {
               })}
             </ul>
 
-            <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-gold/10">
+            <div className="flex flex-col gap-3 mt-5 pt-5 border-t border-gold/10">
               <a
                 href="mailto:zariflandcare@gmail.com"
                 className="flex items-center gap-2.5 text-gray-300 
                            hover:text-gold transition-colors 
                            text-sm lg:text-base group"
               >
-                <div
-                  className="w-8 h-8 rounded-full 
-                             bg-gradient-to-br from-gold to-gold-light
-                             flex items-center justify-center 
-                             flex-shrink-0
+                <Mail
+                  size={16}
+                  className="text-gold flex-shrink-0 
                              transition-transform duration-300
                              group-hover:scale-110"
-                >
-                  <Mail size={14} className="text-navy" />
-                </div>
+                />
                 <span className="break-all text-bangla-safe">
                   zariflandcare@gmail.com
                 </span>
@@ -361,16 +360,12 @@ export default function Footer() {
                            hover:text-gold transition-colors 
                            text-sm lg:text-base group"
               >
-                <div
-                  className="w-8 h-8 rounded-full 
-                             bg-gradient-to-br from-gold to-gold-light
-                             flex items-center justify-center 
-                             flex-shrink-0
+                <Phone
+                  size={16}
+                  className="text-gold flex-shrink-0 
                              transition-transform duration-300
                              group-hover:scale-110"
-                >
-                  <Phone size={14} className="text-navy" />
-                </div>
+                />
                 <span className="text-bangla-safe">
                   +8801788766735
                 </span>
