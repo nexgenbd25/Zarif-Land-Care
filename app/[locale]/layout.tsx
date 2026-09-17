@@ -1,9 +1,23 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import { Hind_Siliguri, Inter } from 'next/font/google';
 import { locales, type Locale } from '@/i18n';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+
+const hindSiliguri = Hind_Siliguri({
+  subsets: ['bengali', 'latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-hind',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -54,7 +68,18 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <div lang={locale} className="min-h-screen flex flex-col bg-white">
+      <div
+        lang={locale}
+        className={`${hindSiliguri.variable} ${inter.variable} min-h-screen flex flex-col bg-white ${
+          locale === 'bn' ? 'font-bangla' : 'font-english'
+        }`}
+        style={{
+          fontFamily:
+            locale === 'bn'
+              ? 'var(--font-hind), "Hind Siliguri", "Noto Sans Bengali", sans-serif'
+              : 'var(--font-inter), system-ui, sans-serif',
+        }}
+      >
         <Header />
 
         <main className="flex-1">{children}</main>
