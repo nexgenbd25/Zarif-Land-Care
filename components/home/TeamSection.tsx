@@ -149,7 +149,10 @@ export default function TeamSection() {
   const totalDots = maxIndex + 1;
 
   return (
-    <section className="relative overflow-hidden section-padding bg-white">
+    <section className="relative overflow-hidden section-padding bg-gradient-to-b from-white via-[#F8FAF9] to-white">
+      {/* Decorative background glow */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#1F7A3F]/5 rounded-full blur-3xl pointer-events-none" />
+
       <div className="container-custom relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -158,11 +161,11 @@ export default function TeamSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 lg:mb-16"
         >
-          <h2 className="heading-2 mb-4 text-[#1F2937] text-bangla-safe">
+          <h2 className="heading-2 mb-4 text-[#1F2937] text-bangla-heading pt-2 pb-2">
             {heading}
           </h2>
 
-          <p className="text-[#6B7280] text-sm sm:text-base max-w-2xl mx-auto leading-[1.9] text-bangla-safe mb-6">
+          <p className="text-[#6B7280] text-sm sm:text-base max-w-2xl mx-auto text-bangla-safe mb-6">
             {subheading}
           </p>
 
@@ -199,17 +202,28 @@ export default function TeamSection() {
                 >
                   <div
                     className="group relative h-full bg-white
-                               border border-[#E5E7EB] rounded-xl
-                               transition-all duration-300
-                               hover:border-[#1F7A3F]
-                               hover:shadow-xl
-                               hover:shadow-[#1F7A3F]/10"
+                               rounded-2xl
+                               border border-[#E5E7EB]
+                               overflow-hidden
+                               transition-all duration-500
+                               hover:border-[#1F7A3F]/40
+                               hover:shadow-[0_20px_50px_-15px_rgba(31,122,63,0.25)]
+                               hover:-translate-y-1"
                   >
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-0.5 rounded-b-full bg-[#1F7A3F]" />
+                    {/* Top gradient ribbon */}
+                    <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#1F7A3F] via-[#22C55E] to-[#1F7A3F]" />
 
-                    <div className="relative p-5 lg:p-6">
-                      <div className="relative w-24 h-24 lg:w-28 lg:h-28 mx-auto mb-4">
-                        <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-[#1F7A3F]/30 group-hover:border-[#1F7A3F] transition-all duration-300">
+                    {/* Subtle pattern overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#1F7A3F]/[0.02] via-transparent to-[#22C55E]/[0.03] pointer-events-none" />
+
+                    {/* Header band */}
+                    <div className="relative pt-6 pb-4 px-5 lg:px-6">
+                      <div className="relative w-24 h-24 lg:w-28 lg:h-28 mx-auto aspect-square">
+                        {/* Outer ring glow */}
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#1F7A3F]/20 to-[#22C55E]/10 blur-md scale-105" />
+
+                        {/* Photo circle */}
+                        <div className="relative w-full h-full aspect-square rounded-full overflow-hidden border-[3px] border-white ring-2 ring-[#1F7A3F]/25 group-hover:ring-[#1F7A3F] transition-all duration-500 shadow-lg">
                           <Image
                             src={member.image_url}
                             alt={name}
@@ -220,49 +234,52 @@ export default function TeamSection() {
                           />
                         </div>
 
-                        <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[#1F7A3F] border-4 border-white flex items-center justify-center">
-                          <BadgeCheck size={12} className="text-white" />
+                        {/* Verified badge */}
+                        <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] border-[3px] border-white flex items-center justify-center shadow-md">
+                          <BadgeCheck size={14} className="text-white" />
                         </div>
                       </div>
+                    </div>
 
+                    {/* Body */}
+                    <div className="relative px-5 lg:px-6 pb-6">
                       <div className="text-center mb-4">
-                        <h3 className="text-base lg:text-lg font-bold text-[#1F2937] mb-1.5 text-bangla-safe leading-[1.6] group-hover:text-[#1F7A3F] transition-colors">
+                        <h3 className="text-base lg:text-lg font-bold text-[#1F2937] mb-1 text-bangla-heading pt-1 pb-1 group-hover:text-[#1F7A3F] transition-colors duration-300">
                           {name}
                         </h3>
 
-                        <p className="text-[#1F7A3F] text-xs lg:text-sm font-semibold text-bangla-safe leading-[1.7]">
+                        <p className="text-[#1F7A3F] text-xs lg:text-sm font-semibold text-bangla-safe pt-1 pb-2">
                           {designation}
                         </p>
 
-                        <div className="w-10 h-0.5 bg-[#1F7A3F] mx-auto rounded-full mt-2.5" />
+                        <div className="w-12 h-0.5 bg-gradient-to-r from-[#1F7A3F] to-[#22C55E] mx-auto rounded-full mt-1" />
                       </div>
 
-                      <div className="space-y-2.5 pt-3 border-t border-[#E5E7EB]">
-                        <div className="flex items-start gap-2">
-                          <User
-                            size={14}
-                            className="text-[#1F7A3F] flex-shrink-0 mt-1"
-                          />
+                      {/* Info list */}
+                      <div className="space-y-3 pt-4 border-t border-[#E5E7EB]">
+                        <div className="flex items-start gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-[#1F7A3F]/8 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <User size={14} className="text-[#1F7A3F]" />
+                          </div>
                           <div className="min-w-0 flex-1">
-                            <span className="text-[10px] text-[#6B7280] block leading-tight">
+                            <span className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold block pt-0.5 pb-0.5">
                               {fatherLabel}
                             </span>
-                            <span className="text-xs lg:text-sm text-[#1F2937] text-bangla-safe leading-[1.6] break-words">
+                            <span className="text-xs lg:text-sm text-[#1F2937] text-bangla-safe break-words">
                               {father}
                             </span>
                           </div>
                         </div>
 
-                        <div className="flex items-start gap-2">
-                          <MapPin
-                            size={14}
-                            className="text-[#1F7A3F] flex-shrink-0 mt-1"
-                          />
+                        <div className="flex items-start gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-[#1F7A3F]/8 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <MapPin size={14} className="text-[#1F7A3F]" />
+                          </div>
                           <div className="min-w-0 flex-1">
-                            <span className="text-[10px] text-[#6B7280] block leading-tight">
+                            <span className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold block pt-0.5 pb-0.5">
                               {addressLabel}
                             </span>
-                            <span className="text-xs lg:text-sm text-[#1F2937] text-bangla-safe leading-[1.6] break-words">
+                            <span className="text-xs lg:text-sm text-[#1F2937] text-bangla-safe break-words">
                               {address}
                             </span>
                           </div>
@@ -270,13 +287,12 @@ export default function TeamSection() {
 
                         <a
                           href={`tel:${member.phone.replace(/\s/g, '')}`}
-                          className="flex items-center gap-2 pt-1"
+                          className="flex items-center gap-2.5 pt-3 mt-1 border-t border-[#E5E7EB] group/phone"
                         >
-                          <Phone
-                            size={14}
-                            className="text-[#1F7A3F] flex-shrink-0"
-                          />
-                          <span className="text-xs lg:text-sm text-[#1F7A3F] hover:text-[#155E30] transition-colors font-semibold">
+                          <div className="w-7 h-7 rounded-lg bg-[#1F7A3F] flex items-center justify-center flex-shrink-0 group-hover/phone:bg-[#155E30] transition-colors">
+                            <Phone size={13} className="text-white" />
+                          </div>
+                          <span className="text-xs lg:text-sm text-[#1F7A3F] group-hover/phone:text-[#155E30] transition-colors font-semibold tracking-wide">
                             {member.phone}
                           </span>
                         </a>
@@ -289,7 +305,8 @@ export default function TeamSection() {
           </motion.div>
         </div>
 
-        <div className="flex items-center justify-center gap-2 mt-8">
+        {/* Dots */}
+        <div className="flex items-center justify-center gap-2 mt-10">
           {Array.from({ length: totalDots }).map((_, index) => (
             <button
               key={index}
