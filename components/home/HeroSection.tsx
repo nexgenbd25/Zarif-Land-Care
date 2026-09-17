@@ -8,6 +8,7 @@ import {
   Monitor,
   Printer,
   Smartphone,
+  ArrowRight,
 } from 'lucide-react';
 
 const HERO_BG =
@@ -95,8 +96,8 @@ export default function HeroSection() {
               <div className="flex flex-row gap-3 sm:gap-4 justify-center items-center">
                 <Link
                   href={getUrl('/contact')}
-                  className="inline-flex items-center justify-center gap-2
-                             px-5 sm:px-6 py-2.5 sm:py-3 rounded-md font-bold
+                  className="group inline-flex items-center justify-center gap-2
+                             w-40 sm:w-48 py-2.5 sm:py-3 rounded-md font-bold
                              bg-brand text-white
                              transition-all duration-300
                              hover:bg-brand-dark
@@ -104,12 +105,17 @@ export default function HeroSection() {
                              text-sm sm:text-base"
                 >
                   <span className="text-bangla-safe">{cta1}</span>
+                  <ArrowRight
+                    size={18}
+                    className="transition-transform duration-300 
+                               group-hover:translate-x-1"
+                  />
                 </Link>
 
                 <Link
                   href={getUrl('/services')}
-                  className="inline-flex items-center justify-center gap-2
-                             px-5 sm:px-6 py-2.5 sm:py-3 rounded-md font-bold
+                  className="group inline-flex items-center justify-center gap-2
+                             w-40 sm:w-48 py-2.5 sm:py-3 rounded-md font-bold
                              bg-white text-brand
                              transition-all duration-300
                              hover:bg-gray-100
@@ -117,6 +123,11 @@ export default function HeroSection() {
                              text-sm sm:text-base"
                 >
                   <span className="text-bangla-safe">{cta2}</span>
+                  <ArrowRight
+                    size={18}
+                    className="transition-transform duration-300 
+                               group-hover:translate-x-1"
+                  />
                 </Link>
               </div>
             </div>
@@ -135,35 +146,35 @@ export default function HeroSection() {
                     key={feature.id}
                     className="group aspect-square rounded-lg
                                flex flex-col items-center justify-center
-                               p-3 sm:p-4 lg:p-5
+                               p-4 sm:p-5 lg:p-6
                                bg-white
                                shadow-[0_8px_30px_rgba(0,0,0,0.15)]
                                transition-all duration-300
                                hover:-translate-y-1
-                               hover:shadow-[0_12px_35px_rgba(31,122,63,0.2)]"
+                               hover:shadow-[0_12px_35px_rgba(31,122,63,0.25)]"
                   >
                     <div
-                      className="mb-2 sm:mb-3 flex items-center justify-center
+                      className="mb-3 sm:mb-4 flex items-center justify-center
                                  transition-transform duration-300
                                  group-hover:scale-110"
                     >
                       <Icon
-                        size={36}
+                        size={44}
                         strokeWidth={1.8}
                         className="text-[#1F7A3F] sm:hidden drop-shadow-md"
                       />
                       <Icon
-                        size={48}
-                        strokeWidth={1.8}
+                        size={72}
+                        strokeWidth={1.6}
                         className="text-[#1F7A3F] hidden sm:block drop-shadow-md"
                       />
                     </div>
 
                     <h3
-                      className="text-[10px] sm:text-xs lg:text-sm font-bold 
-                                 text-black leading-[1.5] 
+                      className="text-sm sm:text-base lg:text-lg xl:text-xl 
+                                 font-bold text-black leading-[1.5] 
                                  text-bangla-safe whitespace-pre-line
-                                 drop-shadow-md text-center"
+                                 text-center"
                     >
                       {title}
                     </h3>
