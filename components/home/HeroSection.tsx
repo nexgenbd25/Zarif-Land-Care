@@ -17,9 +17,6 @@ export default function HeroSection() {
     return path === '/' ? prefix || '/' : `${prefix}${path}`;
   };
 
-  // ============================================
-  // Faster, Simpler Animations
-  // ============================================
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -55,47 +52,54 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-navy section-padding">
-      {/* Animated Background */}
+    <section className="relative overflow-hidden bg-gradient-navy
+                        pt-4 pb-8 sm:pt-8 sm:pb-12 lg:py-20">
       <AnimatedBackground />
 
       <div className="container-custom relative z-10">
-        <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-12 xl:gap-16">
-          {/* ============================================
-              LEFT COLUMN: Text
-              ============================================ */}
+        <div className="flex flex-col lg:flex-row items-center gap-5 sm:gap-8 lg:gap-12 xl:gap-16">
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
             className="w-full lg:w-1/2 text-center lg:text-left"
           >
-            {/* Headline */}
             <motion.h1
               variants={itemVariants}
-              className="heading-1 mb-6 text-bangla-safe"
+              className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl 
+                         font-bold text-white mb-3 sm:mb-5 lg:mb-6
+                         leading-[1.4] pt-[0.15em] pb-[0.05em]
+                         text-bangla-safe"
             >
               {t('hero.title')}
             </motion.h1>
 
-            {/* Sub-headline */}
             <motion.p
               variants={itemVariants}
-              className="text-muted text-base sm:text-lg mb-8 leading-[1.9] 
+              className="text-muted text-sm sm:text-base lg:text-lg 
+                         mb-5 sm:mb-7 lg:mb-8 leading-[1.85] 
                          max-w-2xl mx-auto lg:mx-0 text-bangla-safe"
             >
               {t('hero.subtitle')}
             </motion.p>
 
-            {/* CTA Buttons */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-col sm:flex-row gap-4 
+              className="flex flex-col sm:flex-row gap-2.5 sm:gap-4 
                          justify-center lg:justify-start"
             >
               <Link
                 href={getUrl('/contact')}
-                className="btn-primary group"
+                className="inline-flex items-center justify-center gap-2
+                           px-6 py-3 sm:py-3.5 rounded-lg font-semibold
+                           bg-gradient-to-r from-brand-orange to-brand-red
+                           text-white shadow-lg
+                           transition-all duration-300
+                           hover:shadow-xl hover:scale-105
+                           active:scale-95
+                           w-full sm:w-auto
+                           leading-[1.7] pt-[0.8rem] pb-[0.6rem]
+                           text-sm sm:text-base"
               >
                 <Phone size={18} className="group-hover:scale-110 transition-transform" />
                 <span className="text-bangla-safe">{t('hero.cta1')}</span>
@@ -103,7 +107,16 @@ export default function HeroSection() {
 
               <Link
                 href={getUrl('/services')}
-                className="btn-secondary group"
+                className="inline-flex items-center justify-center gap-2
+                           px-6 py-3 sm:py-3.5 rounded-lg font-semibold
+                           border-2 border-gold text-gold
+                           bg-transparent
+                           transition-all duration-300
+                           hover:bg-gold hover:text-navy
+                           active:scale-95
+                           w-full sm:w-auto
+                           leading-[1.7] pt-[0.8rem] pb-[0.6rem]
+                           text-sm sm:text-base group"
               >
                 <span className="text-bangla-safe">{t('hero.cta2')}</span>
                 <ArrowRight
@@ -113,7 +126,6 @@ export default function HeroSection() {
               </Link>
             </motion.div>
 
-            {/* Trust Indicators - Desktop */}
             <motion.div
               variants={itemVariants}
               className="hidden lg:flex items-center gap-8 mt-12 pt-8 
@@ -153,9 +165,6 @@ export default function HeroSection() {
             </motion.div>
           </motion.div>
 
-          {/* ============================================
-              RIGHT COLUMN: Carousel
-              ============================================ */}
           <motion.div
             variants={imageVariants}
             initial="hidden"
@@ -166,42 +175,41 @@ export default function HeroSection() {
           </motion.div>
         </div>
 
-        {/* Trust Indicators - Mobile */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
-          className="lg:hidden flex items-center justify-center gap-4 sm:gap-8 mt-12 pt-8 
+          className="lg:hidden flex items-center justify-center gap-4 mt-6 pt-5 
                      border-t border-navy-border"
         >
-          <div className="flex flex-col items-center text-center gap-2">
-            <div className="w-14 h-14 rounded-full bg-gold/10 
+          <div className="flex items-center gap-2.5">
+            <div className="w-11 h-11 rounded-full bg-gold/10 
                             border border-gold/30 flex items-center justify-center">
-              <FileText size={24} className="text-gold" />
+              <FileText size={20} className="text-gold" />
             </div>
-            <div>
-              <div className="text-2xl font-bold text-gold">
+            <div className="text-left">
+              <div className="text-xl font-bold text-gold leading-tight">
                 <CountUpNumber end={1000} suffix="+" duration={2} />
               </div>
-              <div className="text-xs text-muted text-bangla-safe">
+              <div className="text-[11px] text-muted text-bangla-safe leading-tight">
                 দলিল সম্পন্ন
               </div>
             </div>
           </div>
 
-          <div className="w-px h-16 bg-navy-border" />
+          <div className="w-px h-10 bg-navy-border" />
 
-          <div className="flex flex-col items-center text-center gap-2">
-            <div className="w-14 h-14 rounded-full bg-gold/10 
+          <div className="flex items-center gap-2.5">
+            <div className="w-11 h-11 rounded-full bg-gold/10 
                             border border-gold/30 flex items-center justify-center">
-              <Users size={24} className="text-gold" />
+              <Users size={20} className="text-gold" />
             </div>
-            <div>
-              <div className="text-2xl font-bold text-gold">
+            <div className="text-left">
+              <div className="text-xl font-bold text-gold leading-tight">
                 <CountUpNumber end={500} suffix="+" duration={2} delay={0.2} />
               </div>
-              <div className="text-xs text-muted text-bangla-safe">
+              <div className="text-[11px] text-muted text-bangla-safe leading-tight">
                 সন্তুষ্ট ক্লায়েন্ট
               </div>
             </div>
