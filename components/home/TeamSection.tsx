@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Phone, MapPin, User } from 'lucide-react';
+import { Phone, MapPin, User, Award, Quote } from 'lucide-react';
 
 interface TeamMember {
   id: number;
@@ -83,9 +83,8 @@ export default function TeamSection() {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [cardsPerView, setCardsPerView] = useState(1);
+  const [cardsPerView, setCardsPerView] = useState(3);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const content = {
     heading_bn: 'আমাদের টিম',
@@ -120,25 +119,9 @@ export default function TeamSection() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const maxIndex = Math.max(0, TEAM.length - cardsPerView);
-
   const goToNext = useCallback(() => {
-    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
-  }, [maxIndex]);
-
-  const goToPrev = useCallback(() => {
-    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
-  }, [maxIndex]);
-
-  const goToSlide = (index: number) => {
-    setCurrentIndex(Math.min(index, maxIndex));
-  };
-
-  useEffect(() => {
-    if (currentIndex > maxIndex) {
-      setCurrentIndex(maxIndex);
-    }
-  }, [cardsPerView, currentIndex, maxIndex]);
+    setCurrentIndex((prev) => prev + 1);
+  }, []);
 
   useEffect(() => {
     if (!isPaused) {
@@ -155,7 +138,22 @@ export default function TeamSection() {
   const handleMouseEnter = () => setIsPaused(true);
   const handleMouseLeave = () => setIsPaused(false);
 
-  const totalDots = maxIndex + 1;
+  const extendedTeam = [...TEAM, ...TEAM, ...TEAM];
+  const startOffset = TEAM.length;
+
+  useEffect(() => {
+    if (currentIndex >= TEAM.length) {
+      const timer = setTimeout(() => {
+        setCurrentIndex(0);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [currentIndex]);
+
+  const displayIndex = startOffset + currentIndex;
+
+  const totalDots = TEAM.length;
+  const activeDot = currentIndex % TEAM.length;
 
   return (
     <section className="relative overflow-hidden section-padding bg-navy
@@ -163,6 +161,10 @@ export default function TeamSection() {
       <div
         className="absolute top-0 right-0 w-[500px] h-[500px] 
                    bg-gold/5 rounded-full blur-[140px] -z-0"
+      />
+      <div
+        className="absolute bottom-0 left-0 w-[400px] h-[400px] 
+                   bg-blue-500/5 rounded-full blur-[140px] -z-0"
       />
 
       <div className="container-custom relative z-10">
@@ -185,56 +187,65 @@ export default function TeamSection() {
           <div className="w-20 h-1 bg-gradient-gold mx-auto rounded-full" />
         </motion.div>
 
-        <div className="relative">
-          <div
-            ref={containerRef}
-            className="overflow-hidden"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+        <div
+          className="relative overflow-hidden"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <motion.div
+            className="flex"
+            animate={{
+              x: `-${displayIndex * (100 / cardsPerView)}%`,
+            }}
+            transition={{
+              type: 'spring',
+              stiffness: 220,
+              damping: 30,
+            }}
           >
-            <motion.div
-              className="flex"
-              animate={{
-                x: `-${currentIndex * (100 / cardsPerView)}%`,
-              }}
-              transition={{
-                type: 'spring',
-                stiffness: 260,
-                damping: 30,
-              }}
-            >
-              {TEAM.map((member) => {
-                const name = isBn ? member.name_bn : member.name_en;
-                const designation = isBn
-                  ? member.designation_bn
-                  : member.designation_en;
-                const father = isBn ? member.father_bn : member.father_en;
-                const address = isBn ? member.address_bn : member.address_en;
+            {extendedTeam.map((member, index) => {
+              const name = isBn ? member.name_bn : member.name_en;
+              const designation = isBn
+                ? member.designation_bn
+                : member.designation_en;
+              const father = isBn ? member.father_bn : member.father_en;
+              const address = isBn ? member.address_bn : member.address_en;
 
-                return (
+              return (
+                <div
+                  key={`${member.id}-${index}`}
+                  className="flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 
+                             px-2.5 sm:px-3"
+                >
                   <div
-                    key={member.id}
-                    className="flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 
-                               px-2 sm:px-3"
+                    className="group relative h-full
+                               bg-gradient-to-b from-navy-dark to-navy
+                               border border-navy-border 
+                               rounded-2xl overflow-hidden
+                               transition-all duration-500
+                               hover:border-gold hover:shadow-2xl 
+                               hover:shadow-gold/10"
                   >
                     <div
-                      className="relative h-full
-                                 bg-navy-dark border border-navy-border 
-                                 rounded-2xl p-5 lg:p-6 text-center
-                                 transition-all duration-500
-                                 hover:border-gold hover:shadow-2xl"
-                    >
-                      <div
-                        className="absolute top-0 left-0 right-0 h-0.5 
-                                   bg-gradient-to-r from-transparent via-gold to-transparent 
-                                   rounded-t-2xl"
-                      />
+                      className="absolute top-0 left-0 right-0 h-1 
+                                 bg-gradient-to-r from-transparent via-gold to-transparent"
+                    />
 
-                      <div className="relative w-24 h-24 lg:w-28 lg:h-28 mx-auto mb-4">
+                    <div className="relative p-6 lg:p-7">
+                      <div className="relative w-28 h-28 lg:w-32 lg:h-32 mx-auto mb-5">
+                        <div
+                          className="absolute inset-0 rounded-full 
+                                     bg-gradient-to-br from-gold/40 to-transparent 
+                                     blur-md group-hover:from-gold/60 
+                                     transition-all duration-500"
+                        />
                         <div
                           className="relative w-full h-full rounded-full 
-                                     overflow-hidden border-4 border-gold/30 
-                                     shadow-xl"
+                                     overflow-hidden border-4 border-gold/40 
+                                     shadow-xl
+                                     group-hover:border-gold 
+                                     group-hover:scale-105
+                                     transition-all duration-500"
                         >
                           <Image
                             src={member.image_url}
@@ -247,28 +258,44 @@ export default function TeamSection() {
                         </div>
                       </div>
 
-                      <h3
-                        className="text-base lg:text-lg font-bold text-white 
-                                   mb-1.5 text-bangla-safe leading-[1.6]"
-                      >
-                        {name}
-                      </h3>
+                      <div className="text-center mb-5">
+                        <div
+                          className="inline-flex items-center gap-1.5 
+                                     px-3 py-1 rounded-full
+                                     bg-gold/10 border border-gold/30
+                                     mb-3"
+                        >
+                          <Award size={12} className="text-gold" />
+                          <span
+                            className="text-[10px] lg:text-xs font-medium 
+                                       text-gold text-bangla-safe"
+                          >
+                            {designation}
+                          </span>
+                        </div>
 
-                      <p
-                        className="text-gold text-xs lg:text-sm font-semibold 
-                                   mb-4 text-bangla-safe leading-[1.8]"
-                      >
-                        {designation}
-                      </p>
+                        <h3
+                          className="text-lg lg:text-xl font-bold text-white 
+                                     mb-2 text-bangla-safe leading-[1.6] 
+                                     transition-colors duration-300
+                                     group-hover:text-gold"
+                        >
+                          {name}
+                        </h3>
 
-                      <div className="space-y-2 text-left">
-                        <div className="flex items-start gap-2">
-                          <User
-                            size={14}
-                            className="text-gold flex-shrink-0 mt-1"
-                          />
-                          <div className="min-w-0">
-                            <span className="text-[10px] text-muted block leading-tight">
+                        <div className="w-12 h-0.5 bg-gradient-gold mx-auto rounded-full" />
+                      </div>
+
+                      <div className="space-y-3 pt-4 border-t border-navy-border/50">
+                        <div className="flex items-start gap-2.5">
+                          <div
+                            className="w-6 h-6 rounded-full bg-gold/10 
+                                       flex items-center justify-center flex-shrink-0"
+                          >
+                            <User size={12} className="text-gold" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <span className="text-[10px] text-muted block leading-tight mb-0.5">
                               {fatherLabel}
                             </span>
                             <span
@@ -281,13 +308,15 @@ export default function TeamSection() {
                           </div>
                         </div>
 
-                        <div className="flex items-start gap-2">
-                          <MapPin
-                            size={14}
-                            className="text-gold flex-shrink-0 mt-1"
-                          />
-                          <div className="min-w-0">
-                            <span className="text-[10px] text-muted block leading-tight">
+                        <div className="flex items-start gap-2.5">
+                          <div
+                            className="w-6 h-6 rounded-full bg-gold/10 
+                                       flex items-center justify-center flex-shrink-0"
+                          >
+                            <MapPin size={12} className="text-gold" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <span className="text-[10px] text-muted block leading-tight mb-0.5">
                               {addressLabel}
                             </span>
                             <span
@@ -300,71 +329,54 @@ export default function TeamSection() {
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                          <Phone
-                            size={14}
-                            className="text-gold flex-shrink-0"
-                          />
+                        <div className="flex items-center gap-2.5 pt-1">
+                          <div
+                            className="w-6 h-6 rounded-full 
+                                       bg-gradient-to-br from-gold to-gold-light
+                                       flex items-center justify-center flex-shrink-0"
+                          >
+                            <Phone size={12} className="text-navy" />
+                          </div>
                           <a
                             href={`tel:${member.phone.replace(/\s/g, '')}`}
                             className="text-xs lg:text-sm text-gold 
                                        hover:text-gold-light 
-                                       transition-colors font-medium"
+                                       transition-colors font-semibold"
                           >
                             {member.phone}
                           </a>
                         </div>
                       </div>
                     </div>
+
+                    <div
+                      className="absolute -bottom-6 -right-6 w-24 h-24 
+                                 opacity-[0.03] group-hover:opacity-[0.06]
+                                 transition-opacity duration-500"
+                    >
+                      <Quote size={96} className="text-gold" />
+                    </div>
                   </div>
-                );
-              })}
-            </motion.div>
-          </div>
+                </div>
+              );
+            })}
+          </motion.div>
+        </div>
 
-          <button
-            onClick={goToPrev}
-            className="absolute left-0 top-1/2 -translate-y-1/2 
-                       -translate-x-2 sm:-translate-x-4 lg:-translate-x-5 z-20
-                       w-10 h-10 lg:w-12 lg:h-12 rounded-full 
-                       bg-navy-dark border border-gold/30
-                       flex items-center justify-center
-                       text-gold hover:bg-gold hover:text-navy
-                       transition-all duration-200 shadow-lg"
-            aria-label="Previous"
-          >
-            <ChevronLeft size={20} />
-          </button>
-
-          <button
-            onClick={goToNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 
-                       translate-x-2 sm:translate-x-4 lg:translate-x-5 z-20
-                       w-10 h-10 lg:w-12 lg:h-12 rounded-full 
-                       bg-navy-dark border border-gold/30
-                       flex items-center justify-center
-                       text-gold hover:bg-gold hover:text-navy
-                       transition-all duration-200 shadow-lg"
-            aria-label="Next"
-          >
-            <ChevronRight size={20} />
-          </button>
-
-          <div className="flex items-center justify-center gap-2 mt-8">
-            {Array.from({ length: totalDots }).map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToSlide(index)}
-                className={`transition-all duration-300 rounded-full
-                            ${
-                              index === currentIndex
-                                ? 'w-8 h-2 bg-gold'
-                                : 'w-2 h-2 bg-white/40 hover:bg-white/70'
-                            }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
+        <div className="flex items-center justify-center gap-2 mt-10">
+          {Array.from({ length: totalDots }).map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`transition-all duration-300 rounded-full
+                          ${
+                            index === activeDot
+                              ? 'w-8 h-2 bg-gradient-gold'
+                              : 'w-2 h-2 bg-white/30 hover:bg-white/60'
+                          }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </div>
     </section>
