@@ -13,7 +13,6 @@ import {
   ArrowRight,
   LucideIcon,
 } from 'lucide-react';
-import SectionDivider from '@/components/ui/SectionDivider';
 
 interface Service {
   id: number;
@@ -110,8 +109,6 @@ export default function ServicesSection() {
   return (
     <section className="relative overflow-hidden section-padding bg-navy
                         border-b border-navy-border">
-      <SectionDivider />
-
       <div
         className="absolute top-0 left-1/2 -translate-x-1/2 
                    w-[600px] h-[600px] bg-gold/5 rounded-full 
