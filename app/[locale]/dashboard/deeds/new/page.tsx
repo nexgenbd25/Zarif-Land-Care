@@ -1,0 +1,607 @@
+'use client';
+
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
+import { motion } from 'framer-motion';
+import {
+  Save,
+  X,
+  Upload,
+  FileText,
+  Loader2,
+  CheckCircle,
+  AlertCircle,
+  Hash,
+  Calendar,
+  User,
+  Users,
+  MapPin,
+  DollarSign,
+  Phone,
+  MessageSquare,
+  FilePlus2,
+} from 'lucide-react';
+
+interface FormData {
+  serialNo: string;
+  deedNo: string;
+  date: string;
+  donorName: string;
+  donorFatherName: string;
+  recipientName: string;
+  recipientFatherName: string;
+  mouzaName: string;
+  deedType: string;
+  value: string;
+  mobile: string;
+  remarks: string;
+}
+
+interface FormErrors {
+  serialNo?: string;
+  deedNo?: string;
+  date?: string;
+  donorName?: string;
+  recipientName?: string;
+  mouzaName?: string;
+  deedType?: string;
+  value?: string;
+  mobile?: string;
+  pdf?: string;
+}
+
+const DEED_TYPES = [
+  { value: 'sale', label_bn: 'বিক্রয় দলিল', label_en: 'Sale Deed' },
+  { value: 'gift', label_bn: 'দানপত্র', label_en: 'Gift Deed' },
+  { value: 'heba', label_bn: 'হেবা দলিল', label_en: 'Heba Deed' },
+  { value: 'exchange', label_bn: 'বিনিময় দলিল', label_en: 'Exchange Deed' },
+  { value: 'partition', label_bn: 'বাটোয়ারা দলিল', label_en: 'Partition Deed' },
+  { value: 'lease', label_bn: 'ইজারা দলিল', label_en: 'Lease Deed' },
+  { value: 'mortgage', label_bn: 'বন্ধকী দলিল', label_en: 'Mortgage Deed' },
+  { value: 'power', label_bn: 'পাওয়ার অব অ্যাটর্নি', label_en: 'Power of Attorney' },
+  { value: 'other', label_bn: 'অন্যান্য', label_en: 'Other' },
+];
+
+export default function NewDeedPage() {
+  const locale = useLocale();
+  const router = useRouter();
+  const isBn = locale === 'bn';
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [success, setSuccess] = useState('');
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+
+  const [formData, setFormData] = useState<FormData>({
+    serialNo: '',
+    deedNo: '',
+    date: new Date().toISOString().split('T')[0],
+    donorName: '',
+    donorFatherName: '',
+    recipientName: '',
+    recipientFatherName: '',
+    mouzaName: '',
+    deedType: '',
+    value: '',
+    mobile: '',
+    remarks: '',
+  });
+
+  const content = {
+    pageTitle_bn: 'নতুন দলিল এন্ট্রি',
+    pageTitle_en: 'New Deed Entry',
+    pageSub_bn: 'নতুন দলিলের তথ্য পূরণ করুন',
+    pageSub_en: 'Fill in the new deed information',
+
+    serialNo_bn: 'ক্রমিক নং',
+    serialNo_en: 'Serial No',
+    serialNoPh_bn: 'যেমন: ০১',
+    serialNoPh_en: 'e.g. 01',
+
+    deedNo_bn: 'দলিল নং',
+    deedNo_en: 'Deed No',
+    deedNoPh_bn: 'যেমন: 1234/2025',
+    deedNoPh_en: 'e.g. 1234/2025',
+
+    date_bn: 'তারিখ',
+    date_en: 'Date',
+
+    donorName_bn: 'দাতার নাম',
+    donorName_en: 'Donor Name',
+    donorNamePh_bn: 'দাতার পূর্ণ নাম',
+    donorNamePh_en: 'Donor full name',
+
+    donorFatherName_bn: 'দাতার পিতার নাম',
+    donorFatherName_en: "Donor's Father Name",
+    donorFatherNamePh_bn: 'দাতার পিতার নাম',
+    donorFatherNamePh_en: "Donor's father name",
+
+    recipientName_bn: 'গ্রহীতার নাম',
+    recipientName_en: 'Recipient Name',
+    recipientNamePh_bn: 'গ্রহীতার পূর্ণ নাম',
+    recipientNamePh_en: 'Recipient full name',
+
+    recipientFatherName_bn: 'গ্রহীতার পিতার নাম',
+    recipientFatherName_en: "Recipient's Father Name",
+    recipientFatherNamePh_bn: 'গ্রহীতার পিতার নাম',
+    recipientFatherNamePh_en: "Recipient's father name",
+
+    mouzaName_bn: 'মৌজার নাম',
+    mouzaName_en: 'Mouza Name',
+    mouzaNamePh_bn: 'মৌজার নাম',
+    mouzaNamePh_en: 'Mouza name',
+
+    deedType_bn: 'দলিলের রকম',
+    deedType_en: 'Deed Type',
+    deedTypePh_bn: 'দলিলের রকম নির্বাচন করুন',
+    deedTypePh_en: 'Select deed type',
+
+    value_bn: 'মূল্য (টাকা)',
+    value_en: 'Value (BDT)',
+    valuePh_bn: 'যেমন: ৫,০০,০০০',
+    valuePh_en: 'e.g. 500000',
+
+    mobile_bn: 'মোবাইল নম্বর',
+    mobile_en: 'Mobile Number',
+    mobilePh_bn: 'যেমন: 01788766735',
+    mobilePh_en: 'e.g. 01788766735',
+
+    remarks_bn: 'মন্তব্য',
+    remarks_en: 'Remarks',
+    remarksPh_bn: 'অতিরিক্ত তথ্য (ঐচ্ছিক)',
+    remarksPh_en: 'Additional notes (optional)',
+
+    pdf_bn: 'দলিল PDF',
+    pdf_en: 'Deed PDF',
+    pdfUpload_bn: 'PDF আপলোড করুন',
+    pdfUpload_en: 'Upload PDF',
+    pdfHint_bn: 'শুধুমাত্র PDF, সর্বোচ্চ 10MB',
+    pdfHint_en: 'PDF only, max 10MB',
+    pdfSelected_bn: 'নির্বাচিত',
+    pdfSelected_en: 'Selected',
+
+    save_bn: 'সংরক্ষণ করুন',
+    save_en: 'Save Deed',
+    cancel_bn: 'বাতিল',
+    cancel_en: 'Cancel',
+    saving_bn: 'সংরক্ষণ হচ্ছে...',
+    saving_en: 'Saving...',
+
+    required_bn: 'এই ঘরটি পূরণ করুন',
+    required_en: 'This field is required',
+    invalidMobile_bn: 'সঠিক মোবাইল নম্বর দিন',
+    invalidMobile_en: 'Enter valid mobile number',
+    invalidValue_bn: 'সঠিক মূল্য দিন',
+    invalidValue_en: 'Enter valid value',
+    pdfTooLarge_bn: 'PDF 10MB এর চেয়ে ছোট হতে হবে',
+    pdfTooLarge_en: 'PDF must be under 10MB',
+    pdfInvalid_bn: 'শুধুমাত্র PDF ফাইল আপলোড করুন',
+    pdfInvalid_en: 'Only PDF files allowed',
+    success_bn: 'দলিল সফলভাবে সংরক্ষিত হয়েছে!',
+    success_en: 'Deed saved successfully!',
+  };
+
+  const t = (key: string) =>
+    isBn ? (content as any)[`${key}_bn`] : (content as any)[`${key}_en`];
+
+  const handleChange = (field: keyof FormData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field as keyof FormErrors]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== 'application/pdf') {
+      setErrors((prev) => ({ ...prev, pdf: t('pdfInvalid') }));
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setErrors((prev) => ({ ...prev, pdf: t('pdfTooLarge') }));
+      return;
+    }
+
+    setPdfFile(file);
+    setErrors((prev) => ({ ...prev, pdf: undefined }));
+  };
+
+  const validate = () => {
+    const newErrors: FormErrors = {};
+    if (!formData.serialNo.trim()) newErrors.serialNo = t('required');
+    if (!formData.deedNo.trim()) newErrors.deedNo = t('required');
+    if (!formData.date) newErrors.date = t('required');
+    if (!formData.donorName.trim()) newErrors.donorName = t('required');
+    if (!formData.recipientName.trim()) newErrors.recipientName = t('required');
+    if (!formData.mouzaName.trim()) newErrors.mouzaName = t('required');
+    if (!formData.deedType) newErrors.deedType = t('required');
+    if (!formData.value.trim()) newErrors.value = t('required');
+    else if (isNaN(Number(formData.value.replace(/,/g, ''))))
+      newErrors.value = t('invalidValue');
+    if (!formData.mobile.trim()) newErrors.mobile = t('required');
+    else if (!/^\d{10,15}$/.test(formData.mobile.replace(/\D/g, '')))
+      newErrors.mobile = t('invalidMobile');
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSuccess('');
+    if (!validate()) {
+      // Scroll to top on error
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    setIsLoading(true);
+
+    // TODO: Replace with actual API call + file upload
+    setTimeout(() => {
+      setIsLoading(false);
+      setSuccess(t('success'));
+      setTimeout(() => {
+        router.push(`/${isBn ? '' : locale + '/'}dashboard/deeds/pending`);
+      }, 1500);
+    }, 1500);
+  };
+
+  const renderField = ({
+    icon: Icon,
+    label,
+    field,
+    placeholder,
+    type = 'text',
+    required = false,
+  }: {
+    icon: any;
+    label: string;
+    field: keyof FormData;
+    placeholder?: string;
+    type?: string;
+    required?: boolean;
+  }) => (
+    <div>
+      <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+        {label}
+        {required && <span className="text-red-500 ml-0.5">*</span>}
+      </label>
+      <div className="relative">
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+          <Icon size={16} />
+        </div>
+        <input
+          type={type}
+          value={formData[field]}
+          onChange={(e) => handleChange(field, e.target.value)}
+          placeholder={placeholder}
+          className={`w-full pl-10 pr-4 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+            errors[field as keyof FormErrors]
+              ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+              : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+          }`}
+        />
+      </div>
+      {errors[field as keyof FormErrors] && (
+        <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+          <AlertCircle size={12} />
+          {errors[field as keyof FormErrors]}
+        </p>
+      )}
+    </div>
+  );
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="max-w-4xl mx-auto"
+    >
+      {/* Header */}
+      <div className="mb-5 sm:mb-6">
+        <div className="flex items-center gap-3 mb-1">
+          <div className="w-11 h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center">
+            <FilePlus2 size={22} className="text-[#1F7A3F]" />
+          </div>
+          <div>
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5 leading-tight">
+              {t('pageTitle')}
+            </h1>
+            <p className="text-[11px] sm:text-xs text-[#6B7280] text-bangla-safe">
+              {t('pageSub')}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Success */}
+      {success && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-4 flex items-start gap-2 p-3 rounded-lg bg-[#DCFCE7] border border-[#22C55E]/30"
+        >
+          <CheckCircle size={18} className="text-[#15803D] flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-[#166534] text-bangla-safe">
+            {success}
+          </p>
+        </motion.div>
+      )}
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Section 1: Deed Basic Info */}
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5 lg:p-6">
+          <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
+            <Hash size={16} className="text-[#1F7A3F]" />
+            {isBn ? 'দলিলের মূল তথ্য' : 'Deed Information'}
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {renderField({
+              icon: Hash,
+              label: t('serialNo'),
+              field: 'serialNo',
+              placeholder: t('serialNoPh'),
+              required: true,
+            })}
+            {renderField({
+              icon: FileText,
+              label: t('deedNo'),
+              field: 'deedNo',
+              placeholder: t('deedNoPh'),
+              required: true,
+            })}
+            {renderField({
+              icon: Calendar,
+              label: t('date'),
+              field: 'date',
+              type: 'date',
+              required: true,
+            })}
+            {/* Deed Type */}
+            <div>
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                {t('deedType')}
+                <span className="text-red-500 ml-0.5">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none z-10">
+                  <FileText size={16} />
+                </div>
+                <select
+                  value={formData.deedType}
+                  onChange={(e) => handleChange('deedType', e.target.value)}
+                  className={`w-full pl-10 pr-10 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] text-bangla-safe focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
+                    errors.deedType
+                      ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                      : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                  }`}
+                >
+                  <option value="">{t('deedTypePh')}</option>
+                  {DEED_TYPES.map((dt) => (
+                    <option key={dt.value} value={dt.value}>
+                      {isBn ? dt.label_bn : dt.label_en}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M3 4.5L6 7.5L9 4.5"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+              {errors.deedType && (
+                <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                  <AlertCircle size={12} />
+                  {errors.deedType}
+                </p>
+              )}
+            </div>
+            {renderField({
+              icon: MapPin,
+              label: t('mouzaName'),
+              field: 'mouzaName',
+              placeholder: t('mouzaNamePh'),
+              required: true,
+            })}
+            {renderField({
+              icon: DollarSign,
+              label: t('value'),
+              field: 'value',
+              placeholder: t('valuePh'),
+              required: true,
+            })}
+          </div>
+        </div>
+
+        {/* Section 2: Donor & Recipient */}
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5 lg:p-6">
+          <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
+            <Users size={16} className="text-[#1F7A3F]" />
+            {isBn ? 'দাতা ও গ্রহীতার তথ্য' : 'Donor & Recipient Info'}
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {renderField({
+              icon: User,
+              label: t('donorName'),
+              field: 'donorName',
+              placeholder: t('donorNamePh'),
+              required: true,
+            })}
+            {renderField({
+              icon: User,
+              label: t('donorFatherName'),
+              field: 'donorFatherName',
+              placeholder: t('donorFatherNamePh'),
+            })}
+            {renderField({
+              icon: User,
+              label: t('recipientName'),
+              field: 'recipientName',
+              placeholder: t('recipientNamePh'),
+              required: true,
+            })}
+            {renderField({
+              icon: User,
+              label: t('recipientFatherName'),
+              field: 'recipientFatherName',
+              placeholder: t('recipientFatherNamePh'),
+            })}
+          </div>
+        </div>
+
+        {/* Section 3: Contact & Notes */}
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5 lg:p-6">
+          <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
+            <Phone size={16} className="text-[#1F7A3F]" />
+            {isBn ? 'যোগাযোগ ও মন্তব্য' : 'Contact & Notes'}
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {renderField({
+              icon: Phone,
+              label: t('mobile'),
+              field: 'mobile',
+              placeholder: t('mobilePh'),
+              type: 'tel',
+              required: true,
+            })}
+            <div>
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                {t('remarks')}
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-3 text-[#9CA3AF] pointer-events-none">
+                  <MessageSquare size={16} />
+                </div>
+                <textarea
+                  value={formData.remarks}
+                  onChange={(e) => handleChange('remarks', e.target.value)}
+                  placeholder={t('remarksPh')}
+                  rows={3}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20 resize-none"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 4: PDF Upload */}
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5 lg:p-6">
+          <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
+            <FileText size={16} className="text-[#1F7A3F]" />
+            {t('pdf')}
+          </h2>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/pdf"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            className={`relative cursor-pointer rounded-xl border-2 border-dashed p-6 sm:p-8 text-center transition-all duration-200 ${
+              errors.pdf
+                ? 'border-red-300 bg-red-50'
+                : pdfFile
+                ? 'border-[#22C55E] bg-[#F0FDF4]'
+                : 'border-[#E5E7EB] bg-[#F8FAF9] hover:border-[#1F7A3F]/40 hover:bg-[#1F7A3F]/5'
+            }`}
+          >
+            {pdfFile ? (
+              <div className="flex items-center justify-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center">
+                  <FileText size={22} className="text-[#1F7A3F]" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-semibold text-[#1F2937] text-bangla-safe break-all max-w-[200px] sm:max-w-md">
+                    {pdfFile.name}
+                  </p>
+                  <p className="text-[11px] text-[#6B7280]">
+                    {(pdfFile.size / 1024 / 1024).toFixed(2)} MB
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPdfFile(null);
+                    if (fileInputRef.current) fileInputRef.current.value = '';
+                  }}
+                  className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors"
+                  aria-label="Remove file"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="w-12 h-12 mx-auto rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center mb-2">
+                  <Upload size={22} className="text-[#1F7A3F]" />
+                </div>
+                <p className="text-sm font-semibold text-[#1F2937] text-bangla-safe mb-1">
+                  {t('pdfUpload')}
+                </p>
+                <p className="text-[11px] text-[#6B7280] text-bangla-safe">
+                  {t('pdfHint')}
+                </p>
+              </>
+            )}
+          </div>
+
+          {errors.pdf && (
+            <p className="mt-2 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+              <AlertCircle size={12} />
+              {errors.pdf}
+            </p>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row gap-3 justify-end pt-2">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="w-full sm:w-auto px-6 py-3 rounded-lg font-semibold text-sm text-[#4B5563] bg-white border border-[#E5E7EB] hover:bg-[#F8FAF9] transition-all duration-200 text-bangla-safe"
+          >
+            {t('cancel')}
+          </button>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-bold text-white text-sm bg-[#1F7A3F] hover:bg-[#155E30] shadow-md shadow-[#1F7A3F]/20 hover:shadow-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98]"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 size={16} className="animate-spin" />
+                <span className="text-bangla-safe">{t('saving')}</span>
+              </>
+            ) : (
+              <>
+                <Save size={16} />
+                <span className="text-bangla-safe">{t('save')}</span>
+              </>
+            )}
+          </button>
+        </div>
+      </form>
+    </motion.div>
+  );
+}
