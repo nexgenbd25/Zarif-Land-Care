@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
-import { ArrowRight, Calendar, Tag } from 'lucide-react';
+import { ArrowRight, Calendar } from 'lucide-react';
 
 interface BlogPost {
   id: number;
@@ -15,8 +15,6 @@ interface BlogPost {
   image_url: string;
   date_bn: string;
   date_en: string;
-  category_bn: string;
-  category_en: string;
   slug: string;
 }
 
@@ -30,8 +28,6 @@ const BLOGS: BlogPost[] = [
     image_url: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80',
     date_bn: '২৭ জুলাই, ২০২৫',
     date_en: '27 July, 2025',
-    category_bn: 'নোটিশ',
-    category_en: 'Notice',
     slug: 'tin-certificate',
   },
   {
@@ -43,8 +39,6 @@ const BLOGS: BlogPost[] = [
     image_url: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80',
     date_bn: '১৫ জুন, ২০২৫',
     date_en: '15 June, 2025',
-    category_bn: 'পরামর্শ',
-    category_en: 'Advice',
     slug: 'deed-writer-service-rules',
   },
   {
@@ -56,8 +50,6 @@ const BLOGS: BlogPost[] = [
     image_url: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
     date_bn: '১০ মে, ২০২৫',
     date_en: '10 May, 2025',
-    category_bn: 'গাইড',
-    category_en: 'Guide',
     slug: 'namjari-kharij-process',
   },
 ];
@@ -150,7 +142,6 @@ export default function BlogSection() {
             const title = isBn ? blog.title_bn : blog.title_en;
             const excerpt = isBn ? blog.excerpt_bn : blog.excerpt_en;
             const date = isBn ? blog.date_bn : blog.date_en;
-            const category = isBn ? blog.category_bn : blog.category_en;
 
             return (
               <motion.div
@@ -184,22 +175,6 @@ export default function BlogSection() {
                                    bg-gradient-to-t 
                                    from-navy-dark via-navy-dark/40 to-transparent"
                       />
-
-                      <div
-                        className="absolute top-4 left-4
-                                   inline-flex items-center gap-1.5
-                                   px-3 py-1.5 rounded-full
-                                   bg-gold/95 backdrop-blur-sm
-                                   shadow-lg"
-                      >
-                        <Tag size={12} className="text-navy" />
-                        <span
-                          className="text-xs font-bold text-navy 
-                                     text-bangla-safe"
-                        >
-                          {category}
-                        </span>
-                      </div>
                     </div>
 
                     <div className="relative flex-1 flex flex-col p-5 lg:p-6">
