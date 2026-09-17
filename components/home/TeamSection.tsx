@@ -101,10 +101,16 @@ export default function TeamSection() {
       'আমাদের টিমে আছেন অভিজ্ঞ ও দক্ষ পেশাদাররা, যারা আপনার জমি সংক্রান্ত সব ধরনের সেবা প্রদান করতে সদা প্রস্তুত।',
     subheading_en:
       'Our team consists of experienced and skilled professionals, always ready to provide all types of land-related services.',
+    addressLabel_bn: 'ঠিকানা',
+    addressLabel_en: 'Address',
+    phoneLabel_bn: 'ফোন',
+    phoneLabel_en: 'Phone',
   };
 
   const heading = isBn ? content.heading_bn : content.heading_en;
   const subheading = isBn ? content.subheading_bn : content.subheading_en;
+  const addressLabel = isBn ? content.addressLabel_bn : content.addressLabel_en;
+  const phoneLabel = isBn ? content.phoneLabel_bn : content.phoneLabel_en;
 
   useEffect(() => {
     const handleResize = () => {
@@ -299,7 +305,7 @@ export default function TeamSection() {
                           <div className="min-w-0 flex-1">
                             <span className="text-[10px] font-bold text-[#1F2937] 
                                             uppercase tracking-wider block mb-0.5">
-                              ঠিকানা
+                              {addressLabel}
                             </span>
                             <span className="text-[11px] sm:text-xs text-[#4B5563] 
                                             text-bangla-safe leading-[1.6] 
@@ -318,7 +324,7 @@ export default function TeamSection() {
                           <div className="min-w-0 flex-1">
                             <span className="text-[10px] font-bold text-[#1F2937] 
                                             uppercase tracking-wider block mb-0.5">
-                              ফোন
+                              {phoneLabel}
                             </span>
                             <a
                               href={`tel:${member.phone.replace(/\s/g, '')}`}
