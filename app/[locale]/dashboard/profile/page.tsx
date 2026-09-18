@@ -13,24 +13,38 @@ import {
   CheckCircle,
   AlertCircle,
   Save,
-  Calendar,
   Shield,
-  X,
+  MapPin,
+  Building2,
+  Hash,
+  Home,
+  AtSign,
 } from 'lucide-react';
 import { getDemoUser, clearDemoUser, saveDemoUser, DemoUser } from '@/lib/auth';
 import DashboardLayout from '../DashboardLayout';
 
 interface FormData {
+  firstName: string;
+  lastName: string;
   username: string;
   email: string;
   country: string;
   phone: string;
+  address: string;
+  state: string;
+  city: string;
+  zipCode: string;
 }
 
 interface FormErrors {
+  firstName?: string;
+  lastName?: string;
   username?: string;
   email?: string;
+  country?: string;
   phone?: string;
+  address?: string;
+  zipCode?: string;
 }
 
 const COUNTRIES = [
@@ -55,10 +69,16 @@ export default function ProfilePage() {
   const [authChecked, setAuthChecked] = useState(false);
 
   const [formData, setFormData] = useState<FormData>({
+    firstName: '',
+    lastName: '',
     username: '',
     email: '',
     country: '+880',
     phone: '',
+    address: '',
+    state: '',
+    city: '',
+    zipCode: '',
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -73,10 +93,16 @@ export default function ProfilePage() {
     }
     setUser(currentUser);
     setFormData({
-      username: currentUser.username,
-      email: currentUser.email,
+      firstName: currentUser.firstName || '',
+      lastName: currentUser.lastName || '',
+      username: currentUser.username || '',
+      email: currentUser.email || '',
       country: currentUser.country || '+880',
       phone: currentUser.phone || '',
+      address: currentUser.address || '',
+      state: currentUser.state || '',
+      city: currentUser.city || '',
+      zipCode: currentUser.zipCode || '',
     });
     setAuthChecked(true);
   }, [router, isBn, locale]);
@@ -89,24 +115,61 @@ export default function ProfilePage() {
   const content = {
     pageTitle_bn: 'আমার প্রোফাইল',
     pageTitle_en: 'My Profile',
-    sectionInfo_bn: 'ব্যক্তিগত তথ্য',
-    sectionInfo_en: 'Personal Information',
+    sectionPersonal_bn: 'ব্যক্তিগত তথ্য',
+    sectionPersonal_en: 'Personal Information',
+    sectionLocation_bn: 'ঠিকানা',
+    sectionLocation_en: 'Location',
     sectionAccount_bn: 'অ্যাকাউন্ট তথ্য',
     sectionAccount_en: 'Account Information',
-    username_bn: 'ইউজারনেম',
-    username_en: 'Username',
-    usernamePh_bn: 'ইউজারনেম',
-    username_en_ph: 'Username',
-    email_bn: 'ইমেইল',
-    email_en: 'Email',
-    emailPh_bn: 'ইমেইল',
-    emailPh_en: 'Email',
-    country_bn: 'দেশ',
-    country_en: 'Country',
-    phone_bn: 'মোবাইল নম্বর',
-    phone_en: 'Mobile Number',
+
+    firstNameLabel_bn: 'প্রথম নাম',
+    firstNameLabel_en: 'First Name',
+    firstNamePh_bn: 'প্রথম নাম লিখুন',
+    firstNamePh_en: 'Enter first name',
+
+    lastNameLabel_bn: 'পদবি',
+    lastNameLabel_en: 'Last Name',
+    lastNamePh_bn: 'পদবি লিখুন',
+    lastNamePh_en: 'Enter last name',
+
+    usernameLabel_bn: 'ইউজারনেম',
+    usernameLabel_en: 'Username',
+    usernamePh_bn: 'ইউজারনেম লিখুন',
+    usernamePh_en: 'Enter username',
+
+    emailLabel_bn: 'ইমেইল',
+    emailLabel_en: 'E-mail Address',
+    emailPh_bn: 'ইমেইল লিখুন',
+    emailPh_en: 'Enter email',
+
+    countryLabel_bn: 'দেশ',
+    countryLabel_en: 'Country',
+
+    phoneLabel_bn: 'মোবাইল নম্বর',
+    phoneLabel_en: 'Mobile Number',
     phonePh_bn: 'মোবাইল নম্বর',
     phonePh_en: 'Mobile number',
+
+    addressLabel_bn: 'ঠিকানা',
+    addressLabel_en: 'Address',
+    addressPh_bn: 'ঠিকানা লিখুন',
+    addressPh_en: 'Enter address',
+
+    stateLabel_bn: 'রাজ্য/বিভাগ',
+    stateLabel_en: 'State',
+    statePh_bn: 'রাজ্য/বিভাগ',
+    statePh_en: 'State',
+
+    cityLabel_bn: 'শহর',
+    cityLabel_en: 'City',
+    cityPh_bn: 'শহর',
+    cityPh_en: 'City',
+
+    zipCodeLabel_bn: 'পোস্ট কোড',
+    zipCodeLabel_en: 'Zip Code',
+    zipCodePh_bn: 'পোস্ট কোড',
+    zipCodePh_en: 'Zip code',
+
     memberSince_bn: 'যোগদানের তারিখ',
     memberSince_en: 'Member Since',
     userId_bn: 'ইউজার আইডি',
@@ -115,22 +178,31 @@ export default function ProfilePage() {
     accountStatus_en: 'Status',
     active_bn: 'সক্রিয়',
     active_en: 'Active',
+
     save_bn: 'সংরক্ষণ করুন',
     save_en: 'Save Changes',
     saving_bn: 'সংরক্ষণ হচ্ছে...',
     saving_en: 'Saving...',
     cancel_bn: 'বাতিল',
     cancel_en: 'Cancel',
-    edit_bn: 'সম্পাদনা',
-    edit_en: 'Edit',
+
     required_bn: 'এই ঘরটি পূরণ করুন',
     required_en: 'This field is required',
+    firstNameShort_bn: 'প্রথম নাম কমপক্ষে ২ অক্ষর',
+    firstNameShort_en: 'First name must be at least 2 characters',
+    lastNameShort_bn: 'পদবি কমপক্ষে ২ অক্ষর',
+    lastNameShort_en: 'Last name must be at least 2 characters',
+    usernameShort_bn: 'ইউজারনেম কমপক্ষে ৩ অক্ষর',
+    usernameShort_en: 'Username must be at least 3 characters',
     invalidEmail_bn: 'সঠিক ইমেইল দিন',
-    invalidEmail_en: 'Enter valid email',
+    invalidEmail_en: 'Enter a valid email',
     invalidPhone_bn: 'সঠিক মোবাইল নম্বর দিন',
     invalidPhone_en: 'Enter valid phone',
-    usernameShort_bn: 'ইউজারনেম কমপক্ষে ৩ অক্ষর',
-    usernameShort_en: 'Min 3 characters',
+    addressLong_bn: 'ঠিকানা সর্বোচ্চ ২০০ অক্ষর',
+    addressLong_en: 'Address must be under 200 characters',
+    invalidZip_bn: 'সঠিক পোস্ট কোড দিন',
+    invalidZip_en: 'Enter valid zip code',
+
     success_bn: 'প্রোফাইল সফলভাবে সংরক্ষিত হয়েছে!',
     success_en: 'Profile updated successfully!',
     loading_bn: 'লোড হচ্ছে...',
@@ -150,16 +222,51 @@ export default function ProfilePage() {
   const validate = () => {
     const newErrors: FormErrors = {};
 
-    if (!formData.username.trim()) newErrors.username = t('required');
-    else if (formData.username.trim().length < 3)
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = t('required');
+    } else if (formData.firstName.trim().length < 2) {
+      newErrors.firstName = t('firstNameShort');
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = t('required');
+    } else if (formData.lastName.trim().length < 2) {
+      newErrors.lastName = t('lastNameShort');
+    }
+
+    if (!formData.username.trim()) {
+      newErrors.username = t('required');
+    } else if (formData.username.trim().length < 3) {
       newErrors.username = t('usernameShort');
+    }
 
-    if (!formData.email.trim()) newErrors.email = t('required');
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+    if (!formData.email.trim()) {
+      newErrors.email = t('required');
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = t('invalidEmail');
+    }
 
-    if (formData.phone && !/^\d{6,15}$/.test(formData.phone.replace(/\D/g, '')))
+    if (!formData.country) {
+      newErrors.country = t('required');
+    }
+
+    if (
+      formData.phone &&
+      !/^\d{6,15}$/.test(formData.phone.replace(/\D/g, ''))
+    ) {
       newErrors.phone = t('invalidPhone');
+    }
+
+    if (formData.address.length > 200) {
+      newErrors.address = t('addressLong');
+    }
+
+    if (
+      formData.zipCode.trim() &&
+      !/^\d{4,10}$/.test(formData.zipCode.replace(/\D/g, ''))
+    ) {
+      newErrors.zipCode = t('invalidZip');
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -172,15 +279,20 @@ export default function ProfilePage() {
 
     setIsLoading(true);
 
-    // TODO: Replace with actual API call
     setTimeout(() => {
       if (user) {
         const updatedUser: DemoUser = {
           ...user,
-          username: formData.username,
-          email: formData.email,
+          firstName: formData.firstName.trim(),
+          lastName: formData.lastName.trim(),
+          username: formData.username.trim(),
+          email: formData.email.trim(),
           country: formData.country,
           phone: formData.phone,
+          address: formData.address,
+          state: formData.state,
+          city: formData.city,
+          zipCode: formData.zipCode,
         };
         saveDemoUser(updatedUser);
         setUser(updatedUser);
@@ -212,6 +324,12 @@ export default function ProfilePage() {
     { day: 'numeric', month: 'long', year: 'numeric' }
   );
 
+  const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+  const displayName = fullName || user.username;
+  const avatarLetter = (user.firstName || user.username || 'U')
+    .charAt(0)
+    .toUpperCase();
+
   return (
     <DashboardLayout user={user} onLogout={handleLogout}>
       <motion.div
@@ -239,7 +357,6 @@ export default function ProfilePage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
             className="mb-4 flex items-start gap-2 p-3 rounded-lg bg-[#DCFCE7] border border-[#22C55E]/30"
           >
             <CheckCircle
@@ -264,13 +381,17 @@ export default function ProfilePage() {
           <div className="p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
             <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center flex-shrink-0 shadow-lg">
               <span className="text-white text-3xl sm:text-4xl font-bold uppercase">
-                {user.username.charAt(0)}
+                {avatarLetter}
               </span>
             </div>
             <div className="text-center sm:text-left min-w-0 flex-1">
               <h2 className="text-xl sm:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1">
-                {user.username}
+                {displayName}
               </h2>
+              <p className="text-sm text-[#6B7280] text-bangla-safe break-all mb-1 flex items-center justify-center sm:justify-start gap-1">
+                <AtSign size={12} className="text-[#1F7A3F]" />
+                {user.username}
+              </p>
               <p className="text-sm text-[#6B7280] text-bangla-safe break-all mb-2">
                 {user.email}
               </p>
@@ -295,16 +416,17 @@ export default function ProfilePage() {
           className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm"
         >
           <form onSubmit={handleSubmit} className="p-4 sm:p-5 lg:p-6">
+            {/* Section 1: Personal */}
             <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
               <User size={16} className="text-[#1F7A3F]" />
-              {t('sectionInfo')}
+              {t('sectionPersonal')}
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-              {/* Username */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-6">
+              {/* First Name */}
               <div className="w-full min-w-0">
                 <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('username')}
+                  {t('firstNameLabel')}
                   <span className="text-red-500 ml-0.5">*</span>
                 </label>
                 <div className="relative">
@@ -313,8 +435,69 @@ export default function ProfilePage() {
                   </div>
                   <input
                     type="text"
+                    value={formData.firstName}
+                    onChange={(e) => handleChange('firstName', e.target.value)}
+                    placeholder={t('firstNamePh')}
+                    className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                      errors.firstName
+                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                    }`}
+                  />
+                </div>
+                {errors.firstName && (
+                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                    <AlertCircle size={12} />
+                    {errors.firstName}
+                  </p>
+                )}
+              </div>
+
+              {/* Last Name */}
+              <div className="w-full min-w-0">
+                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                  {t('lastNameLabel')}
+                  <span className="text-red-500 ml-0.5">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <User size={16} />
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.lastName}
+                    onChange={(e) => handleChange('lastName', e.target.value)}
+                    placeholder={t('lastNamePh')}
+                    className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                      errors.lastName
+                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                    }`}
+                  />
+                </div>
+                {errors.lastName && (
+                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                    <AlertCircle size={12} />
+                    {errors.lastName}
+                  </p>
+                )}
+              </div>
+
+              {/* Username */}
+              <div className="w-full min-w-0">
+                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                  {t('usernameLabel')}
+                  <span className="text-red-500 ml-0.5">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <AtSign size={16} />
+                  </div>
+                  <input
+                    type="text"
                     value={formData.username}
                     onChange={(e) => handleChange('username', e.target.value)}
+                    placeholder={t('usernamePh')}
                     className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
                       errors.username
                         ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
@@ -333,7 +516,7 @@ export default function ProfilePage() {
               {/* Email */}
               <div className="w-full min-w-0">
                 <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('email')}
+                  {t('emailLabel')}
                   <span className="text-red-500 ml-0.5">*</span>
                 </label>
                 <div className="relative">
@@ -344,6 +527,7 @@ export default function ProfilePage() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
+                    placeholder={t('emailPh')}
                     className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
                       errors.email
                         ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
@@ -362,7 +546,8 @@ export default function ProfilePage() {
               {/* Country */}
               <div className="w-full min-w-0">
                 <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('country')}
+                  {t('countryLabel')}
+                  <span className="text-red-500 ml-0.5">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none z-10">
@@ -396,7 +581,7 @@ export default function ProfilePage() {
               {/* Phone */}
               <div className="w-full min-w-0">
                 <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('phone')}
+                  {t('phoneLabel')}
                 </label>
                 <div className="relative flex">
                   <div className="flex items-center gap-1 px-2.5 sm:px-3 py-2.5 rounded-l-lg border border-r-0 border-[#E5E7EB] bg-[#F8FAF9] text-[#1F2937] font-semibold text-xs sm:text-sm min-w-[72px] sm:min-w-[85px]">
@@ -412,6 +597,7 @@ export default function ProfilePage() {
                         e.target.value.replace(/[^\d\s-]/g, '')
                       )
                     }
+                    placeholder={t('phonePh')}
                     className={`w-full px-3 sm:px-4 py-2.5 rounded-r-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
                       errors.phone
                         ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
@@ -428,8 +614,124 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* Account Info */}
-            <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mt-6 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
+            {/* Section 2: Location */}
+            <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
+              <MapPin size={16} className="text-[#1F7A3F]" />
+              {t('sectionLocation')}
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-6">
+              {/* State */}
+              <div className="w-full min-w-0">
+                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                  {t('stateLabel')}
+                </label>
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <Building2 size={16} />
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.state}
+                    onChange={(e) => handleChange('state', e.target.value)}
+                    placeholder={t('statePh')}
+                    className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20"
+                  />
+                </div>
+              </div>
+
+              {/* City */}
+              <div className="w-full min-w-0">
+                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                  {t('cityLabel')}
+                </label>
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <Home size={16} />
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.city}
+                    onChange={(e) => handleChange('city', e.target.value)}
+                    placeholder={t('cityPh')}
+                    className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20"
+                  />
+                </div>
+              </div>
+
+              {/* Zip Code */}
+              <div className="w-full min-w-0">
+                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                  {t('zipCodeLabel')}
+                </label>
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <Hash size={16} />
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.zipCode}
+                    onChange={(e) =>
+                      handleChange(
+                        'zipCode',
+                        e.target.value.replace(/[^\d]/g, '')
+                      )
+                    }
+                    placeholder={t('zipCodePh')}
+                    className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                      errors.zipCode
+                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                    }`}
+                  />
+                </div>
+                {errors.zipCode && (
+                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                    <AlertCircle size={12} />
+                    {errors.zipCode}
+                  </p>
+                )}
+              </div>
+
+              {/* Address — Full width */}
+              <div className="w-full min-w-0 md:col-span-2">
+                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                  {t('addressLabel')}
+                </label>
+                <div className="relative">
+                  <div className="absolute left-3 top-3 text-[#9CA3AF] pointer-events-none">
+                    <MapPin size={16} />
+                  </div>
+                  <textarea
+                    value={formData.address}
+                    onChange={(e) => handleChange('address', e.target.value)}
+                    placeholder={t('addressPh')}
+                    rows={3}
+                    className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 resize-none ${
+                      errors.address
+                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                    }`}
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-0.5">
+                  {errors.address ? (
+                    <p className="text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                      <AlertCircle size={12} />
+                      {errors.address}
+                    </p>
+                  ) : (
+                    <span />
+                  )}
+                  <span className="text-[10px] text-[#9CA3AF]">
+                    {formData.address.length}/200
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 3: Account Info */}
+            <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
               <Shield size={16} className="text-[#1F7A3F]" />
               {t('sectionAccount')}
             </h2>
