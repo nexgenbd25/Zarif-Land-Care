@@ -31,12 +31,21 @@ export function getDemoUser(): DemoUser | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw) as DemoUser;
 
-    // Backward compatibility
     if (!parsed.firstName || !parsed.lastName) {
       const nameParts = (parsed.username || 'User').split(' ');
       parsed.firstName = parsed.firstName || nameParts[0] || 'User';
       parsed.lastName =
         parsed.lastName || nameParts.slice(1).join(' ') || '';
+    }
+
+    // 🎯 Email lowercase force
+    if (parsed.email) {
+      parsed.email = parsed.email.toLowerCase();
+    }
+
+    // 🎯 Username lowercase (jodi capital thake)
+    if (parsed.username) {
+      parsed.username = parsed.username.toLowerCase();
     }
 
     return parsed;
@@ -56,9 +65,6 @@ export function isDemoLoggedIn(): boolean {
   return !!localStorage.getItem(STORAGE_KEY);
 }
 
-/**
- * Full Name from user object
- */
 export function getFullName(user: DemoUser): string {
   const first = user.firstName?.trim() || '';
   const last = user.lastName?.trim() || '';
@@ -67,7 +73,7 @@ export function getFullName(user: DemoUser): string {
 }
 
 /**
- * Demo login
+ * Demo login — username generate from identifier
  */
 export function demoLogin(
   identifier: string,
@@ -84,21 +90,32 @@ export function demoLogin(
   const isEmail = identifier.includes('@');
   const baseName = isEmail ? identifier.split('@')[0] : identifier;
 
-  const nameParts = baseName.split(/[._\-\s]+/).filter((p) => p.length > 0);
+  // 🎯 Username = baseName (lowercase, space chara)
+  const username = baseName.toLowerCase().replace(/\s+/g, '');
+
+  // 🎯 First Name + Last Name from baseName
+  const nameParts = baseName
+    .split(/[._\-\s]+/)
+    .filter((p) => p.length > 0);
 
   const firstName = nameParts[0]
-    ? nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1)
+    ? nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1).toLowerCase()
     : 'User';
   const lastName = nameParts[1]
-    ? nameParts[1].charAt(0).toUpperCase() + nameParts[1].slice(1)
+    ? nameParts[1].charAt(0).toUpperCase() + nameParts[1].slice(1).toLowerCase()
     : '';
+
+  // 🎯 Email lowercase
+  const email = isEmail
+    ? identifier.toLowerCase()
+    : `${username}@demo.local`;
 
   const user: DemoUser = {
     id: `demo_${Date.now()}`,
     firstName,
     lastName,
-    username: baseName,
-    email: isEmail ? identifier : `${identifier}@demo.local`,
+    username,
+    email,
     country: '+880',
     phone: '+880 1788-766735',
     loginTime: new Date().toISOString(),
@@ -109,7 +126,7 @@ export function demoLogin(
 }
 
 /**
- * Demo register — sob field save
+ * Demo register — username as it is, email lowercase
  */
 export function demoRegister(data: {
   firstName: string;
@@ -124,14 +141,20 @@ export function demoRegister(data: {
   city?: string;
   zipCode?: string;
 }): { success: boolean; user?: DemoUser; error?: string } {
+  // 🎯 Username trim + lowercase (jodi capital thake)
+  const username = data.username.trim().toLowerCase();
+
+  // 🎯 Email trim + lowercase
+  const email = data.email.trim().toLowerCase();
+
   const user: DemoUser = {
     id: `demo_${Date.now()}`,
     firstName: data.firstName.trim(),
     lastName: data.lastName.trim(),
-    username: data.username.trim(),
-    email: data.email.trim(),
+    username,
+    email,
     country: data.country,
-    phone: data.phone,
+    phone: data.phone.trim(),
     address: data.address?.trim() || '',
     state: data.state?.trim() || '',
     city: data.city?.trim() || '',
