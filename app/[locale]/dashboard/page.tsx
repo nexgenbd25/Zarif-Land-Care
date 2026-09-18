@@ -4,16 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
-import {
-  CheckCircle2,
-  Hourglass,
-  User,
-  Mail,
-  Phone,
-  Globe,
-  Clock,
-  Loader2,
-} from 'lucide-react';
+import { CheckCircle2, Hourglass, Loader2 } from 'lucide-react';
 import { getDemoUser, clearDemoUser, DemoUser } from '@/lib/auth';
 import DashboardLayout from './DashboardLayout';
 
@@ -65,19 +56,6 @@ export default function DashboardPage() {
 
     approved_bn: 'অনুমোদিত',
     approved_en: 'Approved',
-
-    profile_bn: 'প্রোফাইল তথ্য',
-    profile_en: 'Profile Information',
-    username_bn: 'ইউজারনেম',
-    username_en: 'Username',
-    email_bn: 'ইমেইল',
-    email_en: 'Email',
-    country_bn: 'দেশ',
-    country_en: 'Country',
-    phone_bn: 'মোবাইল',
-    phone_en: 'Mobile',
-    loginTime_bn: 'লগইন সময়',
-    loginTime_en: 'Login Time',
 
     loading_bn: 'লোড হচ্ছে...',
     loading_en: 'Loading...',
@@ -164,13 +142,6 @@ export default function DashboardPage() {
     { year: '2025', value: 256 },
   ];
 
-  const profileFields = [
-    { icon: User, label: t('username'), value: user.username },
-    { icon: Mail, label: t('email'), value: user.email },
-    { icon: Globe, label: t('country'), value: user.country },
-    { icon: Phone, label: t('phone'), value: user.phone },
-  ];
-
   // ===== Chart Component — Approved Only =====
   const RenderChart = ({
     data,
@@ -220,7 +191,6 @@ export default function DashboardPage() {
 
           {/* Chart */}
           <div className="relative h-52 sm:h-64 flex items-end">
-            {/* Y-axis labels */}
             <div className="w-10 sm:w-12 flex flex-col justify-between h-full pb-8 text-[10px] sm:text-xs text-[#9CA3AF] font-medium">
               {yLabels.map((v, i) => (
                 <span key={i} className="leading-none text-right pr-1">
@@ -229,9 +199,7 @@ export default function DashboardPage() {
               ))}
             </div>
 
-            {/* Grid + Bars */}
             <div className="flex-1 relative h-full">
-              {/* Grid lines */}
               <div className="absolute inset-0 bottom-8 flex flex-col justify-between">
                 {yLabels.map((_, i) => (
                   <div
@@ -241,7 +209,6 @@ export default function DashboardPage() {
                 ))}
               </div>
 
-              {/* Bars */}
               <div className="absolute inset-0 bottom-8 flex items-end justify-around gap-1 sm:gap-2">
                 {data.map((d, i) => {
                   const heightPct = (d.value / yMax) * 100;
@@ -270,7 +237,6 @@ export default function DashboardPage() {
                 })}
               </div>
 
-              {/* X-axis labels */}
               <div className="absolute bottom-0 left-0 right-0 h-8 flex items-end justify-around gap-1 sm:gap-2">
                 {data.map((d, i) => (
                   <div key={i} className="flex-1 text-center max-w-[60px]">
@@ -324,11 +290,7 @@ export default function DashboardPage() {
                 <div
                   className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${stat.iconBg} border ${stat.borderColor} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300`}
                 >
-                  <Icon
-                    size={22}
-                    strokeWidth={2}
-                    className={stat.iconColor}
-                  />
+                  <Icon size={22} strokeWidth={2} className={stat.iconColor} />
                 </div>
                 <p className="text-[11px] sm:text-xs font-semibold text-[#6B7280] uppercase tracking-wider text-bangla-safe mb-1">
                   {isBn ? stat.label_bn : stat.label_en}
@@ -354,60 +316,6 @@ export default function DashboardPage() {
           titleKey="khatianChart"
           subKey="khatianChartSub"
         />
-
-        {/* Profile Info */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm"
-        >
-          <div className="p-4 sm:p-5 lg:p-6">
-            <h3 className="text-base sm:text-lg font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-3">
-              {t('profile')}
-            </h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-              {profileFields.map((field, i) => {
-                const Icon = field.icon;
-                return (
-                  <div
-                    key={i}
-                    className="flex items-start gap-3 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]"
-                  >
-                    <div className="w-9 h-9 rounded-lg bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
-                      <Icon size={16} className="text-[#1F7A3F]" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-0.5">
-                        {field.label}
-                      </p>
-                      <p className="text-sm text-[#1F2937] font-semibold text-bangla-safe break-all">
-                        {field.value}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-
-              <div className="flex items-start gap-3 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB] sm:col-span-2">
-                <div className="w-9 h-9 rounded-lg bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
-                  <Clock size={16} className="text-[#1F7A3F]" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-0.5">
-                    {t('loginTime')}
-                  </p>
-                  <p className="text-sm text-[#1F2937] font-semibold">
-                    {new Date(user.loginTime).toLocaleString(
-                      isBn ? 'bn-BD' : 'en-US'
-                    )}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </DashboardLayout>
   );
