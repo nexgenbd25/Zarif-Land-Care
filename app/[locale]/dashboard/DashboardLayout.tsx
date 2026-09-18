@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -78,39 +78,6 @@ export default function DashboardLayout({
 
   const t = (key: string) =>
     isBn ? (content as any)[`${key}_bn`] : (content as any)[`${key}_en`];
-
-  // 🎯 Dynamic Page Title
-  const getPageTitle = (): string => {
-    const base = isBn ? '' : `/${locale}`;
-
-    // Dashboard
-    if (pathname === `${base}/dashboard` || pathname === '/dashboard') {
-      return t('dashboard');
-    }
-
-    // Deeds
-    if (pathname.includes('/dashboard/deeds/new')) return t('newDeed');
-    if (pathname.includes('/dashboard/deeds/approved'))
-      return t('approvedDeed');
-    if (pathname.includes('/dashboard/deeds/pending')) return t('pendingDeed');
-    if (pathname.includes('/dashboard/deeds')) return t('deeds');
-
-    // Khatian
-    if (pathname.includes('/dashboard/khatian/new')) return t('newKhatian');
-    if (pathname.includes('/dashboard/khatian/approved'))
-      return t('approvedKhatian');
-    if (pathname.includes('/dashboard/khatian/pending'))
-      return t('pendingKhatian');
-    if (pathname.includes('/dashboard/khatian')) return t('khatian');
-
-    // Support
-    if (pathname.includes('/dashboard/support')) return t('support');
-
-    // Security
-    if (pathname.includes('/dashboard/security')) return t('security');
-
-    return t('dashboard');
-  };
 
   const menuItems = [
     {
@@ -380,9 +347,10 @@ export default function DashboardLayout({
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col lg:ml-72 min-w-0">
-        {/* Top Bar */}
+        {/* Top Bar — Title REMOVED to avoid duplicate */}
         <header className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB] shadow-sm">
           <div className="flex items-center justify-between px-4 sm:px-6 py-3">
+            {/* Left — Hamburger (mobile only) */}
             <button
               onClick={() => setIsSidebarOpen(true)}
               className="lg:hidden w-10 h-10 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB] flex items-center justify-center text-[#1F2937] hover:bg-[#1F7A3F]/10 hover:border-[#1F7A3F]/30 transition-all"
@@ -391,11 +359,8 @@ export default function DashboardLayout({
               <Menu size={20} />
             </button>
 
-            <h1 className="text-base sm:text-lg lg:text-xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1 flex-1 lg:flex-none ml-3 lg:ml-0 truncate">
-              {getPageTitle()}
-            </h1>
-
-            <div className="flex items-center gap-2 sm:gap-3">
+            {/* Right — Notifications + User */}
+            <div className="flex items-center gap-2 sm:gap-3 ml-auto">
               <button
                 className="relative w-10 h-10 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB] flex items-center justify-center text-[#1F2937] hover:bg-[#1F7A3F]/10 hover:border-[#1F7A3F]/30 transition-all"
                 aria-label="Notifications"
