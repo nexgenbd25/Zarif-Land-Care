@@ -52,22 +52,6 @@ interface FormErrors {
   pdf?: string;
 }
 
-const DEED_TYPES = [
-  { value: 'sale', label_bn: 'বিক্রয় দলিল', label_en: 'Sale Deed' },
-  { value: 'gift', label_bn: 'দানপত্র', label_en: 'Gift Deed' },
-  { value: 'heba', label_bn: 'হেবা দলিল', label_en: 'Heba Deed' },
-  { value: 'exchange', label_bn: 'বিনিময় দলিল', label_en: 'Exchange Deed' },
-  { value: 'partition', label_bn: 'বাটোয়ারা দলিল', label_en: 'Partition Deed' },
-  { value: 'lease', label_bn: 'ইজারা দলিল', label_en: 'Lease Deed' },
-  { value: 'mortgage', label_bn: 'বন্ধকী দলিল', label_en: 'Mortgage Deed' },
-  {
-    value: 'power',
-    label_bn: 'পাওয়ার অব অ্যাটর্নি',
-    label_en: 'Power of Attorney',
-  },
-  { value: 'other', label_bn: 'অন্যান্য', label_en: 'Other' },
-];
-
 function generateSerialNo(existingSerials: string[]): string {
   if (!existingSerials || existingSerials.length === 0) return '01';
 
@@ -110,7 +94,7 @@ export default function NewDeedPage() {
     remarks: '',
   });
 
-  // 🎯 Auth Check
+  // Auth Check
   useEffect(() => {
     const currentUser = getDemoUser();
     if (!currentUser) {
@@ -121,7 +105,7 @@ export default function NewDeedPage() {
     setAuthChecked(true);
   }, [router, isBn, locale]);
 
-  // 🎯 Auto Serial
+  // Auto Serial
   useEffect(() => {
     if (!authChecked) return;
 
@@ -161,10 +145,8 @@ export default function NewDeedPage() {
 
     serialNo_bn: 'ক্রমিক নং',
     serialNo_en: 'Serial No',
-    serialAuto_bn: 'স্বয়ংক্রিয়ভাবে তৈরি হয়েছে',
-    serialAuto_en: 'Auto-generated',
-    serialLoading_bn: 'তৈরি হচ্ছে...',
-    serialLoading_en: 'Generating...',
+    serialLoading_bn: 'লোড হচ্ছে...',
+    serialLoading_en: 'Loading...',
 
     deedNo_bn: 'দলিল নং',
     deedNo_en: 'Deed No',
@@ -201,8 +183,8 @@ export default function NewDeedPage() {
 
     deedType_bn: 'দলিলের রকম',
     deedType_en: 'Deed Type',
-    deedTypePh_bn: 'দলিলের রকম নির্বাচন করুন',
-    deedTypePh_en: 'Select deed type',
+    deedTypePh_bn: 'যেমন: বিক্রয় দলিল / দানপত্র / হেবা দলিল',
+    deedTypePh_en: 'e.g. Sale Deed / Gift Deed / Heba Deed',
 
     value_bn: 'মূল্য (টাকা)',
     value_en: 'Value (BDT)',
@@ -281,7 +263,7 @@ export default function NewDeedPage() {
     if (!formData.donorName.trim()) newErrors.donorName = t('required');
     if (!formData.recipientName.trim()) newErrors.recipientName = t('required');
     if (!formData.mouzaName.trim()) newErrors.mouzaName = t('required');
-    if (!formData.deedType) newErrors.deedType = t('required');
+    if (!formData.deedType.trim()) newErrors.deedType = t('required');
     if (!formData.value.trim()) newErrors.value = t('required');
     else if (isNaN(Number(formData.value.replace(/,/g, ''))))
       newErrors.value = t('invalidValue');
@@ -357,7 +339,7 @@ export default function NewDeedPage() {
     </div>
   );
 
-  // ===== Loading =====
+  // Loading
   if (!authChecked || !user) {
     return (
       <div className="min-h-[100dvh] flex items-center justify-center bg-[#F8FAF9]">
@@ -426,7 +408,7 @@ export default function NewDeedPage() {
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {/* Serial No */}
+              {/* 🎯 Serial No — Simple Readonly, No Badge, No Helper */}
               <div className="w-full min-w-0">
                 <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
                   {t('serialNo')}
@@ -443,16 +425,9 @@ export default function NewDeedPage() {
                     }
                     readOnly
                     disabled
-                    className="w-full pl-10 pr-16 py-2.5 rounded-lg border border-[#E5E7EB] bg-[#F8FAF9] text-sm text-[#1F7A3F] font-bold text-bangla-safe cursor-not-allowed focus:outline-none"
+                    className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] bg-[#F8FAF9] text-sm text-[#1F7A3F] font-bold text-bangla-safe cursor-not-allowed focus:outline-none"
                   />
-                  <div className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#1F7A3F]/10 text-[#1F7A3F] text-[9px] font-bold uppercase tracking-wider">
-                    <CheckCircle size={9} />
-                    Auto
-                  </div>
                 </div>
-                <p className="mt-1 text-[10px] text-[#6B7280] text-bangla-safe">
-                  {t('serialAuto')}
-                </p>
               </div>
 
               {renderField({
@@ -471,51 +446,14 @@ export default function NewDeedPage() {
                 required: true,
               })}
 
-              {/* Deed Type */}
-              <div className="w-full min-w-0">
-                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('deedType')}
-                  <span className="text-red-500 ml-0.5">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none z-10">
-                    <FileText size={16} />
-                  </div>
-                  <select
-                    value={formData.deedType}
-                    onChange={(e) => handleChange('deedType', e.target.value)}
-                    className={`w-full pl-10 pr-10 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] text-bangla-safe focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
-                      errors.deedType
-                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                    }`}
-                  >
-                    <option value="">{t('deedTypePh')}</option>
-                    {DEED_TYPES.map((dt) => (
-                      <option key={dt.value} value={dt.value}>
-                        {isBn ? dt.label_bn : dt.label_en}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                      <path
-                        d="M3 4.5L6 7.5L9 4.5"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                {errors.deedType && (
-                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                    <AlertCircle size={12} />
-                    {errors.deedType}
-                  </p>
-                )}
-              </div>
+              {/* 🎯 Deed Type — Manual Input (Not Dropdown) */}
+              {renderField({
+                icon: FileText,
+                label: t('deedType'),
+                field: 'deedType',
+                placeholder: t('deedTypePh'),
+                required: true,
+              })}
 
               {renderField({
                 icon: MapPin,
