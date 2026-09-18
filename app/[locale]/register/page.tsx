@@ -292,8 +292,11 @@ export default function RegisterPage() {
 
     setIsLoading(true);
 
+    // 🎯 DEMO REGISTER with firstName + lastName
     setTimeout(() => {
       const result = demoRegister({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         username: formData.username,
         email: formData.email,
         country: formData.country,
@@ -365,7 +368,7 @@ export default function RegisterPage() {
           </motion.div>
         )}
 
-        {/* ===== Form (No Cards) ===== */}
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
           {/* Section 1: Personal Info */}
           <div>
