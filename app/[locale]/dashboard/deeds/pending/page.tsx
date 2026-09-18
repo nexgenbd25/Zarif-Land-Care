@@ -7,15 +7,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
   Eye,
-  CheckCircle2,
   X,
   ChevronLeft,
   ChevronRight,
   FileText,
   User,
-  MapPin,
-  Calendar,
-  Phone,
   Hash,
   Inbox,
   Loader2,
@@ -216,8 +212,6 @@ export default function PendingDeedsPage() {
     actions_en: 'Actions',
     view_bn: 'দেখুন',
     view_en: 'View',
-    approve_bn: 'অনুমোদন',
-    approve_en: 'Approve',
     prev_bn: 'পূর্ববর্তী',
     prev_en: 'Prev',
     next_bn: 'পরবর্তী',
@@ -236,10 +230,6 @@ export default function PendingDeedsPage() {
     mobile_en: 'Mobile',
     remarks_bn: 'মন্তব্য',
     remarks_en: 'Remarks',
-    date_bn: 'তারিখ',
-    date_en: 'Date',
-    mouza_bn: 'মৌজা',
-    mouza_en: 'Mouza',
     close_bn: 'বন্ধ করুন',
     close_en: 'Close',
     loading_bn: 'লোড হচ্ছে...',
@@ -275,11 +265,6 @@ export default function PendingDeedsPage() {
 
   const formatValue = (value: number) => {
     return `৳ ${value.toLocaleString(isBn ? 'bn-BD' : 'en-US')}`;
-  };
-
-  const handleApprove = (deedId: number) => {
-    // TODO: API call
-    alert(isBn ? 'দলিল অনুমোদিত হয়েছে!' : 'Deed approved!');
   };
 
   if (!authChecked || !user) {
@@ -423,20 +408,13 @@ export default function PendingDeedsPage() {
                           </span>
                         </td>
                         <td className="px-4 py-3">
-                          <div className="flex items-center justify-center gap-1.5">
+                          <div className="flex items-center justify-center">
                             <button
                               onClick={() => setViewDeed(deed)}
                               className="w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 flex items-center justify-center transition-colors"
                               title={t('view')}
                             >
                               <Eye size={14} />
-                            </button>
-                            <button
-                              onClick={() => handleApprove(deed.id)}
-                              className="w-8 h-8 rounded-lg bg-green-50 hover:bg-green-100 text-green-600 flex items-center justify-center transition-colors"
-                              title={t('approve')}
-                            >
-                              <CheckCircle2 size={14} />
                             </button>
                           </div>
                         </td>
@@ -514,20 +492,13 @@ export default function PendingDeedsPage() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center gap-2 pt-3 border-t border-[#F3F4F6]">
+                  <div className="pt-3 border-t border-[#F3F4F6]">
                     <button
                       onClick={() => setViewDeed(deed)}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-blue-50 text-blue-600 text-xs font-semibold hover:bg-blue-100 transition-colors text-bangla-safe"
+                      className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-blue-50 text-blue-600 text-xs font-semibold hover:bg-blue-100 transition-colors text-bangla-safe"
                     >
                       <Eye size={12} />
                       {t('view')}
-                    </button>
-                    <button
-                      onClick={() => handleApprove(deed.id)}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-green-50 text-green-600 text-xs font-semibold hover:bg-green-100 transition-colors text-bangla-safe"
-                    >
-                      <CheckCircle2 size={12} />
-                      {t('approve')}
                     </button>
                   </div>
                 </motion.div>
@@ -674,24 +645,14 @@ export default function PendingDeedsPage() {
                     </div>
                   )}
 
-                  <div className="flex flex-col-reverse sm:flex-row gap-2 pt-3 border-t border-[#F3F4F6]">
+                  {/* Actions */}
+                  <div className="flex justify-end pt-3 border-t border-[#F3F4F6]">
                     <button
                       type="button"
                       onClick={() => setViewDeed(null)}
                       className="w-full sm:w-auto px-5 py-2.5 rounded-lg font-semibold text-sm text-[#4B5563] bg-white border border-[#E5E7EB] hover:bg-[#F8FAF9] transition-all text-bangla-safe"
                     >
                       {t('close')}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleApprove(viewDeed.id);
-                        setViewDeed(null);
-                      }}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-bold text-white text-sm bg-[#1F7A3F] hover:bg-[#155E30] shadow-md transition-all active:scale-[0.98]"
-                    >
-                      <CheckCircle2 size={16} />
-                      <span className="text-bangla-safe">{t('approve')}</span>
                     </button>
                   </div>
                 </div>
