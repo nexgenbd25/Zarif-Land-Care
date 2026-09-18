@@ -18,7 +18,9 @@ import {
   Building2,
   Hash,
   Home,
+  Lock,
   AtSign,
+  Calendar,
 } from 'lucide-react';
 import { getDemoUser, clearDemoUser, saveDemoUser, DemoUser } from '@/lib/auth';
 import DashboardLayout from '../DashboardLayout';
@@ -39,7 +41,6 @@ interface FormData {
 interface FormErrors {
   firstName?: string;
   lastName?: string;
-  username?: string;
   email?: string;
   country?: string;
   phone?: string;
@@ -134,8 +135,8 @@ export default function ProfilePage() {
 
     usernameLabel_bn: 'ইউজারনেম',
     usernameLabel_en: 'Username',
-    usernamePh_bn: 'ইউজারনেম লিখুন',
-    usernamePh_en: 'Enter username',
+    usernameLocked_bn: 'ইউজারনেম পরিবর্তন করা যাবে না',
+    usernameLocked_en: 'Username cannot be changed',
 
     emailLabel_bn: 'ইমেইল',
     emailLabel_en: 'E-mail Address',
@@ -172,8 +173,6 @@ export default function ProfilePage() {
 
     memberSince_bn: 'যোগদানের তারিখ',
     memberSince_en: 'Member Since',
-    userId_bn: 'ইউজার আইডি',
-    userId_en: 'User ID',
     accountStatus_bn: 'স্টেটাস',
     accountStatus_en: 'Status',
     active_bn: 'সক্রিয়',
@@ -192,8 +191,6 @@ export default function ProfilePage() {
     firstNameShort_en: 'First name must be at least 2 characters',
     lastNameShort_bn: 'পদবি কমপক্ষে ২ অক্ষর',
     lastNameShort_en: 'Last name must be at least 2 characters',
-    usernameShort_bn: 'ইউজারনেম কমপক্ষে ৩ অক্ষর',
-    usernameShort_en: 'Username must be at least 3 characters',
     invalidEmail_bn: 'সঠিক ইমেইল দিন',
     invalidEmail_en: 'Enter a valid email',
     invalidPhone_bn: 'সঠিক মোবাইল নম্বর দিন',
@@ -232,12 +229,6 @@ export default function ProfilePage() {
       newErrors.lastName = t('required');
     } else if (formData.lastName.trim().length < 2) {
       newErrors.lastName = t('lastNameShort');
-    }
-
-    if (!formData.username.trim()) {
-      newErrors.username = t('required');
-    } else if (formData.username.trim().length < 3) {
-      newErrors.username = t('usernameShort');
     }
 
     if (!formData.email.trim()) {
@@ -285,7 +276,8 @@ export default function ProfilePage() {
           ...user,
           firstName: formData.firstName.trim(),
           lastName: formData.lastName.trim(),
-          username: formData.username.trim(),
+          // 🎯 Username change hobe na
+          username: user.username,
           email: formData.email.trim(),
           country: formData.country,
           phone: formData.phone,
@@ -385,13 +377,15 @@ export default function ProfilePage() {
               </span>
             </div>
             <div className="text-center sm:text-left min-w-0 flex-1">
+              {/* 🎯 Line 1: Full Name */}
               <h2 className="text-xl sm:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1">
                 {displayName}
               </h2>
-              <p className="text-sm text-[#6B7280] text-bangla-safe break-all mb-1 flex items-center justify-center sm:justify-start gap-1">
-                <AtSign size={12} className="text-[#1F7A3F]" />
+              {/* 🎯 Line 2: Username (no @) */}
+              <p className="text-sm text-[#1F7A3F] font-semibold text-bangla-safe break-all mb-1">
                 {user.username}
               </p>
+              {/* 🎯 Line 3: Email */}
               <p className="text-sm text-[#6B7280] text-bangla-safe break-all mb-2">
                 {user.email}
               </p>
@@ -401,7 +395,8 @@ export default function ProfilePage() {
                   {t('active')}
                 </span>
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#1F7A3F]/10 text-[#1F7A3F] text-[10px] font-bold">
-                  ID: {user.id}
+                  <Calendar size={10} />
+                  {memberDate}
                 </span>
               </div>
             </div>
@@ -483,11 +478,11 @@ export default function ProfilePage() {
                 )}
               </div>
 
-              {/* Username */}
-              <div className="w-full min-w-0">
-                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+              {/* 🎯 Username — READ-ONLY */}
+              <div className="w-full min-w-0 md:col-span-2">
+                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe flex items-center gap-1.5">
                   {t('usernameLabel')}
-                  <span className="text-red-500 ml-0.5">*</span>
+                  <Lock size={11} className="text-[#6B7280]" />
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
@@ -496,25 +491,19 @@ export default function ProfilePage() {
                   <input
                     type="text"
                     value={formData.username}
-                    onChange={(e) => handleChange('username', e.target.value)}
-                    placeholder={t('usernamePh')}
-                    className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
-                      errors.username
-                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                    }`}
+                    readOnly
+                    disabled
+                    className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] bg-[#F8FAF9] text-sm text-[#6B7280] font-medium text-bangla-safe cursor-not-allowed focus:outline-none"
                   />
                 </div>
-                {errors.username && (
-                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                    <AlertCircle size={12} />
-                    {errors.username}
-                  </p>
-                )}
+                <p className="mt-1 text-[10px] text-[#6B7280] flex items-center gap-1 text-bangla-safe">
+                  <Lock size={10} />
+                  {t('usernameLocked')}
+                </p>
               </div>
 
               {/* Email */}
-              <div className="w-full min-w-0">
+              <div className="w-full min-w-0 md:col-span-2">
                 <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
                   {t('emailLabel')}
                   <span className="text-red-500 ml-0.5">*</span>
@@ -730,27 +719,19 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* Section 3: Account Info */}
+            {/* Section 3: Account Info — User ID NEI */}
             <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
               <Shield size={16} className="text-[#1F7A3F]" />
               {t('sectionAccount')}
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
                 <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-1">
                   {t('memberSince')}
                 </p>
                 <p className="text-sm font-semibold text-[#1F2937]">
                   {memberDate}
-                </p>
-              </div>
-              <div className="p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
-                <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-1">
-                  {t('userId')}
-                </p>
-                <p className="text-sm font-semibold text-[#1F2937] break-all">
-                  {user.id}
                 </p>
               </div>
               <div className="p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
