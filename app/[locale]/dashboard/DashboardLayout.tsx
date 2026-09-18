@@ -16,8 +16,8 @@ import {
   Shield,
   LogOut,
   Circle,
-  User,
   Bell,
+  Mail,
 } from 'lucide-react';
 
 const LOGO_URL =
@@ -74,8 +74,6 @@ export default function DashboardLayout({
     security_en: '2FA Security',
     logout_bn: 'লগআউট',
     logout_en: 'Log Out',
-    user_bn: 'ইউজার',
-    user_en: 'User',
   };
 
   const t = (key: string) =>
@@ -169,18 +167,36 @@ export default function DashboardLayout({
         </Link>
       </div>
 
-      {/* User Card */}
+      {/* User Card — Full Name + Username + Email */}
       <div className="px-4 py-5">
         <div className="relative rounded-2xl border-2 border-dashed border-[#22C55E]/40 bg-[#1F7A3F]/10 p-4 text-center">
-          <div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center shadow-lg mb-2">
-            <User size={24} className="text-white" />
+          {/* Avatar */}
+          <div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center shadow-lg mb-3">
+            <span className="text-white text-xl font-bold uppercase">
+              {user.username.charAt(0)}
+            </span>
           </div>
-          <p className="text-white font-bold text-sm truncate text-bangla-safe">
+
+          {/* Full Name (Username as display) */}
+          <p className="text-white font-bold text-sm text-bangla-safe break-words leading-tight">
             {user.username}
           </p>
-          <p className="text-[#22C55E] text-[10px] uppercase tracking-wider font-semibold mt-0.5">
-            {t('user')}
+
+          {/* Username with @ */}
+          <p className="text-[#22C55E] text-[11px] font-medium mt-0.5 break-all">
+            @{user.username}
           </p>
+
+          {/* Email */}
+          <div className="mt-3 pt-3 border-t border-white/10 flex items-start justify-center gap-1.5">
+            <Mail
+              size={11}
+              className="text-[#22C55E] flex-shrink-0 mt-0.5"
+            />
+            <p className="text-gray-300 text-[10px] break-all text-left leading-tight">
+              {user.email}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -297,16 +313,15 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-[100dvh] bg-[#F8FAF9] flex">
-      {/* ===== DESKTOP SIDEBAR ===== */}
+      {/* Desktop Sidebar */}
       <aside className="hidden lg:flex lg:flex-col lg:w-72 bg-gradient-to-b from-[#0F3D1F] via-[#0A2E17] to-[#061B0D] text-white fixed inset-y-0 left-0 z-40">
         <SidebarContent />
       </aside>
 
-      {/* ===== MOBILE SIDEBAR ===== */}
+      {/* Mobile Sidebar */}
       <AnimatePresence>
         {isSidebarOpen && (
           <>
-            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -316,7 +331,6 @@ export default function DashboardLayout({
               className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
             />
 
-            {/* Drawer */}
             <motion.aside
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
@@ -324,7 +338,6 @@ export default function DashboardLayout({
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               className="lg:hidden fixed inset-y-0 left-0 w-[80%] max-w-[320px] bg-gradient-to-b from-[#0F3D1F] via-[#0A2E17] to-[#061B0D] text-white z-50 flex flex-col overflow-y-auto"
             >
-              {/* Close button */}
               <button
                 onClick={() => setIsSidebarOpen(false)}
                 className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-10"
@@ -339,12 +352,11 @@ export default function DashboardLayout({
         )}
       </AnimatePresence>
 
-      {/* ===== MAIN CONTENT ===== */}
+      {/* Main Content */}
       <div className="flex-1 flex flex-col lg:ml-72 min-w-0">
         {/* Top Bar */}
         <header className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB] shadow-sm">
           <div className="flex items-center justify-between px-4 sm:px-6 py-3">
-            {/* Mobile menu button */}
             <button
               onClick={() => setIsSidebarOpen(true)}
               className="lg:hidden w-10 h-10 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB] flex items-center justify-center text-[#1F2937] hover:bg-[#1F7A3F]/10 hover:border-[#1F7A3F]/30 transition-all"
@@ -353,14 +365,11 @@ export default function DashboardLayout({
               <Menu size={20} />
             </button>
 
-            {/* Page Title */}
             <h1 className="text-base sm:text-lg lg:text-xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1 flex-1 lg:flex-none ml-3 lg:ml-0">
               {t('dashboard')}
             </h1>
 
-            {/* Right side */}
             <div className="flex items-center gap-2 sm:gap-3">
-              {/* Notifications */}
               <button
                 className="relative w-10 h-10 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB] flex items-center justify-center text-[#1F2937] hover:bg-[#1F7A3F]/10 hover:border-[#1F7A3F]/30 transition-all"
                 aria-label="Notifications"
@@ -369,7 +378,6 @@ export default function DashboardLayout({
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#22C55E] rounded-full" />
               </button>
 
-              {/* Avatar */}
               <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB]">
                 <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center">
                   <span className="text-white text-xs font-bold uppercase">
