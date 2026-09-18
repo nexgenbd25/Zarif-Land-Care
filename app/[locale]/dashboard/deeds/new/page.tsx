@@ -128,8 +128,6 @@ export default function NewDeedPage() {
   const content = {
     pageTitle_bn: 'নতুন দলিল এন্ট্রি',
     pageTitle_en: 'New Deed Entry',
-    pageSub_bn: 'নতুন দলিলের তথ্য পূরণ করুন',
-    pageSub_en: 'Fill in the new deed information',
 
     sectionBasic_bn: 'দলিলের মূল তথ্য',
     sectionBasic_en: 'Deed Information',
@@ -360,7 +358,7 @@ export default function NewDeedPage() {
         transition={{ duration: 0.4 }}
         className="w-full max-w-4xl mx-auto"
       >
-        {/* ===== Page Header (ONLY TITLE HERE) ===== */}
+        {/* ===== Page Header (Only Title, No Subtitle) ===== */}
         <div className="mb-5 sm:mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
@@ -370,9 +368,6 @@ export default function NewDeedPage() {
               <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5 leading-tight">
                 {t('pageTitle')}
               </h1>
-              <p className="text-[11px] sm:text-xs text-[#6B7280] text-bangla-safe">
-                {t('pageSub')}
-              </p>
             </div>
           </div>
         </div>
