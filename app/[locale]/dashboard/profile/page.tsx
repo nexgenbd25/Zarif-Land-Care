@@ -13,14 +13,12 @@ import {
   CheckCircle,
   AlertCircle,
   Save,
-  Shield,
   MapPin,
   Building2,
   Hash,
   Home,
   Lock,
   AtSign,
-  Calendar,
 } from 'lucide-react';
 import { getDemoUser, clearDemoUser, saveDemoUser, DemoUser } from '@/lib/auth';
 import DashboardLayout from '../DashboardLayout';
@@ -120,8 +118,6 @@ export default function ProfilePage() {
     sectionPersonal_en: 'Personal Information',
     sectionLocation_bn: 'ঠিকানা',
     sectionLocation_en: 'Location',
-    sectionAccount_bn: 'অ্যাকাউন্ট তথ্য',
-    sectionAccount_en: 'Account Information',
 
     firstNameLabel_bn: 'প্রথম নাম',
     firstNameLabel_en: 'First Name',
@@ -170,13 +166,6 @@ export default function ProfilePage() {
     zipCodeLabel_en: 'Zip Code',
     zipCodePh_bn: 'পোস্ট কোড',
     zipCodePh_en: 'Zip code',
-
-    memberSince_bn: 'যোগদানের তারিখ',
-    memberSince_en: 'Member Since',
-    accountStatus_bn: 'স্টেটাস',
-    accountStatus_en: 'Status',
-    active_bn: 'সক্রিয়',
-    active_en: 'Active',
 
     save_bn: 'সংরক্ষণ করুন',
     save_en: 'Save Changes',
@@ -276,9 +265,7 @@ export default function ProfilePage() {
           ...user,
           firstName: formData.firstName.trim(),
           lastName: formData.lastName.trim(),
-          // 🎯 Username change hobe na (read-only)
           username: user.username,
-          // 🎯 Email lowercase
           email: formData.email.trim().toLowerCase(),
           country: formData.country,
           phone: formData.phone,
@@ -311,11 +298,6 @@ export default function ProfilePage() {
       </div>
     );
   }
-
-  const memberDate = new Date(user.loginTime).toLocaleDateString(
-    isBn ? 'bn-BD' : 'en-US',
-    { day: 'numeric', month: 'long', year: 'numeric' }
-  );
 
   // 🎯 Full Name
   const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
@@ -371,7 +353,7 @@ export default function ProfilePage() {
           </motion.div>
         )}
 
-        {/* Avatar Card — 3 line format */}
+        {/* ===== Avatar Card — Only 3 lines (no badge) ===== */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -391,29 +373,19 @@ export default function ProfilePage() {
               <h2 className="text-xl sm:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1">
                 {displayName}
               </h2>
-              {/* Line 2: Username (lowercase) */}
+              {/* Line 2: Username */}
               <p className="text-sm text-[#1F7A3F] font-semibold text-bangla-safe break-all mb-1">
                 {displayUsername}
               </p>
-              {/* Line 3: Email (lowercase) */}
-              <p className="text-sm text-[#6B7280] text-bangla-safe break-all mb-2">
+              {/* Line 3: Email */}
+              <p className="text-sm text-[#6B7280] text-bangla-safe break-all">
                 {displayEmail}
               </p>
-              <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-[10px] font-bold uppercase tracking-wider">
-                  <Shield size={10} />
-                  {t('active')}
-                </span>
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#1F7A3F]/10 text-[#1F7A3F] text-[10px] font-bold">
-                  <Calendar size={10} />
-                  {memberDate}
-                </span>
-              </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Profile Form */}
+        {/* ===== Profile Form ===== */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -726,31 +698,6 @@ export default function ProfilePage() {
                     {formData.address.length}/200
                   </span>
                 </div>
-              </div>
-            </div>
-
-            {/* Section 3: Account Info — User ID nei */}
-            <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
-              <Shield size={16} className="text-[#1F7A3F]" />
-              {t('sectionAccount')}
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
-                <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-1">
-                  {t('memberSince')}
-                </p>
-                <p className="text-sm font-semibold text-[#1F2937]">
-                  {memberDate}
-                </p>
-              </div>
-              <div className="p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
-                <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-1">
-                  {t('accountStatus')}
-                </p>
-                <p className="text-sm font-semibold text-green-600">
-                  {t('active')}
-                </p>
               </div>
             </div>
 
