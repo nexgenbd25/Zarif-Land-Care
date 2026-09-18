@@ -12,11 +12,7 @@ import {
   ChevronRight,
   FileText,
   User,
-  MapPin,
-  Calendar,
-  Phone,
   Hash,
-  Filter,
   Inbox,
   Loader2,
   MessageSquare,
@@ -185,7 +181,6 @@ export default function ApprovedDeedsPage() {
   const [authChecked, setAuthChecked] = useState(false);
 
   const [search, setSearch] = useState('');
-  const [activeFilter, setActiveFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [viewDeed, setViewDeed] = useState<Deed | null>(null);
 
@@ -207,32 +202,18 @@ export default function ApprovedDeedsPage() {
   const content = {
     pageTitle_bn: 'অনুমোদিত দলিল',
     pageTitle_en: 'Approved Deeds',
-    pageSub_bn: 'আপনার অনুমোদিত দলিলের তালিকা',
-    pageSub_en: 'List of your approved deeds',
-    search_bn: 'খুঁজুন (দলিল নং, দাতা, গ্রহীতা, মৌজা)',
-    search_en: 'Search (deed no, donor, recipient, mouza)',
-    all_bn: 'সব',
-    all_en: 'All',
-    total_bn: 'মোট',
-    total_en: 'Total',
-    showing_bn: 'দেখানো হচ্ছে',
-    showing_en: 'Showing',
+    search_bn: 'খুঁজুন...',
+    search_en: 'Search...',
     noData_bn: 'কোনো অনুমোদিত দলিল নেই',
     noData_en: 'No approved deeds found',
-    noDataSub_bn: 'অনুমোদিত দলিল এখানে দেখা যাবে',
-    noDataSub_en: 'Approved deeds will appear here',
-    serial_bn: 'ক্রমিক',
+    serial_bn: 'ক্রমিক নং',
     serial_en: 'SL',
     deedNo_bn: 'দলিল নং',
     deedNo_en: 'Deed No',
-    date_bn: 'তারিখ',
-    date_en: 'Date',
-    donor_bn: 'দাতা',
-    donor_en: 'Donor',
-    recipient_bn: 'গ্রহীতা',
-    recipient_en: 'Recipient',
-    mouza_bn: 'মৌজা',
-    mouza_en: 'Mouza',
+    donor_bn: 'দাতার নাম',
+    donor_en: 'Donor Name',
+    recipient_bn: 'গ্রহীতার নাম',
+    recipient_en: 'Recipient Name',
     value_bn: 'মূল্য',
     value_en: 'Value',
     actions_bn: 'অ্যাকশন',
@@ -261,10 +242,10 @@ export default function ApprovedDeedsPage() {
     close_en: 'Close',
     loading_bn: 'লোড হচ্ছে...',
     loading_en: 'Loading...',
-    filterBy_bn: 'দলিলের রকম',
-    filterBy_en: 'Filter by Type',
     status_bn: 'অনুমোদিত',
     status_en: 'Approved',
+    downloadStart_bn: 'ডাউনলোড শুরু হচ্ছে...',
+    downloadStart_en: 'Download starting...',
   };
 
   const t = (key: string) =>
@@ -272,21 +253,17 @@ export default function ApprovedDeedsPage() {
 
   const filteredDeeds = useMemo(() => {
     return APPROVED_DEEDS.filter((deed) => {
-      const matchesFilter =
-        activeFilter === 'all' || deed.deedType === activeFilter;
-
       const searchLower = search.toLowerCase();
-      const matchesSearch =
+      return (
         !search ||
         deed.deedNo.toLowerCase().includes(searchLower) ||
         deed.donorName.toLowerCase().includes(searchLower) ||
         deed.recipientName.toLowerCase().includes(searchLower) ||
         deed.mouzaName.toLowerCase().includes(searchLower) ||
-        deed.mobile.includes(search);
-
-      return matchesFilter && matchesSearch;
+        deed.mobile.includes(search)
+      );
     });
-  }, [search, activeFilter]);
+  }, [search]);
 
   const totalPages = Math.ceil(filteredDeeds.length / ITEMS_PER_PAGE);
   const paginatedDeeds = useMemo(() => {
@@ -296,33 +273,14 @@ export default function ApprovedDeedsPage() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, activeFilter]);
-
-  const availableTypes = useMemo(() => {
-    const types = new Set(APPROVED_DEEDS.map((d) => d.deedType));
-    return ['all', ...Array.from(types)];
-  }, []);
-
-  const formatDate = (dateStr: string) => {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString(isBn ? 'bn-BD' : 'en-US', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    });
-  };
+  }, [search]);
 
   const formatValue = (value: number) => {
     return `৳ ${value.toLocaleString(isBn ? 'bn-BD' : 'en-US')}`;
   };
 
-  const getFilterLabel = (type: string) => {
-    if (type === 'all') return t('all');
-    return type;
-  };
-
   const handleDownload = (deed: Deed) => {
-    // TODO: API call
+    // TODO: API call to download PDF
     alert(
       isBn
         ? `দলিল ${deed.deedNo} ডাউনলোড হচ্ছে...`
@@ -350,7 +308,7 @@ export default function ApprovedDeedsPage() {
     <DashboardLayout user={user} onLogout={handleLogout}>
       <div className="w-full max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-5 sm:mb-6">
+        <div className="mb-4 sm:mb-5">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
               <CheckCircle2 size={20} className="text-[#1F7A3F]" />
@@ -359,36 +317,13 @@ export default function ApprovedDeedsPage() {
               <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5 leading-tight">
                 {t('pageTitle')}
               </h1>
-              <p className="text-[11px] sm:text-xs text-[#6B7280] text-bangla-safe">
-                {t('pageSub')}
-              </p>
             </div>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-3 sm:p-4">
-            <p className="text-[10px] sm:text-xs font-semibold text-[#6B7280] uppercase tracking-wider text-bangla-safe mb-1">
-              {t('total')}
-            </p>
-            <p className="text-xl sm:text-2xl font-bold text-[#1F2937] leading-tight">
-              {APPROVED_DEEDS.length}
-            </p>
-          </div>
-          <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-3 sm:p-4">
-            <p className="text-[10px] sm:text-xs font-semibold text-[#6B7280] uppercase tracking-wider text-bangla-safe mb-1">
-              {t('showing')}
-            </p>
-            <p className="text-xl sm:text-2xl font-bold text-[#1F7A3F] leading-tight">
-              {filteredDeeds.length}
-            </p>
-          </div>
-        </div>
-
-        {/* Search + Filter */}
+        {/* Search Bar */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-3 sm:p-4 mb-4">
-          <div className="relative mb-3">
+          <div className="relative">
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
               <Search size={16} />
             </div>
@@ -410,32 +345,6 @@ export default function ApprovedDeedsPage() {
               </button>
             )}
           </div>
-
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-            <div className="flex items-center gap-1 text-[#6B7280] pr-2 flex-shrink-0">
-              <Filter size={14} />
-              <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-bangla-safe">
-                {t('filterBy')}
-              </span>
-            </div>
-            {availableTypes.map((type) => {
-              const isActive = activeFilter === type;
-              const label = getFilterLabel(type);
-              return (
-                <button
-                  key={type}
-                  onClick={() => setActiveFilter(type)}
-                  className={`flex-shrink-0 px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-all duration-200 text-bangla-safe ${
-                    isActive
-                      ? 'bg-[#1F7A3F] text-white shadow-sm'
-                      : 'bg-[#F8FAF9] text-[#4B5563] border border-[#E5E7EB] hover:border-[#1F7A3F]/30 hover:text-[#1F7A3F]'
-                  }`}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
         </div>
 
         {/* Content */}
@@ -447,9 +356,6 @@ export default function ApprovedDeedsPage() {
             <h3 className="text-base sm:text-lg font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1 mb-1">
               {t('noData')}
             </h3>
-            <p className="text-xs sm:text-sm text-[#6B7280] text-bangla-safe">
-              {t('noDataSub')}
-            </p>
           </div>
         ) : (
           <>
@@ -466,16 +372,10 @@ export default function ApprovedDeedsPage() {
                         {t('deedNo')}
                       </th>
                       <th className="px-4 py-3 text-left text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
-                        {t('date')}
-                      </th>
-                      <th className="px-4 py-3 text-left text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
                         {t('donor')}
                       </th>
                       <th className="px-4 py-3 text-left text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
                         {t('recipient')}
-                      </th>
-                      <th className="px-4 py-3 text-left text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
-                        {t('mouza')}
                       </th>
                       <th className="px-4 py-3 text-right text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
                         {t('value')}
@@ -505,11 +405,6 @@ export default function ApprovedDeedsPage() {
                           </span>
                         </td>
                         <td className="px-4 py-3">
-                          <span className="text-xs text-[#4B5563]">
-                            {formatDate(deed.date)}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
                           <span className="text-xs text-[#1F2937] text-bangla-safe">
                             {deed.donorName}
                           </span>
@@ -517,11 +412,6 @@ export default function ApprovedDeedsPage() {
                         <td className="px-4 py-3">
                           <span className="text-xs text-[#1F2937] text-bangla-safe">
                             {deed.recipientName}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className="text-xs text-[#4B5563] text-bangla-safe">
-                            {deed.mouzaName}
                           </span>
                         </td>
                         <td className="px-4 py-3 text-right">
@@ -564,6 +454,7 @@ export default function ApprovedDeedsPage() {
                   transition={{ duration: 0.3, delay: idx * 0.03 }}
                   className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4"
                 >
+                  {/* Top row */}
                   <div className="flex items-center justify-between mb-3">
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-bold uppercase tracking-wider">
                       <CheckCircle2 size={10} />#{deed.serialNo}
@@ -573,19 +464,15 @@ export default function ApprovedDeedsPage() {
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between mb-3 pb-3 border-b border-[#F3F4F6]">
-                    <div className="flex items-center gap-2">
-                      <Hash size={14} className="text-[#1F7A3F]" />
-                      <span className="text-sm font-bold text-[#1F2937]">
-                        {deed.deedNo}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-[11px] text-[#6B7280]">
-                      <Calendar size={12} />
-                      {formatDate(deed.date)}
-                    </div>
+                  {/* Deed No */}
+                  <div className="flex items-center gap-2 mb-3 pb-3 border-b border-[#F3F4F6]">
+                    <Hash size={14} className="text-[#1F7A3F]" />
+                    <span className="text-sm font-bold text-[#1F2937]">
+                      {deed.deedNo}
+                    </span>
                   </div>
 
+                  {/* Info grid */}
                   <div className="grid grid-cols-2 gap-2.5 mb-3">
                     <div className="flex items-start gap-2">
                       <User
@@ -615,45 +502,9 @@ export default function ApprovedDeedsPage() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-2">
-                      <MapPin
-                        size={14}
-                        className="text-[#1F7A3F] mt-0.5 flex-shrink-0"
-                      />
-                      <div className="min-w-0">
-                        <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] font-bold mb-0.5">
-                          {t('mouza')}
-                        </p>
-                        <p className="text-xs text-[#1F2937] text-bangla-safe break-words">
-                          {deed.mouzaName}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Phone
-                        size={14}
-                        className="text-[#1F7A3F] mt-0.5 flex-shrink-0"
-                      />
-                      <div className="min-w-0">
-                        <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] font-bold mb-0.5">
-                          {t('mobile')}
-                        </p>
-                        <p className="text-xs text-[#1F2937] break-words">
-                          {deed.mobile}
-                        </p>
-                      </div>
-                    </div>
                   </div>
 
-                  <div className="mb-3 flex items-center gap-2 flex-wrap">
-                    <span className="inline-block px-2 py-0.5 rounded-md bg-[#1F7A3F]/10 text-[#1F7A3F] text-[10px] font-bold text-bangla-safe">
-                      {deed.deedType}
-                    </span>
-                    <span className="inline-block px-2 py-0.5 rounded-md bg-green-100 text-green-700 text-[10px] font-bold text-bangla-safe">
-                      {t('status')}
-                    </span>
-                  </div>
-
+                  {/* Actions */}
                   <div className="flex items-center gap-2 pt-3 border-t border-[#F3F4F6]">
                     <button
                       onClick={() => setViewDeed(deed)}
@@ -738,6 +589,7 @@ export default function ApprovedDeedsPage() {
                 transition={{ duration: 0.25 }}
                 className="fixed inset-x-3 top-1/2 -translate-y-1/2 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:max-w-2xl sm:w-full z-[101] max-h-[92vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
               >
+                {/* Modal Header */}
                 <div className="sticky top-0 bg-white border-b border-[#E5E7EB] px-4 sm:px-5 py-3.5 flex items-center justify-between z-10 rounded-t-2xl">
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-10 h-10 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
@@ -761,17 +613,13 @@ export default function ApprovedDeedsPage() {
                   </button>
                 </div>
 
+                {/* Modal Body */}
                 <div className="p-4 sm:p-5 space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     <DetailRow
                       icon={Hash}
                       label={t('deedNo')}
                       value={viewDeed.deedNo}
-                    />
-                    <DetailRow
-                      icon={Calendar}
-                      label={t('date')}
-                      value={formatDate(viewDeed.date)}
                     />
                     <DetailRow
                       icon={User}
@@ -792,21 +640,6 @@ export default function ApprovedDeedsPage() {
                       icon={User}
                       label={t('recipientFather')}
                       value={viewDeed.recipientFatherName || '—'}
-                    />
-                    <DetailRow
-                      icon={MapPin}
-                      label={t('mouza')}
-                      value={viewDeed.mouzaName}
-                    />
-                    <DetailRow
-                      icon={FileText}
-                      label={t('deedType')}
-                      value={viewDeed.deedType}
-                    />
-                    <DetailRow
-                      icon={Phone}
-                      label={t('mobile')}
-                      value={viewDeed.mobile}
                     />
                     <DetailRow
                       icon={FileText}
@@ -832,6 +665,7 @@ export default function ApprovedDeedsPage() {
                     </div>
                   )}
 
+                  {/* Actions */}
                   <div className="flex flex-col-reverse sm:flex-row gap-2 pt-3 border-t border-[#F3F4F6]">
                     <button
                       type="button"
