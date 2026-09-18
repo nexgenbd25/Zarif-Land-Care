@@ -19,8 +19,8 @@ import {
   Mail,
   User,
   Lock,
+  AtSign,
 } from 'lucide-react';
-import { getFullName } from '@/lib/auth';
 
 const LOGO_URL =
   'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
@@ -57,13 +57,13 @@ export default function DashboardLayout({
   const profileRef = useRef<HTMLDivElement>(null);
 
   // 🎯 Full Name
-  const fullName = `${user.firstName || user.username || ''} ${
-    user.lastName || ''
-  }`.trim();
+  const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
   const displayName = fullName || user.username || 'User';
-  const avatarLetter = displayName.charAt(0).toUpperCase();
+  const avatarLetter = (user.firstName || user.username || 'U')
+    .charAt(0)
+    .toUpperCase();
 
-  // Click outside → close dropdown
+  // Click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -78,7 +78,6 @@ export default function DashboardLayout({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Close dropdown when path changes
   useEffect(() => {
     setIsProfileOpen(false);
   }, [pathname]);
@@ -205,22 +204,27 @@ export default function DashboardLayout({
         </Link>
       </div>
 
-      {/* ===== User Card — Full Name + Email ===== */}
+      {/* ===== User Card — Full Name + Username + Email ===== */}
       <div className="px-4 py-5">
         <div className="relative rounded-2xl border-2 border-dashed border-[#22C55E]/40 bg-[#1F7A3F]/10 p-4 text-center">
-          {/* Avatar — First Letter */}
+          {/* Avatar */}
           <div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center shadow-lg mb-3">
             <span className="text-white text-xl font-bold uppercase">
               {avatarLetter}
             </span>
           </div>
 
-          {/* 🎯 Full Name (No @) */}
+          {/* 🎯 Full Name */}
           <p className="text-white font-bold text-sm text-bangla-safe break-words leading-tight">
             {displayName}
           </p>
 
-          {/* Email */}
+          {/* 🎯 Username */}
+          <p className="text-[#22C55E] text-[11px] font-medium mt-1 break-all">
+            @{user.username}
+          </p>
+
+          {/* 🎯 Email */}
           <div className="mt-3 pt-3 border-t border-white/10 flex items-start justify-center gap-1.5">
             <Mail size={11} className="text-[#22C55E] flex-shrink-0 mt-0.5" />
             <p className="text-gray-300 text-[10px] break-all text-left leading-tight">
@@ -387,7 +391,6 @@ export default function DashboardLayout({
         {/* Top Bar */}
         <header className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB] shadow-sm">
           <div className="flex items-center justify-between px-4 sm:px-6 py-3">
-            {/* Left — Hamburger */}
             <button
               onClick={() => setIsSidebarOpen(true)}
               className="lg:hidden w-10 h-10 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB] flex items-center justify-center text-[#1F2937] hover:bg-[#1F7A3F]/10 hover:border-[#1F7A3F]/30 transition-all"
@@ -396,7 +399,6 @@ export default function DashboardLayout({
               <Menu size={20} />
             </button>
 
-            {/* Right — Profile Dropdown */}
             <div className="flex items-center gap-2 sm:gap-3 ml-auto">
               <div className="relative" ref={profileRef}>
                 <button
@@ -409,7 +411,6 @@ export default function DashboardLayout({
                       {avatarLetter}
                     </span>
                   </div>
-                  {/* 🎯 Full Name in Top Bar */}
                   <span className="hidden sm:inline text-sm font-semibold text-[#1F2937] text-bangla-safe max-w-[140px] truncate">
                     {displayName}
                   </span>
@@ -429,19 +430,23 @@ export default function DashboardLayout({
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-56 z-[100] bg-white border border-[#E5E7EB] rounded-xl shadow-2xl overflow-hidden"
+                      className="absolute right-0 mt-2 w-64 z-[100] bg-white border border-[#E5E7EB] rounded-xl shadow-2xl overflow-hidden"
                     >
                       {/* User Info Header */}
                       <div className="px-4 py-3 bg-[#F8FAF9] border-b border-[#E5E7EB]">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center flex-shrink-0">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center flex-shrink-0">
                             <span className="text-white text-sm font-bold uppercase">
                               {avatarLetter}
                             </span>
                           </div>
-                          <div className="min-w-0">
+                          <div className="min-w-0 flex-1">
                             <p className="text-sm font-bold text-[#1F2937] text-bangla-safe truncate">
                               {displayName}
+                            </p>
+                            <p className="text-[10px] text-[#6B7280] truncate flex items-center gap-1">
+                              <AtSign size={9} />
+                              {user.username}
                             </p>
                             <p className="text-[10px] text-[#6B7280] truncate">
                               {user.email}
@@ -491,7 +496,6 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        {/* Content */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
