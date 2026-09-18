@@ -1,13 +1,11 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
-  Plus,
   Eye,
   CheckCircle2,
   X,
@@ -19,10 +17,10 @@ import {
   Calendar,
   Phone,
   Hash,
-  Filter,
   Inbox,
   Loader2,
   MessageSquare,
+  Clock,
 } from 'lucide-react';
 import { getDemoUser, clearDemoUser, DemoUser } from '@/lib/auth';
 import DashboardLayout from '../../DashboardLayout';
@@ -177,7 +175,6 @@ export default function PendingDeedsPage() {
   const [authChecked, setAuthChecked] = useState(false);
 
   const [search, setSearch] = useState('');
-  const [activeFilter, setActiveFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [viewDeed, setViewDeed] = useState<Deed | null>(null);
 
@@ -199,36 +196,22 @@ export default function PendingDeedsPage() {
   const content = {
     pageTitle_bn: 'অপেক্ষমাণ দলিল',
     pageTitle_en: 'Pending Deeds',
-    pageSub_bn: 'আপনার অপেক্ষমাণ দলিলের তালিকা',
-    pageSub_en: 'List of your pending deeds',
-    newDeed_bn: 'নতুন দলিল',
-    newDeed_en: 'New Deed',
-    search_bn: 'খুঁজুন (দলিল নং, দাতা, গ্রহীতা, মৌজা)',
-    search_en: 'Search (deed no, donor, recipient, mouza)',
-    all_bn: 'সব',
-    all_en: 'All',
-    total_bn: 'মোট',
-    total_en: 'Total',
-    showing_bn: 'দেখানো হচ্ছে',
-    showing_en: 'Showing',
+    search_bn: 'খুঁজুন...',
+    search_en: 'Search...',
     noData_bn: 'কোনো অপেক্ষমাণ দলিল নেই',
     noData_en: 'No pending deeds found',
-    noDataSub_bn: 'নতুন দলিল যোগ করতে উপরে ক্লিক করুন',
-    noDataSub_en: 'Click above to add a new deed',
-    serial_bn: 'ক্রমিক',
+    serial_bn: 'ক্রমিক নং',
     serial_en: 'SL',
     deedNo_bn: 'দলিল নং',
     deedNo_en: 'Deed No',
-    date_bn: 'তারিখ',
-    date_en: 'Date',
-    donor_bn: 'দাতা',
-    donor_en: 'Donor',
-    recipient_bn: 'গ্রহীতা',
-    recipient_en: 'Recipient',
-    mouza_bn: 'মৌজা',
-    mouza_en: 'Mouza',
+    donor_bn: 'দাতার নাম',
+    donor_en: 'Donor Name',
+    recipient_bn: 'গ্রহীতার নাম',
+    recipient_en: 'Recipient Name',
     value_bn: 'মূল্য',
     value_en: 'Value',
+    status_bn: 'স্টেটাস',
+    status_en: 'Status',
     actions_bn: 'অ্যাকশন',
     actions_en: 'Actions',
     view_bn: 'দেখুন',
@@ -239,6 +222,8 @@ export default function PendingDeedsPage() {
     prev_en: 'Prev',
     next_bn: 'পরবর্তী',
     next_en: 'Next',
+    pendingStatus_bn: 'অপেক্ষমাণ',
+    pendingStatus_en: 'Pending',
     viewTitle_bn: 'দলিলের বিস্তারিত',
     viewTitle_en: 'Deed Details',
     donorFather_bn: 'দাতার পিতা',
@@ -251,20 +236,14 @@ export default function PendingDeedsPage() {
     mobile_en: 'Mobile',
     remarks_bn: 'মন্তব্য',
     remarks_en: 'Remarks',
+    date_bn: 'তারিখ',
+    date_en: 'Date',
+    mouza_bn: 'মৌজা',
+    mouza_en: 'Mouza',
     close_bn: 'বন্ধ করুন',
     close_en: 'Close',
     loading_bn: 'লোড হচ্ছে...',
     loading_en: 'Loading...',
-    filterBy_bn: 'দলিলের রকম',
-    filterBy_en: 'Filter by Type',
-    approveConfirm_bn: 'আপনি কি এই দলিলটি অনুমোদন করতে চান?',
-    approveConfirm_en: 'Do you want to approve this deed?',
-    yes_bn: 'হ্যাঁ, অনুমোদন করুন',
-    yes_en: 'Yes, Approve',
-    cancel_bn: 'বাতিল',
-    cancel_en: 'Cancel',
-    approved_bn: 'অনুমোদিত হয়েছে!',
-    approved_en: 'Approved!',
   };
 
   const t = (key: string) =>
@@ -272,21 +251,17 @@ export default function PendingDeedsPage() {
 
   const filteredDeeds = useMemo(() => {
     return PENDING_DEEDS.filter((deed) => {
-      const matchesFilter =
-        activeFilter === 'all' || deed.deedType === activeFilter;
-
       const searchLower = search.toLowerCase();
-      const matchesSearch =
+      return (
         !search ||
         deed.deedNo.toLowerCase().includes(searchLower) ||
         deed.donorName.toLowerCase().includes(searchLower) ||
         deed.recipientName.toLowerCase().includes(searchLower) ||
         deed.mouzaName.toLowerCase().includes(searchLower) ||
-        deed.mobile.includes(search);
-
-      return matchesFilter && matchesSearch;
+        deed.mobile.includes(search)
+      );
     });
-  }, [search, activeFilter]);
+  }, [search]);
 
   const totalPages = Math.ceil(filteredDeeds.length / ITEMS_PER_PAGE);
   const paginatedDeeds = useMemo(() => {
@@ -296,29 +271,10 @@ export default function PendingDeedsPage() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, activeFilter]);
-
-  const availableTypes = useMemo(() => {
-    const types = new Set(PENDING_DEEDS.map((d) => d.deedType));
-    return ['all', ...Array.from(types)];
-  }, []);
-
-  const formatDate = (dateStr: string) => {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString(isBn ? 'bn-BD' : 'en-US', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    });
-  };
+  }, [search]);
 
   const formatValue = (value: number) => {
     return `৳ ${value.toLocaleString(isBn ? 'bn-BD' : 'en-US')}`;
-  };
-
-  const getFilterLabel = (type: string) => {
-    if (type === 'all') return t('all');
-    return type;
   };
 
   const handleApprove = (deedId: number) => {
@@ -346,7 +302,7 @@ export default function PendingDeedsPage() {
     <DashboardLayout user={user} onLogout={handleLogout}>
       <div className="w-full max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 sm:mb-6">
+        <div className="mb-4 sm:mb-5">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center flex-shrink-0">
               <FileText size={20} className="text-orange-500" />
@@ -355,44 +311,13 @@ export default function PendingDeedsPage() {
               <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5 leading-tight">
                 {t('pageTitle')}
               </h1>
-              <p className="text-[11px] sm:text-xs text-[#6B7280] text-bangla-safe">
-                {t('pageSub')}
-              </p>
             </div>
           </div>
-
-          <Link
-            href={`/${isBn ? '' : locale + '/'}dashboard/deeds/new`}
-            className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-lg font-bold text-white text-xs sm:text-sm bg-[#1F7A3F] hover:bg-[#155E30] shadow-md shadow-[#1F7A3F]/20 hover:shadow-lg transition-all duration-300 active:scale-[0.98]"
-          >
-            <Plus size={16} />
-            <span className="text-bangla-safe">{t('newDeed')}</span>
-          </Link>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-3 sm:p-4">
-            <p className="text-[10px] sm:text-xs font-semibold text-[#6B7280] uppercase tracking-wider text-bangla-safe mb-1">
-              {t('total')}
-            </p>
-            <p className="text-xl sm:text-2xl font-bold text-[#1F2937] leading-tight">
-              {PENDING_DEEDS.length}
-            </p>
-          </div>
-          <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-3 sm:p-4">
-            <p className="text-[10px] sm:text-xs font-semibold text-[#6B7280] uppercase tracking-wider text-bangla-safe mb-1">
-              {t('showing')}
-            </p>
-            <p className="text-xl sm:text-2xl font-bold text-[#1F7A3F] leading-tight">
-              {filteredDeeds.length}
-            </p>
-          </div>
-        </div>
-
-        {/* Search + Filter */}
+        {/* Search Bar */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-3 sm:p-4 mb-4">
-          <div className="relative mb-3">
+          <div className="relative">
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
               <Search size={16} />
             </div>
@@ -414,32 +339,6 @@ export default function PendingDeedsPage() {
               </button>
             )}
           </div>
-
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-            <div className="flex items-center gap-1 text-[#6B7280] pr-2 flex-shrink-0">
-              <Filter size={14} />
-              <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-bangla-safe">
-                {t('filterBy')}
-              </span>
-            </div>
-            {availableTypes.map((type) => {
-              const isActive = activeFilter === type;
-              const label = getFilterLabel(type);
-              return (
-                <button
-                  key={type}
-                  onClick={() => setActiveFilter(type)}
-                  className={`flex-shrink-0 px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-all duration-200 text-bangla-safe ${
-                    isActive
-                      ? 'bg-[#1F7A3F] text-white shadow-sm'
-                      : 'bg-[#F8FAF9] text-[#4B5563] border border-[#E5E7EB] hover:border-[#1F7A3F]/30 hover:text-[#1F7A3F]'
-                  }`}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
         </div>
 
         {/* Content */}
@@ -451,9 +350,6 @@ export default function PendingDeedsPage() {
             <h3 className="text-base sm:text-lg font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1 mb-1">
               {t('noData')}
             </h3>
-            <p className="text-xs sm:text-sm text-[#6B7280] text-bangla-safe">
-              {t('noDataSub')}
-            </p>
           </div>
         ) : (
           <>
@@ -470,19 +366,16 @@ export default function PendingDeedsPage() {
                         {t('deedNo')}
                       </th>
                       <th className="px-4 py-3 text-left text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
-                        {t('date')}
-                      </th>
-                      <th className="px-4 py-3 text-left text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
                         {t('donor')}
                       </th>
                       <th className="px-4 py-3 text-left text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
                         {t('recipient')}
                       </th>
-                      <th className="px-4 py-3 text-left text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
-                        {t('mouza')}
-                      </th>
                       <th className="px-4 py-3 text-right text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
                         {t('value')}
+                      </th>
+                      <th className="px-4 py-3 text-center text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
+                        {t('status')}
                       </th>
                       <th className="px-4 py-3 text-center text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
                         {t('actions')}
@@ -509,11 +402,6 @@ export default function PendingDeedsPage() {
                           </span>
                         </td>
                         <td className="px-4 py-3">
-                          <span className="text-xs text-[#4B5563]">
-                            {formatDate(deed.date)}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
                           <span className="text-xs text-[#1F2937] text-bangla-safe">
                             {deed.donorName}
                           </span>
@@ -523,14 +411,15 @@ export default function PendingDeedsPage() {
                             {deed.recipientName}
                           </span>
                         </td>
-                        <td className="px-4 py-3">
-                          <span className="text-xs text-[#4B5563] text-bangla-safe">
-                            {deed.mouzaName}
-                          </span>
-                        </td>
                         <td className="px-4 py-3 text-right">
                           <span className="text-xs font-bold text-[#1F7A3F]">
                             {formatValue(deed.value)}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold uppercase tracking-wider">
+                            <Clock size={10} />
+                            {t('pendingStatus')}
                           </span>
                         </td>
                         <td className="px-4 py-3">
@@ -568,15 +457,18 @@ export default function PendingDeedsPage() {
                   transition={{ duration: 0.3, delay: idx * 0.03 }}
                   className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4"
                 >
+                  {/* Top row */}
                   <div className="flex items-center justify-between mb-3">
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold uppercase tracking-wider">
                       <FileText size={10} />#{deed.serialNo}
                     </span>
-                    <span className="text-sm font-bold text-[#1F7A3F]">
-                      {formatValue(deed.value)}
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold uppercase tracking-wider">
+                      <Clock size={10} />
+                      {t('pendingStatus')}
                     </span>
                   </div>
 
+                  {/* Deed No + Value */}
                   <div className="flex items-center justify-between mb-3 pb-3 border-b border-[#F3F4F6]">
                     <div className="flex items-center gap-2">
                       <Hash size={14} className="text-[#1F7A3F]" />
@@ -584,12 +476,12 @@ export default function PendingDeedsPage() {
                         {deed.deedNo}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-[11px] text-[#6B7280]">
-                      <Calendar size={12} />
-                      {formatDate(deed.date)}
-                    </div>
+                    <span className="text-sm font-bold text-[#1F7A3F]">
+                      {formatValue(deed.value)}
+                    </span>
                   </div>
 
+                  {/* Info grid */}
                   <div className="grid grid-cols-2 gap-2.5 mb-3">
                     <div className="flex items-start gap-2">
                       <User
@@ -619,42 +511,9 @@ export default function PendingDeedsPage() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-2">
-                      <MapPin
-                        size={14}
-                        className="text-[#1F7A3F] mt-0.5 flex-shrink-0"
-                      />
-                      <div className="min-w-0">
-                        <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] font-bold mb-0.5">
-                          {t('mouza')}
-                        </p>
-                        <p className="text-xs text-[#1F2937] text-bangla-safe break-words">
-                          {deed.mouzaName}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Phone
-                        size={14}
-                        className="text-[#1F7A3F] mt-0.5 flex-shrink-0"
-                      />
-                      <div className="min-w-0">
-                        <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] font-bold mb-0.5">
-                          {t('mobile')}
-                        </p>
-                        <p className="text-xs text-[#1F2937] break-words">
-                          {deed.mobile}
-                        </p>
-                      </div>
-                    </div>
                   </div>
 
-                  <div className="mb-3">
-                    <span className="inline-block px-2 py-0.5 rounded-md bg-[#1F7A3F]/10 text-[#1F7A3F] text-[10px] font-bold text-bangla-safe">
-                      {deed.deedType}
-                    </span>
-                  </div>
-
+                  {/* Actions */}
                   <div className="flex items-center gap-2 pt-3 border-t border-[#F3F4F6]">
                     <button
                       onClick={() => setViewDeed(deed)}
@@ -765,17 +624,11 @@ export default function PendingDeedsPage() {
 
                 {/* Modal Body */}
                 <div className="p-4 sm:p-5 space-y-3">
-                  {/* Grid of fields */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     <DetailRow
                       icon={Hash}
                       label={t('deedNo')}
                       value={viewDeed.deedNo}
-                    />
-                    <DetailRow
-                      icon={Calendar}
-                      label={t('date')}
-                      value={formatDate(viewDeed.date)}
                     />
                     <DetailRow
                       icon={User}
@@ -796,21 +649,6 @@ export default function PendingDeedsPage() {
                       icon={User}
                       label={t('recipientFather')}
                       value={viewDeed.recipientFatherName || '—'}
-                    />
-                    <DetailRow
-                      icon={MapPin}
-                      label={t('mouza')}
-                      value={viewDeed.mouzaName}
-                    />
-                    <DetailRow
-                      icon={FileText}
-                      label={t('deedType')}
-                      value={viewDeed.deedType}
-                    />
-                    <DetailRow
-                      icon={Phone}
-                      label={t('mobile')}
-                      value={viewDeed.mobile}
                     />
                     <DetailRow
                       icon={FileText}
@@ -836,7 +674,6 @@ export default function PendingDeedsPage() {
                     </div>
                   )}
 
-                  {/* Actions */}
                   <div className="flex flex-col-reverse sm:flex-row gap-2 pt-3 border-t border-[#F3F4F6]">
                     <button
                       type="button"
