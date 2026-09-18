@@ -55,12 +55,20 @@ export default function DashboardLayout({
 
   const profileRef = useRef<HTMLDivElement>(null);
 
-  // 🎯 Full Name Display
+  // 🎯 Full Name
   const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
   const displayName = fullName || user.username || 'User';
   const avatarLetter = (user.firstName || user.username || 'U')
     .charAt(0)
     .toUpperCase();
+
+  // 🎯 Username (lowercase, space chara)
+  const displayUsername = (user.username || '')
+    .toLowerCase()
+    .replace(/\s+/g, '');
+
+  // 🎯 Email (lowercase)
+  const displayEmail = (user.email || '').toLowerCase();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -217,16 +225,16 @@ export default function DashboardLayout({
             {displayName}
           </p>
 
-          {/* 🎯 Line 2: Username (no @) */}
+          {/* 🎯 Line 2: Username (register er, no @, lowercase) */}
           <p className="text-[#22C55E] text-[11px] font-medium mt-1 break-all">
-            {user.username}
+            {displayUsername}
           </p>
 
-          {/* 🎯 Line 3: Email */}
+          {/* 🎯 Line 3: Email (lowercase) */}
           <div className="mt-2.5 pt-2.5 border-t border-white/10 flex items-start justify-center gap-1.5">
             <Mail size={11} className="text-[#22C55E] flex-shrink-0 mt-0.5" />
             <p className="text-gray-300 text-[10px] break-all text-left leading-tight">
-              {user.email}
+              {displayEmail}
             </p>
           </div>
         </div>
@@ -430,7 +438,7 @@ export default function DashboardLayout({
                       transition={{ duration: 0.2 }}
                       className="absolute right-0 mt-2 w-64 z-[100] bg-white border border-[#E5E7EB] rounded-xl shadow-2xl overflow-hidden"
                     >
-                      {/* User Info Header — Same 3 line format */}
+                      {/* User Info Header — 3 line */}
                       <div className="px-4 py-3 bg-[#F8FAF9] border-b border-[#E5E7EB]">
                         <div className="flex items-center gap-2.5">
                           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center flex-shrink-0">
@@ -443,13 +451,13 @@ export default function DashboardLayout({
                             <p className="text-sm font-bold text-[#1F2937] text-bangla-safe truncate">
                               {displayName}
                             </p>
-                            {/* Line 2: Username (no @) */}
+                            {/* Line 2: Username */}
                             <p className="text-[10px] text-[#22C55E] font-medium truncate">
-                              {user.username}
+                              {displayUsername}
                             </p>
                             {/* Line 3: Email */}
                             <p className="text-[10px] text-[#6B7280] truncate">
-                              {user.email}
+                              {displayEmail}
                             </p>
                           </div>
                         </div>
