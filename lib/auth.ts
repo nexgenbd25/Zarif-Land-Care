@@ -8,6 +8,10 @@ export interface DemoUser {
   email: string;
   country: string;
   phone: string;
+  address?: string;
+  state?: string;
+  city?: string;
+  zipCode?: string;
   loginTime: string;
 }
 
@@ -27,7 +31,7 @@ export function getDemoUser(): DemoUser | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw) as DemoUser;
 
-    // Backward compatibility — purono user jodi firstName/lastName na thake
+    // Backward compatibility
     if (!parsed.firstName || !parsed.lastName) {
       const nameParts = (parsed.username || 'User').split(' ');
       parsed.firstName = parsed.firstName || nameParts[0] || 'User';
@@ -53,7 +57,7 @@ export function isDemoLoggedIn(): boolean {
 }
 
 /**
- * Get full name from user object
+ * Full Name from user object
  */
 export function getFullName(user: DemoUser): string {
   const first = user.firstName?.trim() || '';
@@ -63,7 +67,7 @@ export function getFullName(user: DemoUser): string {
 }
 
 /**
- * Demo login — full name auto-generate from username
+ * Demo login
  */
 export function demoLogin(
   identifier: string,
@@ -78,14 +82,9 @@ export function demoLogin(
   }
 
   const isEmail = identifier.includes('@');
-
-  // Extract name from identifier
   const baseName = isEmail ? identifier.split('@')[0] : identifier;
 
-  // Split baseName by common separators (dot, underscore, dash, space)
-  const nameParts = baseName
-    .split(/[._\-\s]+/)
-    .filter((p) => p.length > 0);
+  const nameParts = baseName.split(/[._\-\s]+/).filter((p) => p.length > 0);
 
   const firstName = nameParts[0]
     ? nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1)
@@ -98,7 +97,7 @@ export function demoLogin(
     id: `demo_${Date.now()}`,
     firstName,
     lastName,
-    username: firstName, // Username = First Name (display)
+    username: baseName,
     email: isEmail ? identifier : `${identifier}@demo.local`,
     country: '+880',
     phone: '+880 1788-766735',
@@ -110,40 +109,33 @@ export function demoLogin(
 }
 
 /**
- * Demo register — full name save korbe
+ * Demo register — sob field save
  */
 export function demoRegister(data: {
-  firstName?: string;
-  lastName?: string;
+  firstName: string;
+  lastName: string;
   username: string;
   email: string;
   country: string;
   phone: string;
   password: string;
+  address?: string;
+  state?: string;
+  city?: string;
+  zipCode?: string;
 }): { success: boolean; user?: DemoUser; error?: string } {
-  // First Name + Last Name handle
-  let firstName = data.firstName?.trim() || '';
-  let lastName = data.lastName?.trim() || '';
-
-  // Jodi firstName na thake — username theke generate
-  if (!firstName) {
-    const nameParts = data.username.split(/[._\-\s]+/).filter(Boolean);
-    firstName = nameParts[0]
-      ? nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1)
-      : 'User';
-    lastName = nameParts[1]
-      ? nameParts[1].charAt(0).toUpperCase() + nameParts[1].slice(1)
-      : lastName;
-  }
-
   const user: DemoUser = {
     id: `demo_${Date.now()}`,
-    firstName,
-    lastName,
-    username: firstName, // Username = firstName (display)
-    email: data.email,
+    firstName: data.firstName.trim(),
+    lastName: data.lastName.trim(),
+    username: data.username.trim(),
+    email: data.email.trim(),
     country: data.country,
     phone: data.phone,
+    address: data.address?.trim() || '',
+    state: data.state?.trim() || '',
+    city: data.city?.trim() || '',
+    zipCode: data.zipCode?.trim() || '',
     loginTime: new Date().toISOString(),
   };
 
