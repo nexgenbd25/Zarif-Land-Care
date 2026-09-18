@@ -80,7 +80,12 @@ export default function DashboardPage() {
     );
   }
 
-  // ===== Stats Data =====
+  // 🎯 Full Name for Welcome
+  const fullName = `${user.firstName || user.username || ''} ${
+    user.lastName || ''
+  }`.trim();
+  const displayName = fullName || user.username || 'User';
+
   const statsData = [
     {
       icon: CheckCircle2,
@@ -120,7 +125,6 @@ export default function DashboardPage() {
     },
   ];
 
-  // ===== Chart 1: Approved Deeds Only =====
   const deedsChartData = [
     { year: '2019', value: 42 },
     { year: '2020', value: 68 },
@@ -131,7 +135,6 @@ export default function DashboardPage() {
     { year: '2025', value: 312 },
   ];
 
-  // ===== Chart 2: Approved Khatian Only =====
   const khatianChartData = [
     { year: '2019', value: 28 },
     { year: '2020', value: 45 },
@@ -142,7 +145,6 @@ export default function DashboardPage() {
     { year: '2025', value: 256 },
   ];
 
-  // ===== Chart Component — Approved Only =====
   const RenderChart = ({
     data,
     titleKey,
@@ -171,7 +173,6 @@ export default function DashboardPage() {
         className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden"
       >
         <div className="p-4 sm:p-5 lg:p-6">
-          {/* Header */}
           <div className="flex items-start sm:items-center justify-between mb-5 flex-col sm:flex-row gap-3">
             <div>
               <h3 className="text-base sm:text-lg font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5">
@@ -189,7 +190,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Chart */}
           <div className="relative h-52 sm:h-64 flex items-end">
             <div className="w-10 sm:w-12 flex flex-col justify-between h-full pb-8 text-[10px] sm:text-xs text-[#9CA3AF] font-medium">
               {yLabels.map((v, i) => (
@@ -256,14 +256,14 @@ export default function DashboardPage() {
   return (
     <DashboardLayout user={user} onLogout={handleLogout}>
       <div className="space-y-5 sm:space-y-6">
-        {/* Welcome */}
+        {/* 🎯 Welcome — Full Name */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1 leading-tight">
-            {t('welcome')}, {user.username}!
+            {t('welcome')}, {displayName}!
           </h2>
           <p className="text-xs sm:text-sm text-[#6B7280] text-bangla-safe">
             {new Date().toLocaleDateString(isBn ? 'bn-BD' : 'en-US', {
@@ -275,7 +275,7 @@ export default function DashboardPage() {
           </p>
         </motion.div>
 
-        {/* Stats Grid */}
+        {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {statsData.map((stat, index) => {
             const Icon = stat.icon;
@@ -303,14 +303,13 @@ export default function DashboardPage() {
           })}
         </div>
 
-        {/* Chart 1: Approved Deeds Only */}
+        {/* Charts */}
         <RenderChart
           data={deedsChartData}
           titleKey="deedsChart"
           subKey="deedsChartSub"
         />
 
-        {/* Chart 2: Approved Khatian Only */}
         <RenderChart
           data={khatianChartData}
           titleKey="khatianChart"
