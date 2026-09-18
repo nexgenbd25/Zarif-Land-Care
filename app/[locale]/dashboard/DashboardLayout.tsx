@@ -19,8 +19,8 @@ import {
   Mail,
   User,
   Lock,
-  Settings,
 } from 'lucide-react';
+import { getFullName } from '@/lib/auth';
 
 const LOGO_URL =
   'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
@@ -28,6 +28,8 @@ const LOGO_URL =
 interface DashboardLayoutProps {
   children: React.ReactNode;
   user: {
+    firstName?: string;
+    lastName?: string;
     username: string;
     email: string;
   };
@@ -53,6 +55,13 @@ export default function DashboardLayout({
   );
 
   const profileRef = useRef<HTMLDivElement>(null);
+
+  // 🎯 Full Name
+  const fullName = `${user.firstName || user.username || ''} ${
+    user.lastName || ''
+  }`.trim();
+  const displayName = fullName || user.username || 'User';
+  const avatarLetter = displayName.charAt(0).toUpperCase();
 
   // Click outside → close dropdown
   useEffect(() => {
@@ -196,23 +205,22 @@ export default function DashboardLayout({
         </Link>
       </div>
 
-      {/* User Card */}
+      {/* ===== User Card — Full Name + Email ===== */}
       <div className="px-4 py-5">
         <div className="relative rounded-2xl border-2 border-dashed border-[#22C55E]/40 bg-[#1F7A3F]/10 p-4 text-center">
+          {/* Avatar — First Letter */}
           <div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center shadow-lg mb-3">
             <span className="text-white text-xl font-bold uppercase">
-              {user.username.charAt(0)}
+              {avatarLetter}
             </span>
           </div>
 
+          {/* 🎯 Full Name (No @) */}
           <p className="text-white font-bold text-sm text-bangla-safe break-words leading-tight">
-            {user.username}
+            {displayName}
           </p>
 
-          <p className="text-[#22C55E] text-[11px] font-medium mt-0.5 break-all">
-            @{user.username}
-          </p>
-
+          {/* Email */}
           <div className="mt-3 pt-3 border-t border-white/10 flex items-start justify-center gap-1.5">
             <Mail size={11} className="text-[#22C55E] flex-shrink-0 mt-0.5" />
             <p className="text-gray-300 text-[10px] break-all text-left leading-tight">
@@ -376,10 +384,10 @@ export default function DashboardLayout({
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col lg:ml-72 min-w-0">
-        {/* Top Bar — No Title, No Bell */}
+        {/* Top Bar */}
         <header className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB] shadow-sm">
           <div className="flex items-center justify-between px-4 sm:px-6 py-3">
-            {/* Left — Hamburger (mobile only) */}
+            {/* Left — Hamburger */}
             <button
               onClick={() => setIsSidebarOpen(true)}
               className="lg:hidden w-10 h-10 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB] flex items-center justify-center text-[#1F2937] hover:bg-[#1F7A3F]/10 hover:border-[#1F7A3F]/30 transition-all"
@@ -388,10 +396,9 @@ export default function DashboardLayout({
               <Menu size={20} />
             </button>
 
-            {/* Right — Profile Avatar with Dropdown */}
+            {/* Right — Profile Dropdown */}
             <div className="flex items-center gap-2 sm:gap-3 ml-auto">
               <div className="relative" ref={profileRef}>
-                {/* Profile Button */}
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB] hover:border-[#1F7A3F]/30 hover:bg-[#1F7A3F]/5 transition-all"
@@ -399,11 +406,12 @@ export default function DashboardLayout({
                 >
                   <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center flex-shrink-0">
                     <span className="text-white text-xs font-bold uppercase">
-                      {user.username.charAt(0)}
+                      {avatarLetter}
                     </span>
                   </div>
-                  <span className="hidden sm:inline text-sm font-semibold text-[#1F2937] text-bangla-safe max-w-[100px] truncate">
-                    {user.username}
+                  {/* 🎯 Full Name in Top Bar */}
+                  <span className="hidden sm:inline text-sm font-semibold text-[#1F2937] text-bangla-safe max-w-[140px] truncate">
+                    {displayName}
                   </span>
                   <ChevronDown
                     size={14}
@@ -428,12 +436,12 @@ export default function DashboardLayout({
                         <div className="flex items-center gap-2.5">
                           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center flex-shrink-0">
                             <span className="text-white text-sm font-bold uppercase">
-                              {user.username.charAt(0)}
+                              {avatarLetter}
                             </span>
                           </div>
                           <div className="min-w-0">
                             <p className="text-sm font-bold text-[#1F2937] text-bangla-safe truncate">
-                              {user.username}
+                              {displayName}
                             </p>
                             <p className="text-[10px] text-[#6B7280] truncate">
                               {user.email}
@@ -444,7 +452,6 @@ export default function DashboardLayout({
 
                       {/* Menu Items */}
                       <div className="py-1">
-                        {/* My Profile */}
                         <Link
                           href={`/${isBn ? '' : locale + '/'}dashboard/profile`}
                           onClick={() => setIsProfileOpen(false)}
@@ -454,7 +461,6 @@ export default function DashboardLayout({
                           <span>{t('myProfile')}</span>
                         </Link>
 
-                        {/* Change Password */}
                         <Link
                           href={`/${isBn ? '' : locale + '/'}dashboard/change-password`}
                           onClick={() => setIsProfileOpen(false)}
@@ -464,10 +470,8 @@ export default function DashboardLayout({
                           <span>{t('changePassword')}</span>
                         </Link>
 
-                        {/* Divider */}
                         <div className="my-1 border-t border-[#F3F4F6]" />
 
-                        {/* Logout */}
                         <button
                           onClick={() => {
                             setIsProfileOpen(false);
