@@ -17,7 +17,6 @@ import {
   User,
   Users,
   MapPin,
-  DollarSign,
   Phone,
   MessageSquare,
   FilePlus2,
@@ -408,7 +407,7 @@ export default function NewDeedPage() {
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {/* 🎯 Serial No — Simple Readonly, No Badge, No Helper */}
+              {/* Serial No */}
               <div className="w-full min-w-0">
                 <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
                   {t('serialNo')}
@@ -446,7 +445,7 @@ export default function NewDeedPage() {
                 required: true,
               })}
 
-              {/* 🎯 Deed Type — Manual Input (Not Dropdown) */}
+              {/* Deed Type — Manual Input */}
               {renderField({
                 icon: FileText,
                 label: t('deedType'),
@@ -463,13 +462,35 @@ export default function NewDeedPage() {
                 required: true,
               })}
 
-              {renderField({
-                icon: DollarSign,
-                label: t('value'),
-                field: 'value',
-                placeholder: t('valuePh'),
-                required: true,
-              })}
+              {/* 🎯 Value Field — BDT symbol ৳ (Instead of Dollar) */}
+              <div className="w-full min-w-0">
+                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                  {t('value')}
+                  <span className="text-red-500 ml-0.5">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none font-bold text-base">
+                    ৳
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.value}
+                    onChange={(e) => handleChange('value', e.target.value)}
+                    placeholder={t('valuePh')}
+                    className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                      errors.value
+                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                    }`}
+                  />
+                </div>
+                {errors.value && (
+                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                    <AlertCircle size={12} />
+                    {errors.value}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
 
