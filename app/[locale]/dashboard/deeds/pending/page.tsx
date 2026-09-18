@@ -17,6 +17,10 @@ import {
   Loader2,
   MessageSquare,
   Clock,
+  Calendar,
+  MapPin,
+  Phone,
+  Users,
 } from 'lucide-react';
 import { getDemoUser, clearDemoUser, DemoUser } from '@/lib/auth';
 import DashboardLayout from '../../DashboardLayout';
@@ -35,29 +39,32 @@ interface Deed {
   value: number;
   mobile: string;
   remarks: string;
+  pdfUrl: string;
 }
 
 const PENDING_DEEDS: Deed[] = [
   {
     id: 1,
-    serialNo: '01',
-    deedNo: '1234/2025',
-    date: '2025-01-15',
-    donorName: 'মোঃ জাহিদুল ইসলাম',
-    donorFatherName: 'মোঃ জহিরুল ইসলাম',
-    recipientName: 'মোঃ সেলিম',
-    recipientFatherName: 'মোঃ ইউনুছ আলী',
-    mouzaName: 'বড়াইল',
-    deedType: 'বিক্রয় দলিল',
-    value: 500000,
-    mobile: '01788766735',
-    remarks: 'সম্পূর্ণ কাগজপত্র সহ',
+    serialNo: '101',
+    deedNo: '260',
+    date: '2020-01-21',
+    donorName: 'বিল্লাল হোসেন মাদবর',
+    donorFatherName: '0',
+    recipientName: 'আন্না আক্তার গং',
+    recipientFatherName: '0000',
+    mouzaName: 'ধিপুর',
+    deedType: 'কবলা',
+    value: 115000,
+    mobile: '0',
+    remarks:
+      'দলিলেল মূল রশিদ সিহাদ দেওয়ান অফিস থেকে নিয়া গেছে।',
+    pdfUrl: 'N/A',
   },
   {
     id: 2,
-    serialNo: '02',
-    deedNo: '1235/2025',
-    date: '2025-02-20',
+    serialNo: '102',
+    deedNo: '261',
+    date: '2020-02-20',
     donorName: 'মোঃ সাব্বির শেখ',
     donorFatherName: 'মোঃ দেলোয়ার হোসেন শেখ',
     recipientName: 'নাজমুল হাসান দেওয়ান',
@@ -67,12 +74,13 @@ const PENDING_DEEDS: Deed[] = [
     value: 300000,
     mobile: '01829784457',
     remarks: '',
+    pdfUrl: 'N/A',
   },
   {
     id: 3,
-    serialNo: '03',
-    deedNo: '1236/2025',
-    date: '2025-03-10',
+    serialNo: '103',
+    deedNo: '262',
+    date: '2020-03-10',
     donorName: 'আব্দুল করিম',
     donorFatherName: 'মোঃ আব্দুল হক',
     recipientName: 'মোঃ রফিকুল ইসলাম',
@@ -82,12 +90,13 @@ const PENDING_DEEDS: Deed[] = [
     value: 750000,
     mobile: '01531568468',
     remarks: 'জরুরি',
+    pdfUrl: 'N/A',
   },
   {
     id: 4,
-    serialNo: '04',
-    deedNo: '1237/2025',
-    date: '2025-04-05',
+    serialNo: '104',
+    deedNo: '263',
+    date: '2020-04-05',
     donorName: 'মোঃ আনোয়ার হোসেন',
     donorFatherName: 'মোঃ ইসমাইল হোসেন',
     recipientName: 'মোঃ শাহাদাত হোসেন',
@@ -97,12 +106,13 @@ const PENDING_DEEDS: Deed[] = [
     value: 1200000,
     mobile: '01712345678',
     remarks: 'পারিবারিক বাটোয়ারা',
+    pdfUrl: 'N/A',
   },
   {
     id: 5,
-    serialNo: '05',
-    deedNo: '1238/2025',
-    date: '2025-05-18',
+    serialNo: '105',
+    deedNo: '264',
+    date: '2020-05-18',
     donorName: 'মোঃ হাসান আলী',
     donorFatherName: 'মোঃ মোস্তফা আলী',
     recipientName: 'মোঃ ইব্রাহিম',
@@ -112,12 +122,13 @@ const PENDING_DEEDS: Deed[] = [
     value: 850000,
     mobile: '01788766735',
     remarks: '',
+    pdfUrl: 'N/A',
   },
   {
     id: 6,
-    serialNo: '06',
-    deedNo: '1239/2025',
-    date: '2025-06-22',
+    serialNo: '106',
+    deedNo: '265',
+    date: '2020-06-22',
     donorName: 'মোঃ রুহুল আমিন',
     donorFatherName: 'মোঃ আব্দুল জলিল',
     recipientName: 'মোঃ সাইফুল ইসলাম',
@@ -127,12 +138,13 @@ const PENDING_DEEDS: Deed[] = [
     value: 450000,
     mobile: '01627890841',
     remarks: 'পুত্রকে দান',
+    pdfUrl: 'N/A',
   },
   {
     id: 7,
-    serialNo: '07',
-    deedNo: '1240/2025',
-    date: '2025-07-14',
+    serialNo: '107',
+    deedNo: '266',
+    date: '2020-07-14',
     donorName: 'মোঃ শফিকুল ইসলাম',
     donorFatherName: 'মোঃ মজিবর রহমান',
     recipientName: 'মোঃ মামুন',
@@ -142,12 +154,13 @@ const PENDING_DEEDS: Deed[] = [
     value: 600000,
     mobile: '01829784457',
     remarks: '',
+    pdfUrl: 'N/A',
   },
   {
     id: 8,
-    serialNo: '08',
-    deedNo: '1241/2025',
-    date: '2025-08-30',
+    serialNo: '108',
+    deedNo: '267',
+    date: '2020-08-30',
     donorName: 'মোঃ কামাল হোসেন',
     donorFatherName: 'মোঃ জামাল হোসেন',
     recipientName: 'মোঃ সবুজ হোসেন',
@@ -157,6 +170,7 @@ const PENDING_DEEDS: Deed[] = [
     value: 950000,
     mobile: '01302555723',
     remarks: 'জমি বিক্রয়',
+    pdfUrl: 'N/A',
   },
 ];
 
@@ -220,14 +234,24 @@ export default function PendingDeedsPage() {
     pendingStatus_en: 'Pending',
     viewTitle_bn: 'দলিলের বিস্তারিত',
     viewTitle_en: 'Deed Details',
-    donorFather_bn: 'দাতার পিতা',
-    donorFather_en: "Donor's Father",
-    recipientFather_bn: 'গ্রহীতার পিতা',
-    recipientFather_en: "Recipient's Father",
+    dateLabel_bn: 'তারিখ',
+    dateLabel_en: 'Date',
+    donorFather_bn: 'দাতার পিতার নাম',
+    donorFather_en: "Donor's Father Name",
+    recipientFather_bn: 'গ্রহীতার পিতার নাম',
+    recipientFather_en: "Recipient's Father Name",
+    mouza_bn: 'মৌজার নাম',
+    mouza_en: 'Mouza Name',
+    deedType_bn: 'দলিলের রকম',
+    deedType_en: 'Deed Type',
     valueLabel_bn: 'মূল্য',
     valueLabel_en: 'Value',
+    mobileLabel_bn: 'মোবাইল নম্বর',
+    mobileLabel_en: 'Mobile Number',
     remarks_bn: 'মন্তব্য',
     remarks_en: 'Remarks',
+    pdfLabel_bn: 'PDF ফাইল',
+    pdfLabel_en: 'PDF File',
     close_bn: 'বন্ধ করুন',
     close_en: 'Close',
     loading_bn: 'লোড হচ্ছে...',
@@ -261,8 +285,20 @@ export default function PendingDeedsPage() {
     setCurrentPage(1);
   }, [search]);
 
+  const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString(isBn ? 'bn-BD' : 'en-US', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
+
   const formatValue = (value: number) => {
-    return `৳ ${value.toLocaleString(isBn ? 'bn-BD' : 'en-US')}`;
+    return `৳ ${value.toLocaleString(isBn ? 'bn-BD' : 'en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
   };
 
   if (!authChecked || !user) {
@@ -545,7 +581,7 @@ export default function PendingDeedsPage() {
           </>
         )}
 
-        {/* ===== View Modal ===== */}
+        {/* ===== View Modal — Centered, 2 Columns ===== */}
         <AnimatePresence>
           {viewDeed && (
             <>
@@ -565,83 +601,141 @@ export default function PendingDeedsPage() {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 20 }}
                   transition={{ duration: 0.25 }}
-                  className="pointer-events-auto w-full max-w-2xl max-h-[92vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+                  className="pointer-events-auto w-full max-w-3xl max-h-[92vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden"
                 >
                   {/* Modal Header */}
-                  <div className="bg-white border-b border-[#E5E7EB] px-4 sm:px-5 py-3.5 flex items-center justify-between flex-shrink-0">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
-                        <FileText size={18} className="text-[#1F7A3F]" />
+                  <div className="bg-white border-b border-[#E5E7EB] px-4 sm:px-5 py-3.5 flex-shrink-0">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
+                          <FileText size={18} className="text-[#1F7A3F]" />
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-0.5 truncate">
+                            {t('viewTitle')}
+                          </h3>
+                          <p className="text-[10px] sm:text-[11px] text-[#6B7280] truncate">
+                            {t('serial')}: {viewDeed.serialNo} •{' '}
+                            {t('deedNo')}: {viewDeed.deedNo}
+                          </p>
+                        </div>
                       </div>
-                      <div className="min-w-0">
-                        <h3 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-0.5 truncate">
-                          {t('viewTitle')}
-                        </h3>
-                        <p className="text-[10px] sm:text-[11px] text-[#6B7280] truncate">
-                          #{viewDeed.serialNo} • {viewDeed.deedNo}
-                        </p>
-                      </div>
+                      <button
+                        onClick={() => setViewDeed(null)}
+                        className="w-9 h-9 rounded-lg bg-[#F8FAF9] hover:bg-[#E5E7EB] flex items-center justify-center text-[#4B5563] transition-colors flex-shrink-0"
+                        aria-label={t('close')}
+                      >
+                        <X size={18} />
+                      </button>
                     </div>
-                    <button
-                      onClick={() => setViewDeed(null)}
-                      className="w-9 h-9 rounded-lg bg-[#F8FAF9] hover:bg-[#E5E7EB] flex items-center justify-center text-[#4B5563] transition-colors flex-shrink-0"
-                      aria-label={t('close')}
-                    >
-                      <X size={18} />
-                    </button>
                   </div>
 
-                  {/* Modal Body — Scrollable */}
-                  <div className="p-4 sm:p-5 space-y-3 overflow-y-auto flex-1">
+                  {/* Modal Body — 13 Fields in 2 Columns */}
+                  <div className="p-4 sm:p-5 overflow-y-auto flex-1">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      {/* Row 1 */}
                       <DetailRow
                         icon={Hash}
+                        label={t('serial')}
+                        value={viewDeed.serialNo}
+                      />
+                      <DetailRow
+                        icon={FileText}
                         label={t('deedNo')}
                         value={viewDeed.deedNo}
                       />
+
+                      {/* Row 2 */}
+                      <DetailRow
+                        icon={Calendar}
+                        label={t('dateLabel')}
+                        value={formatDate(viewDeed.date)}
+                      />
+                      <DetailRow
+                        icon={FileText}
+                        label={t('deedType')}
+                        value={viewDeed.deedType}
+                      />
+
+                      {/* Row 3 */}
                       <DetailRow
                         icon={User}
                         label={t('donor')}
                         value={viewDeed.donorName}
                       />
                       <DetailRow
-                        icon={User}
+                        icon={Users}
                         label={t('donorFather')}
-                        value={viewDeed.donorFatherName || '—'}
+                        value={viewDeed.donorFatherName || '0'}
                       />
+
+                      {/* Row 4 */}
                       <DetailRow
                         icon={User}
                         label={t('recipient')}
                         value={viewDeed.recipientName}
                       />
                       <DetailRow
-                        icon={User}
+                        icon={Users}
                         label={t('recipientFather')}
-                        value={viewDeed.recipientFatherName || '—'}
+                        value={viewDeed.recipientFatherName || '0'}
+                      />
+
+                      {/* Row 5 */}
+                      <DetailRow
+                        icon={MapPin}
+                        label={t('mouza')}
+                        value={viewDeed.mouzaName}
                       />
                       <DetailRow
                         icon={FileText}
                         label={t('valueLabel')}
                         value={formatValue(viewDeed.value)}
                       />
+
+                      {/* Row 6 */}
+                      <DetailRow
+                        icon={Phone}
+                        label={t('mobileLabel')}
+                        value={viewDeed.mobile || '0'}
+                      />
+                      <DetailRow
+                        icon={FileText}
+                        label={t('pdfLabel')}
+                        value={viewDeed.pdfUrl || 'N/A'}
+                      />
                     </div>
 
-                    {viewDeed.remarks && (
-                      <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
-                        <MessageSquare
-                          size={16}
-                          className="text-[#1F7A3F] flex-shrink-0 mt-0.5"
-                        />
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-1">
-                            {t('remarks')}
-                          </p>
-                          <p className="text-sm text-[#1F2937] text-bangla-safe break-words">
-                            {viewDeed.remarks}
-                          </p>
-                        </div>
+                    {/* Status — Full Width */}
+                    <div className="mt-2.5 flex items-center gap-2.5 p-3 rounded-xl bg-orange-50 border border-orange-200">
+                      <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+                        <Clock size={14} className="text-orange-600" />
                       </div>
-                    )}
+                      <div className="min-w-0 flex-1 flex items-center justify-between gap-2">
+                        <p className="text-[10px] uppercase tracking-wider text-orange-700 font-bold">
+                          {t('status')}
+                        </p>
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-500 text-white text-[10px] font-bold uppercase tracking-wider">
+                          <Clock size={10} />
+                          {t('pendingStatus')}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Remarks — Full Width */}
+                    <div className="mt-2.5 flex items-start gap-2.5 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
+                      <div className="w-8 h-8 rounded-lg bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
+                        <MessageSquare size={14} className="text-[#1F7A3F]" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-0.5">
+                          {t('remarks')}
+                        </p>
+                        <p className="text-sm text-[#1F2937] text-bangla-safe break-words">
+                          {viewDeed.remarks || '—'}
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Modal Footer */}
