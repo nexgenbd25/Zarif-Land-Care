@@ -17,6 +17,10 @@ import {
   Loader2,
   MessageSquare,
   CheckCircle2,
+  Calendar,
+  MapPin,
+  Phone,
+  Users,
   Download,
 } from 'lucide-react';
 import { getDemoUser, clearDemoUser, DemoUser } from '@/lib/auth';
@@ -36,137 +40,138 @@ interface Deed {
   value: number;
   mobile: string;
   remarks: string;
-  pdfUrl?: string;
+  pdfUrl: string;
 }
 
 const APPROVED_DEEDS: Deed[] = [
   {
     id: 1,
-    serialNo: '01',
-    deedNo: '1101/2024',
-    date: '2024-01-10',
-    donorName: 'মোঃ আব্দুল কাদির',
-    donorFatherName: 'মোঃ আব্দুল মজিদ',
-    recipientName: 'মোঃ রফিকুল ইসলাম',
-    recipientFatherName: 'মোঃ নুরুল ইসলাম',
-    mouzaName: 'বড়াইল',
-    deedType: 'বিক্রয় দলিল',
-    value: 750000,
-    mobile: '01788766735',
-    remarks: 'সফলভাবে সম্পন্ন',
-    pdfUrl: '#',
+    serialNo: '101',
+    deedNo: '260',
+    date: '2020-01-21',
+    donorName: 'বিল্লাল হোসেন মাদবর',
+    donorFatherName: '0',
+    recipientName: 'আন্না আক্তার গং',
+    recipientFatherName: '0000',
+    mouzaName: 'ধিপুর',
+    deedType: 'কবলা',
+    value: 115000,
+    mobile: '0',
+    remarks:
+      'দলিলেল মূল রশিদ সিহাদ দেওয়ান অফিস থেকে নিয়া গেছে।',
+    pdfUrl: 'N/A',
   },
   {
     id: 2,
-    serialNo: '02',
-    deedNo: '1102/2024',
-    date: '2024-02-15',
-    donorName: 'মোঃ সাইফুল ইসলাম',
-    donorFatherName: 'মোঃ রুহুল আমিন',
-    recipientName: 'মোঃ মামুন',
-    recipientFatherName: 'মোঃ শফিকুল ইসলাম',
+    serialNo: '102',
+    deedNo: '261',
+    date: '2020-02-20',
+    donorName: 'মোঃ সাব্বির শেখ',
+    donorFatherName: 'মোঃ দেলোয়ার হোসেন শেখ',
+    recipientName: 'নাজমুল হাসান দেওয়ান',
+    recipientFatherName: 'আবু বাক্কার দেওয়ান',
     mouzaName: 'হাসাইল',
     deedType: 'দানপত্র',
-    value: 450000,
+    value: 300000,
     mobile: '01829784457',
     remarks: '',
-    pdfUrl: '#',
+    pdfUrl: 'N/A',
   },
   {
     id: 3,
-    serialNo: '03',
-    deedNo: '1103/2024',
-    date: '2024-03-20',
-    donorName: 'মোঃ শাহাদাত হোসেন',
-    donorFatherName: 'মোঃ আনোয়ার হোসেন',
-    recipientName: 'মোঃ ইব্রাহিম',
-    recipientFatherName: 'মোঃ হাসান আলী',
+    serialNo: '103',
+    deedNo: '262',
+    date: '2020-03-10',
+    donorName: 'আব্দুল করিম',
+    donorFatherName: 'মোঃ আব্দুল হক',
+    recipientName: 'মোঃ রফিকুল ইসলাম',
+    recipientFatherName: 'মোঃ নুরুল ইসলাম',
     mouzaName: 'টঙ্গীবাড়ি',
     deedType: 'হেবা দলিল',
-    value: 1200000,
+    value: 750000,
     mobile: '01531568468',
-    remarks: 'পরিবারিক দলিল',
-    pdfUrl: '#',
+    remarks: 'জরুরি',
+    pdfUrl: 'N/A',
   },
   {
     id: 4,
-    serialNo: '04',
-    deedNo: '1104/2024',
-    date: '2024-04-05',
-    donorName: 'মোঃ ইসমাইল হোসেন',
-    donorFatherName: 'মোঃ ইদ্রিস হোসেন',
-    recipientName: 'মোঃ সবুজ হোসেন',
-    recipientFatherName: 'মোঃ কামাল হোসেন',
+    serialNo: '104',
+    deedNo: '263',
+    date: '2020-04-05',
+    donorName: 'মোঃ আনোয়ার হোসেন',
+    donorFatherName: 'মোঃ ইসমাইল হোসেন',
+    recipientName: 'মোঃ শাহাদাত হোসেন',
+    recipientFatherName: 'মোঃ আনোয়ার হোসেন',
     mouzaName: 'কামারখাড়া',
     deedType: 'বাটোয়ারা দলিল',
-    value: 1800000,
+    value: 1200000,
     mobile: '01712345678',
-    remarks: '',
-    pdfUrl: '#',
+    remarks: 'পারিবারিক বাটোয়ারা',
+    pdfUrl: 'N/A',
   },
   {
     id: 5,
-    serialNo: '05',
-    deedNo: '1105/2024',
-    date: '2024-05-18',
-    donorName: 'মোঃ মোস্তফা আলী',
-    donorFatherName: 'মোঃ হাসেম আলী',
-    recipientName: 'মোঃ সাইফুল ইসলাম',
-    recipientFatherName: 'মোঃ রুহুল আমিন',
+    serialNo: '105',
+    deedNo: '264',
+    date: '2020-05-18',
+    donorName: 'মোঃ হাসান আলী',
+    donorFatherName: 'মোঃ মোস্তফা আলী',
+    recipientName: 'মোঃ ইব্রাহিম',
+    recipientFatherName: 'মোঃ হাসান আলী',
     mouzaName: 'পাঁচগাঁও',
     deedType: 'বিক্রয় দলিল',
-    value: 900000,
+    value: 850000,
     mobile: '01788766735',
-    remarks: 'জমি বিক্রয় সম্পন্ন',
-    pdfUrl: '#',
+    remarks: '',
+    pdfUrl: 'N/A',
   },
   {
     id: 6,
-    serialNo: '06',
-    deedNo: '1106/2024',
-    date: '2024-06-22',
-    donorName: 'মোঃ মজিবর রহমান',
+    serialNo: '106',
+    deedNo: '265',
+    date: '2020-06-22',
+    donorName: 'মোঃ রুহুল আমিন',
     donorFatherName: 'মোঃ আব্দুল জলিল',
-    recipientName: 'মোঃ মামুন',
-    recipientFatherName: 'মোঃ শফিকুল ইসলাম',
+    recipientName: 'মোঃ সাইফুল ইসলাম',
+    recipientFatherName: 'মোঃ রুহুল আমিন',
     mouzaName: 'শিমুলিয়া',
     deedType: 'দানপত্র',
-    value: 550000,
+    value: 450000,
     mobile: '01627890841',
-    remarks: '',
-    pdfUrl: '#',
+    remarks: 'পুত্রকে দান',
+    pdfUrl: 'N/A',
   },
   {
     id: 7,
-    serialNo: '07',
-    deedNo: '1107/2024',
-    date: '2024-07-14',
-    donorName: 'মোঃ জামাল হোসেন',
-    donorFatherName: 'মোঃ ইসমাইল হোসেন',
-    recipientName: 'মোঃ সবুজ হোসেন',
-    recipientFatherName: 'মোঃ কামাল হোসেন',
+    serialNo: '107',
+    deedNo: '266',
+    date: '2020-07-14',
+    donorName: 'মোঃ শফিকুল ইসলাম',
+    donorFatherName: 'মোঃ মজিবর রহমান',
+    recipientName: 'মোঃ মামুন',
+    recipientFatherName: 'মোঃ শফিকুল ইসলাম',
     mouzaName: 'বানারী',
     deedType: 'বিনিময় দলিল',
-    value: 700000,
+    value: 600000,
     mobile: '01829784457',
-    remarks: 'বিনিময় সম্পন্ন',
-    pdfUrl: '#',
+    remarks: '',
+    pdfUrl: 'N/A',
   },
   {
     id: 8,
-    serialNo: '08',
-    deedNo: '1108/2024',
-    date: '2024-08-30',
+    serialNo: '108',
+    deedNo: '267',
+    date: '2020-08-30',
     donorName: 'মোঃ কামাল হোসেন',
     donorFatherName: 'মোঃ জামাল হোসেন',
-    recipientName: 'মোঃ ফরহাদ',
-    recipientFatherName: 'মোঃ মোস্তাফিজুর রহমান',
+    recipientName: 'মোঃ সবুজ হোসেন',
+    recipientFatherName: 'মোঃ কামাল হোসেন',
     mouzaName: 'রহিমগঞ্জ',
     deedType: 'বিক্রয় দলিল',
-    value: 1100000,
+    value: 950000,
     mobile: '01302555723',
-    remarks: 'সফলভাবে সম্পন্ন',
-    pdfUrl: '#',
+    remarks: 'জমি বিক্রয়',
+    pdfUrl: 'N/A',
   },
 ];
 
@@ -216,6 +221,8 @@ export default function ApprovedDeedsPage() {
     recipient_en: 'Recipient Name',
     value_bn: 'মূল্য',
     value_en: 'Value',
+    status_bn: 'স্টেটাস',
+    status_en: 'Status',
     actions_bn: 'অ্যাকশন',
     actions_en: 'Actions',
     view_bn: 'দেখুন',
@@ -226,26 +233,30 @@ export default function ApprovedDeedsPage() {
     prev_en: 'Prev',
     next_bn: 'পরবর্তী',
     next_en: 'Next',
+    approvedStatus_bn: 'অনুমোদিত',
+    approvedStatus_en: 'Approved',
     viewTitle_bn: 'দলিলের বিস্তারিত',
     viewTitle_en: 'Deed Details',
-    donorFather_bn: 'দাতার পিতা',
-    donorFather_en: "Donor's Father",
-    recipientFather_bn: 'গ্রহীতার পিতা',
-    recipientFather_en: "Recipient's Father",
+    dateLabel_bn: 'তারিখ',
+    dateLabel_en: 'Date',
+    donorFather_bn: 'দাতার পিতার নাম',
+    donorFather_en: "Donor's Father Name",
+    recipientFather_bn: 'গ্রহীতার পিতার নাম',
+    recipientFather_en: "Recipient's Father Name",
+    mouza_bn: 'মৌজার নাম',
+    mouza_en: 'Mouza Name',
     deedType_bn: 'দলিলের রকম',
     deedType_en: 'Deed Type',
-    mobile_bn: 'মোবাইল',
-    mobile_en: 'Mobile',
+    valueLabel_bn: 'মূল্য',
+    valueLabel_en: 'Value',
+    mobileLabel_bn: 'মোবাইল নম্বর',
+    mobileLabel_en: 'Mobile Number',
     remarks_bn: 'মন্তব্য',
     remarks_en: 'Remarks',
-    close_bn: 'বন্ধ করুন',
-    close_en: 'Close',
+    pdfLabel_bn: 'PDF ফাইল',
+    pdfLabel_en: 'PDF File',
     loading_bn: 'লোড হচ্ছে...',
     loading_en: 'Loading...',
-    status_bn: 'অনুমোদিত',
-    status_en: 'Approved',
-    downloadStart_bn: 'ডাউনলোড শুরু হচ্ছে...',
-    downloadStart_en: 'Download starting...',
   };
 
   const t = (key: string) =>
@@ -275,12 +286,24 @@ export default function ApprovedDeedsPage() {
     setCurrentPage(1);
   }, [search]);
 
+  const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString(isBn ? 'bn-BD' : 'en-US', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
+
   const formatValue = (value: number) => {
-    return `৳ ${value.toLocaleString(isBn ? 'bn-BD' : 'en-US')}`;
+    return `৳ ${value.toLocaleString(isBn ? 'bn-BD' : 'en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
   };
 
   const handleDownload = (deed: Deed) => {
-    // TODO: API call to download PDF
+    // TODO: API call for actual download
     alert(
       isBn
         ? `দলিল ${deed.deedNo} ডাউনলোড হচ্ছে...`
@@ -381,6 +404,9 @@ export default function ApprovedDeedsPage() {
                         {t('value')}
                       </th>
                       <th className="px-4 py-3 text-center text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
+                        {t('status')}
+                      </th>
+                      <th className="px-4 py-3 text-center text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
                         {t('actions')}
                       </th>
                     </tr>
@@ -419,6 +445,12 @@ export default function ApprovedDeedsPage() {
                             {formatValue(deed.value)}
                           </span>
                         </td>
+                        <td className="px-4 py-3 text-center">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-[10px] font-bold uppercase tracking-wider">
+                            <CheckCircle2 size={10} />
+                            {t('approvedStatus')}
+                          </span>
+                        </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center justify-center gap-1.5">
                             <button
@@ -454,25 +486,28 @@ export default function ApprovedDeedsPage() {
                   transition={{ duration: 0.3, delay: idx * 0.03 }}
                   className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4"
                 >
-                  {/* Top row */}
                   <div className="flex items-center justify-between mb-3">
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-bold uppercase tracking-wider">
                       <CheckCircle2 size={10} />#{deed.serialNo}
                     </span>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-bold uppercase tracking-wider">
+                      <CheckCircle2 size={10} />
+                      {t('approvedStatus')}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between mb-3 pb-3 border-b border-[#F3F4F6]">
+                    <div className="flex items-center gap-2">
+                      <Hash size={14} className="text-[#1F7A3F]" />
+                      <span className="text-sm font-bold text-[#1F2937]">
+                        {deed.deedNo}
+                      </span>
+                    </div>
                     <span className="text-sm font-bold text-[#1F7A3F]">
                       {formatValue(deed.value)}
                     </span>
                   </div>
 
-                  {/* Deed No */}
-                  <div className="flex items-center gap-2 mb-3 pb-3 border-b border-[#F3F4F6]">
-                    <Hash size={14} className="text-[#1F7A3F]" />
-                    <span className="text-sm font-bold text-[#1F2937]">
-                      {deed.deedNo}
-                    </span>
-                  </div>
-
-                  {/* Info grid */}
                   <div className="grid grid-cols-2 gap-2.5 mb-3">
                     <div className="flex items-start gap-2">
                       <User
@@ -504,7 +539,6 @@ export default function ApprovedDeedsPage() {
                     </div>
                   </div>
 
-                  {/* Actions */}
                   <div className="flex items-center gap-2 pt-3 border-t border-[#F3F4F6]">
                     <button
                       onClick={() => setViewDeed(deed)}
@@ -571,10 +605,11 @@ export default function ApprovedDeedsPage() {
           </>
         )}
 
-        {/* View Modal */}
+        {/* ===== View Modal — Centered, 2 Columns, No Footer ===== */}
         <AnimatePresence>
           {viewDeed && (
             <>
+              {/* Backdrop */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -582,114 +617,168 @@ export default function ApprovedDeedsPage() {
                 onClick={() => setViewDeed(null)}
                 className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
               />
-              <motion.div
-                initial={{ opacity: 0, y: 50, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 50, scale: 0.95 }}
-                transition={{ duration: 0.25 }}
-                className="fixed inset-x-3 top-1/2 -translate-y-1/2 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:max-w-2xl sm:w-full z-[101] max-h-[92vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
-              >
-                {/* Modal Header */}
-                <div className="sticky top-0 bg-white border-b border-[#E5E7EB] px-4 sm:px-5 py-3.5 flex items-center justify-between z-10 rounded-t-2xl">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
-                      <FileText size={18} className="text-[#1F7A3F]" />
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-0.5 truncate">
-                        {t('viewTitle')}
-                      </h3>
-                      <p className="text-[10px] sm:text-[11px] text-[#6B7280] truncate">
-                        #{viewDeed.serialNo} • {viewDeed.deedNo}
-                      </p>
+
+              {/* Modal Wrapper — Centered */}
+              <div className="fixed inset-0 z-[101] flex items-center justify-center p-3 sm:p-4 pointer-events-none">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                  transition={{ duration: 0.25 }}
+                  className="pointer-events-auto w-full max-w-3xl max-h-[92vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+                >
+                  {/* Modal Header */}
+                  <div className="bg-white border-b border-[#E5E7EB] px-4 sm:px-5 py-3.5 flex-shrink-0">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
+                          <CheckCircle2 size={18} className="text-[#1F7A3F]" />
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-0.5 truncate">
+                            {t('viewTitle')}
+                          </h3>
+                          <p className="text-[10px] sm:text-[11px] text-[#6B7280] truncate">
+                            {t('serial')}: {viewDeed.serialNo} •{' '}
+                            {t('deedNo')}: {viewDeed.deedNo}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setViewDeed(null)}
+                        className="w-9 h-9 rounded-lg bg-[#F8FAF9] hover:bg-[#E5E7EB] flex items-center justify-center text-[#4B5563] transition-colors flex-shrink-0"
+                        aria-label="Close"
+                      >
+                        <X size={18} />
+                      </button>
                     </div>
                   </div>
-                  <button
-                    onClick={() => setViewDeed(null)}
-                    className="w-9 h-9 rounded-lg bg-[#F8FAF9] hover:bg-[#E5E7EB] flex items-center justify-center text-[#4B5563] transition-colors flex-shrink-0"
-                    aria-label={t('close')}
-                  >
-                    <X size={18} />
-                  </button>
-                </div>
 
-                {/* Modal Body */}
-                <div className="p-4 sm:p-5 space-y-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    <DetailRow
-                      icon={Hash}
-                      label={t('deedNo')}
-                      value={viewDeed.deedNo}
-                    />
-                    <DetailRow
-                      icon={User}
-                      label={t('donor')}
-                      value={viewDeed.donorName}
-                    />
-                    <DetailRow
-                      icon={User}
-                      label={t('donorFather')}
-                      value={viewDeed.donorFatherName || '—'}
-                    />
-                    <DetailRow
-                      icon={User}
-                      label={t('recipient')}
-                      value={viewDeed.recipientName}
-                    />
-                    <DetailRow
-                      icon={User}
-                      label={t('recipientFather')}
-                      value={viewDeed.recipientFatherName || '—'}
-                    />
-                    <DetailRow
-                      icon={FileText}
-                      label={t('value')}
-                      value={formatValue(viewDeed.value)}
-                    />
-                  </div>
-
-                  {viewDeed.remarks && (
-                    <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
-                      <MessageSquare
-                        size={16}
-                        className="text-[#1F7A3F] flex-shrink-0 mt-0.5"
+                  {/* Modal Body — 13 Fields in 2 Columns */}
+                  <div className="p-4 sm:p-5 overflow-y-auto flex-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      {/* Row 1 */}
+                      <DetailRow
+                        icon={Hash}
+                        label={t('serial')}
+                        value={viewDeed.serialNo}
                       />
+                      <DetailRow
+                        icon={FileText}
+                        label={t('deedNo')}
+                        value={viewDeed.deedNo}
+                      />
+
+                      {/* Row 2 */}
+                      <DetailRow
+                        icon={Calendar}
+                        label={t('dateLabel')}
+                        value={formatDate(viewDeed.date)}
+                      />
+                      <DetailRow
+                        icon={FileText}
+                        label={t('deedType')}
+                        value={viewDeed.deedType}
+                      />
+
+                      {/* Row 3 */}
+                      <DetailRow
+                        icon={User}
+                        label={t('donor')}
+                        value={viewDeed.donorName}
+                      />
+                      <DetailRow
+                        icon={Users}
+                        label={t('donorFather')}
+                        value={viewDeed.donorFatherName || '0'}
+                      />
+
+                      {/* Row 4 */}
+                      <DetailRow
+                        icon={User}
+                        label={t('recipient')}
+                        value={viewDeed.recipientName}
+                      />
+                      <DetailRow
+                        icon={Users}
+                        label={t('recipientFather')}
+                        value={viewDeed.recipientFatherName || '0'}
+                      />
+
+                      {/* Row 5 */}
+                      <DetailRow
+                        icon={MapPin}
+                        label={t('mouza')}
+                        value={viewDeed.mouzaName}
+                      />
+                      <DetailRow
+                        icon={FileText}
+                        label={t('valueLabel')}
+                        value={formatValue(viewDeed.value)}
+                      />
+
+                      {/* Row 6 */}
+                      <DetailRow
+                        icon={Phone}
+                        label={t('mobileLabel')}
+                        value={viewDeed.mobile || '0'}
+                      />
+                      <DetailRow
+                        icon={FileText}
+                        label={t('pdfLabel')}
+                        value={viewDeed.pdfUrl || 'N/A'}
+                      />
+                    </div>
+
+                    {/* Status — Full Width */}
+                    <div className="mt-2.5 flex items-center gap-2.5 p-3 rounded-xl bg-green-50 border border-green-200">
+                      <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                        <CheckCircle2 size={14} className="text-green-600" />
+                      </div>
+                      <div className="min-w-0 flex-1 flex items-center justify-between gap-2">
+                        <p className="text-[10px] uppercase tracking-wider text-green-700 font-bold">
+                          {t('status')}
+                        </p>
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-500 text-white text-[10px] font-bold uppercase tracking-wider">
+                          <CheckCircle2 size={10} />
+                          {t('approvedStatus')}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Remarks — Full Width */}
+                    <div className="mt-2.5 flex items-start gap-2.5 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
+                      <div className="w-8 h-8 rounded-lg bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
+                        <MessageSquare size={14} className="text-[#1F7A3F]" />
+                      </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-1">
+                        <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-0.5">
                           {t('remarks')}
                         </p>
                         <p className="text-sm text-[#1F2937] text-bangla-safe break-words">
-                          {viewDeed.remarks}
+                          {viewDeed.remarks || '—'}
                         </p>
                       </div>
                     </div>
-                  )}
 
-                  {/* Actions */}
-                  <div className="flex flex-col-reverse sm:flex-row gap-2 pt-3 border-t border-[#F3F4F6]">
-                    <button
-                      type="button"
-                      onClick={() => setViewDeed(null)}
-                      className="w-full sm:w-auto px-5 py-2.5 rounded-lg font-semibold text-sm text-[#4B5563] bg-white border border-[#E5E7EB] hover:bg-[#F8FAF9] transition-all text-bangla-safe"
-                    >
-                      {t('close')}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleDownload(viewDeed);
-                        setViewDeed(null);
-                      }}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-bold text-white text-sm bg-[#1F7A3F] hover:bg-[#155E30] shadow-md transition-all active:scale-[0.98]"
-                    >
-                      <Download size={16} />
-                      <span className="text-bangla-safe">
-                        {t('download')}
-                      </span>
-                    </button>
+                    {/* Download Button — Full Width inside body */}
+                    <div className="mt-2.5">
+                      <button
+                        type="button"
+                        onClick={() => handleDownload(viewDeed)}
+                        className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-white text-sm bg-[#1F7A3F] hover:bg-[#155E30] shadow-md transition-all active:scale-[0.98]"
+                      >
+                        <Download size={16} />
+                        <span className="text-bangla-safe">
+                          {t('download')}
+                        </span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
+
+                  {/* ❌ NO FOOTER */}
+                </motion.div>
+              </div>
             </>
           )}
         </AnimatePresence>
