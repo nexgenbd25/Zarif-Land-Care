@@ -19,7 +19,6 @@ import {
   Mail,
   User,
   Lock,
-  AtSign,
 } from 'lucide-react';
 
 const LOGO_URL =
@@ -56,14 +55,13 @@ export default function DashboardLayout({
 
   const profileRef = useRef<HTMLDivElement>(null);
 
-  // 🎯 Full Name
+  // 🎯 Full Name Display
   const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
   const displayName = fullName || user.username || 'User';
   const avatarLetter = (user.firstName || user.username || 'U')
     .charAt(0)
     .toUpperCase();
 
-  // Click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -204,7 +202,7 @@ export default function DashboardLayout({
         </Link>
       </div>
 
-      {/* ===== User Card — Full Name + Username + Email ===== */}
+      {/* ===== User Card: Full Name + Username + Email ===== */}
       <div className="px-4 py-5">
         <div className="relative rounded-2xl border-2 border-dashed border-[#22C55E]/40 bg-[#1F7A3F]/10 p-4 text-center">
           {/* Avatar */}
@@ -214,18 +212,18 @@ export default function DashboardLayout({
             </span>
           </div>
 
-          {/* 🎯 Full Name */}
+          {/* 🎯 Line 1: Full Name */}
           <p className="text-white font-bold text-sm text-bangla-safe break-words leading-tight">
             {displayName}
           </p>
 
-          {/* 🎯 Username */}
+          {/* 🎯 Line 2: Username (no @) */}
           <p className="text-[#22C55E] text-[11px] font-medium mt-1 break-all">
-            @{user.username}
+            {user.username}
           </p>
 
-          {/* 🎯 Email */}
-          <div className="mt-3 pt-3 border-t border-white/10 flex items-start justify-center gap-1.5">
+          {/* 🎯 Line 3: Email */}
+          <div className="mt-2.5 pt-2.5 border-t border-white/10 flex items-start justify-center gap-1.5">
             <Mail size={11} className="text-[#22C55E] flex-shrink-0 mt-0.5" />
             <p className="text-gray-300 text-[10px] break-all text-left leading-tight">
               {user.email}
@@ -432,7 +430,7 @@ export default function DashboardLayout({
                       transition={{ duration: 0.2 }}
                       className="absolute right-0 mt-2 w-64 z-[100] bg-white border border-[#E5E7EB] rounded-xl shadow-2xl overflow-hidden"
                     >
-                      {/* User Info Header */}
+                      {/* User Info Header — Same 3 line format */}
                       <div className="px-4 py-3 bg-[#F8FAF9] border-b border-[#E5E7EB]">
                         <div className="flex items-center gap-2.5">
                           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center flex-shrink-0">
@@ -441,13 +439,15 @@ export default function DashboardLayout({
                             </span>
                           </div>
                           <div className="min-w-0 flex-1">
+                            {/* Line 1: Full Name */}
                             <p className="text-sm font-bold text-[#1F2937] text-bangla-safe truncate">
                               {displayName}
                             </p>
-                            <p className="text-[10px] text-[#6B7280] truncate flex items-center gap-1">
-                              <AtSign size={9} />
+                            {/* Line 2: Username (no @) */}
+                            <p className="text-[10px] text-[#22C55E] font-medium truncate">
                               {user.username}
                             </p>
+                            {/* Line 3: Email */}
                             <p className="text-[10px] text-[#6B7280] truncate">
                               {user.email}
                             </p>
