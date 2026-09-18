@@ -18,6 +18,11 @@ import {
   CheckCircle,
   AlertCircle,
   Loader2,
+  MapPin,
+  Building2,
+  Hash,
+  Home,
+  Users,
 } from 'lucide-react';
 import { demoRegister } from '@/lib/auth';
 
@@ -25,19 +30,31 @@ const LOGO_URL =
   'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
 
 interface FormData {
+  firstName: string;
+  lastName: string;
   username: string;
   email: string;
   country: string;
-  phone: string;
+  mobile: string;
+  address: string;
+  state: string;
+  city: string;
+  zipCode: string;
   password: string;
   confirmPassword: string;
 }
 
 interface FormErrors {
+  firstName?: string;
+  lastName?: string;
   username?: string;
   email?: string;
   country?: string;
-  phone?: string;
+  mobile?: string;
+  address?: string;
+  state?: string;
+  city?: string;
+  zipCode?: string;
   password?: string;
   confirmPassword?: string;
 }
@@ -73,59 +90,119 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState('');
 
   const [formData, setFormData] = useState<FormData>({
+    firstName: '',
+    lastName: '',
     username: '',
     email: '',
     country: '+880',
-    phone: '',
+    mobile: '',
+    address: '',
+    state: '',
+    city: '',
+    zipCode: '',
     password: '',
     confirmPassword: '',
   });
 
   const content = {
-    title_bn: 'নতুন অ্যাকাউন্ট',
+    title_bn: 'নতুন অ্যাকাউন্ট তৈরি করুন',
     title_en: 'Create Account',
-    subtitle_bn: 'আপনার তথ্য দিয়ে রেজিস্টার করুন',
-    subtitle_en: 'Register with your information',
+    subtitle_bn: 'নিচের তথ্য দিয়ে রেজিস্টার করুন',
+    subtitle_en: 'Register with the information below',
+
+    sectionPersonal_bn: 'ব্যক্তিগত তথ্য',
+    sectionPersonal_en: 'Personal Information',
+    sectionLocation_bn: 'ঠিকানা',
+    sectionLocation_en: 'Location',
+    sectionSecurity_bn: 'নিরাপত্তা',
+    sectionSecurity_en: 'Security',
+
+    firstNameLabel_bn: 'প্রথম নাম',
+    firstNameLabel_en: 'First Name',
+    firstNamePh_bn: 'প্রথম নাম লিখুন',
+    firstNamePh_en: 'Enter first name',
+
+    lastNameLabel_bn: 'পদবি',
+    lastNameLabel_en: 'Last Name',
+    lastNamePh_bn: 'পদবি লিখুন',
+    lastNamePh_en: 'Enter last name',
+
     usernameLabel_bn: 'ইউজারনেম',
     usernameLabel_en: 'Username',
-    usernamePlaceholder_bn: 'ইউজারনেম লিখুন',
-    usernamePlaceholder_en: 'Enter username',
+    usernamePh_bn: 'ইউজারনেম লিখুন',
+    usernamePh_en: 'Enter username',
+
     emailLabel_bn: 'ইমেইল',
-    emailLabel_en: 'Email',
-    emailPlaceholder_bn: 'ইমেইল লিখুন',
-    emailPlaceholder_en: 'Enter email',
+    emailLabel_en: 'E-mail Address',
+    emailPh_bn: 'ইমেইল লিখুন',
+    emailPh_en: 'Enter email',
+
     countryLabel_bn: 'দেশ',
     countryLabel_en: 'Country',
-    phoneLabel_bn: 'মোবাইল নম্বর',
-    phoneLabel_en: 'Mobile Number',
-    phonePlaceholder_bn: 'নম্বর লিখুন',
-    phonePlaceholder_en: 'Enter number',
+
+    mobileLabel_bn: 'মোবাইল নম্বর',
+    mobileLabel_en: 'Mobile Number',
+    mobilePh_bn: 'নম্বর লিখুন',
+    mobilePh_en: 'Enter number',
+
+    addressLabel_bn: 'ঠিকানা',
+    addressLabel_en: 'Address',
+    addressPh_bn: 'ঠিকানা লিখুন (ঐচ্ছিক)',
+    addressPh_en: 'Enter address (optional)',
+
+    stateLabel_bn: 'রাজ্য/বিভাগ',
+    stateLabel_en: 'State',
+    statePh_bn: 'রাজ্য/বিভাগ (ঐচ্ছিক)',
+    statePh_en: 'State (optional)',
+
+    cityLabel_bn: 'শহর',
+    cityLabel_en: 'City',
+    cityPh_bn: 'শহর (ঐচ্ছিক)',
+    cityPh_en: 'City (optional)',
+
+    zipCodeLabel_bn: 'পোস্ট কোড',
+    zipCodeLabel_en: 'Zip Code',
+    zipCodePh_bn: 'পোস্ট কোড (ঐচ্ছিক)',
+    zipCodePh_en: 'Zip code (optional)',
+
     passwordLabel_bn: 'পাসওয়ার্ড',
     passwordLabel_en: 'Password',
-    passwordPlaceholder_bn: 'পাসওয়ার্ড লিখুন',
-    passwordPlaceholder_en: 'Enter password',
+    passwordPh_bn: 'পাসওয়ার্ড লিখুন',
+    passwordPh_en: 'Enter password',
+
     confirmPasswordLabel_bn: 'পাসওয়ার্ড নিশ্চিত করুন',
     confirmPasswordLabel_en: 'Confirm Password',
-    confirmPasswordPlaceholder_bn: 'আবার লিখুন',
-    confirmPasswordPlaceholder_en: 'Re-enter',
+    confirmPasswordPh_bn: 'পাসওয়ার্ড আবার লিখুন',
+    confirmPasswordPh_en: 'Re-enter password',
+
     registerBtn_bn: 'রেজিস্টার করুন',
     registerBtn_en: 'Create Account',
     haveAccount_bn: 'অ্যাকাউন্ট আছে?',
     haveAccount_en: 'Already have an account?',
     signIn_bn: 'লগইন করুন',
     signIn_en: 'Sign In',
+
     required_bn: 'এই ঘরটি পূরণ করুন',
     required_en: 'This field is required',
+    firstNameShort_bn: 'প্রথম নাম কমপক্ষে ২ অক্ষর',
+    firstNameShort_en: 'First name must be at least 2 characters',
+    lastNameShort_bn: 'পদবি কমপক্ষে ২ অক্ষর',
+    lastNameShort_en: 'Last name must be at least 2 characters',
+    usernameShort_bn: 'ইউজারনেম কমপক্ষে ৩ অক্ষর',
+    usernameShort_en: 'Username must be at least 3 characters',
     invalidEmail_bn: 'সঠিক ইমেইল দিন',
     invalidEmail_en: 'Enter a valid email',
-    invalidPhone_bn: 'সঠিক নম্বর দিন',
-    invalidPhone_en: 'Enter a valid number',
+    invalidMobile_bn: 'সঠিক মোবাইল নম্বর দিন',
+    invalidMobile_en: 'Enter a valid mobile number',
+    addressLong_bn: 'ঠিকানা সর্বোচ্চ ২০০ অক্ষর',
+    addressLong_en: 'Address must be under 200 characters',
+    invalidZip_bn: 'সঠিক পোস্ট কোড দিন',
+    invalidZip_en: 'Enter a valid zip code',
     passwordShort_bn: 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষর',
-    passwordShort_en: 'Min 6 characters',
+    passwordShort_en: 'Password must be at least 6 characters',
     passwordMismatch_bn: 'পাসওয়ার্ড মিলছে না',
     passwordMismatch_en: 'Passwords do not match',
-    usernameShort_bn: 'ইউজারনেম কমপক্ষে ৩ অক্ষর',
-    usernameShort_en: 'Min 3 characters',
+
     registerSuccess_bn: 'অ্যাকাউন্ট তৈরি হয়েছে! ড্যাশবোর্ডে যাচ্ছে...',
     registerSuccess_en: 'Account created! Going to dashboard...',
     loading_bn: 'অপেক্ষা করুন...',
@@ -135,30 +212,79 @@ export default function RegisterPage() {
   const t = (key: string) =>
     isBn ? (content as any)[`${key}_bn`] : (content as any)[`${key}_en`];
 
+  const handleChange = (field: keyof FormData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field as keyof FormErrors]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
+  };
+
   const validate = () => {
     const newErrors: FormErrors = {};
 
-    if (!formData.username.trim()) newErrors.username = t('required');
-    else if (formData.username.trim().length < 3)
+    // First Name — Min 2 chars
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = t('required');
+    } else if (formData.firstName.trim().length < 2) {
+      newErrors.firstName = t('firstNameShort');
+    }
+
+    // Last Name — Min 2 chars
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = t('required');
+    } else if (formData.lastName.trim().length < 2) {
+      newErrors.lastName = t('lastNameShort');
+    }
+
+    // Username — Min 3 chars
+    if (!formData.username.trim()) {
+      newErrors.username = t('required');
+    } else if (formData.username.trim().length < 3) {
       newErrors.username = t('usernameShort');
+    }
 
-    if (!formData.email.trim()) newErrors.email = t('required');
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+    // Email — Valid format
+    if (!formData.email.trim()) {
+      newErrors.email = t('required');
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = t('invalidEmail');
+    }
 
-    if (!formData.country) newErrors.country = t('required');
+    // Country — Required
+    if (!formData.country) {
+      newErrors.country = t('required');
+    }
 
-    if (!formData.phone.trim()) newErrors.phone = t('required');
-    else if (!/^\d{6,15}$/.test(formData.phone.replace(/\D/g, '')))
-      newErrors.phone = t('invalidPhone');
+    // Mobile — 6-15 digit
+    if (!formData.mobile.trim()) {
+      newErrors.mobile = t('required');
+    } else if (!/^\d{6,15}$/.test(formData.mobile.replace(/\D/g, ''))) {
+      newErrors.mobile = t('invalidMobile');
+    }
 
-    if (!formData.password) newErrors.password = t('required');
-    else if (formData.password.length < 6)
+    // Address — Optional, max 200
+    if (formData.address.length > 200) {
+      newErrors.address = t('addressLong');
+    }
+
+    // Zip Code — Optional, 4-10 digit
+    if (formData.zipCode.trim() && !/^\d{4,10}$/.test(formData.zipCode.replace(/\D/g, ''))) {
+      newErrors.zipCode = t('invalidZip');
+    }
+
+    // Password — Min 6
+    if (!formData.password) {
+      newErrors.password = t('required');
+    } else if (formData.password.length < 6) {
       newErrors.password = t('passwordShort');
+    }
 
-    if (!formData.confirmPassword) newErrors.confirmPassword = t('required');
-    else if (formData.password !== formData.confirmPassword)
+    // Confirm Password — Match
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = t('required');
+    } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = t('passwordMismatch');
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -167,7 +293,10 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSuccess('');
-    if (!validate()) return;
+    if (!validate()) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
 
     setIsLoading(true);
 
@@ -177,7 +306,7 @@ export default function RegisterPage() {
         username: formData.username,
         email: formData.email,
         country: formData.country,
-        phone: formData.phone,
+        phone: formData.mobile,
         password: formData.password,
       });
 
@@ -193,7 +322,8 @@ export default function RegisterPage() {
   };
 
   return (
-    <section className="relative min-h-[100dvh] w-full flex items-center justify-center px-4 py-3 sm:py-6 bg-gradient-to-br from-[#F0FDF4] via-white to-[#F0FDF4] overflow-hidden">
+    <section className="relative min-h-[100dvh] w-full flex items-start sm:items-center justify-center px-4 py-4 sm:py-6 bg-gradient-to-br from-[#F0FDF4] via-white to-[#F0FDF4] overflow-hidden">
+      {/* Background decorations */}
       <div className="absolute top-0 left-0 w-56 h-56 sm:w-72 sm:h-72 bg-[#1F7A3F]/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-[#22C55E]/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -201,25 +331,25 @@ export default function RegisterPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative w-full max-w-sm sm:max-w-md z-10"
+        className="relative w-full max-w-2xl z-10"
       >
         {/* Logo */}
-        <div className="text-center mb-2.5 sm:mb-4">
+        <div className="text-center mb-3 sm:mb-5">
           <Link href={`/${isBn ? '' : locale}`} className="inline-block group">
             <Image
               src={LOGO_URL}
               alt="Zarif Landcare Center"
               width={200}
               height={60}
-              className="h-9 sm:h-12 w-auto object-contain mx-auto transition-transform duration-300 group-hover:scale-105"
+              className="h-10 sm:h-14 w-auto object-contain mx-auto transition-transform duration-300 group-hover:scale-105"
               unoptimized
             />
           </Link>
         </div>
 
         {/* Title */}
-        <div className="text-center mb-3 sm:mb-5">
-          <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-0.5 leading-tight">
+        <div className="text-center mb-4 sm:mb-6">
+          <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-1 leading-tight">
             {t('title')}
           </h1>
           <p className="text-[11px] sm:text-sm text-[#6B7280] text-bangla-safe leading-tight">
@@ -232,7 +362,7 @@ export default function RegisterPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-2 flex items-start gap-2 p-2 rounded-lg bg-[#DCFCE7] border border-[#22C55E]/30"
+            className="mb-3 flex items-start gap-2 p-2.5 rounded-lg bg-[#DCFCE7] border border-[#22C55E]/30"
           >
             <CheckCircle
               size={14}
@@ -244,261 +374,462 @@ export default function RegisterPage() {
           </motion.div>
         )}
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-2 sm:space-y-2.5">
-          {/* Username */}
-          <div>
-            <label className="block text-[11px] sm:text-sm font-semibold text-[#1F2937] mb-0.5 text-bangla-safe">
-              {t('usernameLabel')}
-            </label>
-            <div className="relative">
-              <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                <User size={14} className="sm:hidden" />
-                <User size={16} className="hidden sm:block" />
-              </div>
-              <input
-                type="text"
-                value={formData.username}
-                onChange={(e) =>
-                  setFormData({ ...formData, username: e.target.value })
-                }
-                placeholder={t('usernamePlaceholder')}
-                className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
-                  errors.username
-                    ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                    : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                }`}
-              />
-            </div>
-            {errors.username && (
-              <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                <AlertCircle size={10} />
-                {errors.username}
-              </p>
-            )}
-          </div>
+        {/* ===== Form ===== */}
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+          {/* Section 1: Personal Info */}
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5">
+            <h2 className="text-xs sm:text-sm font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-1.5 mb-3 flex items-center gap-2 border-b border-[#F3F4F6]">
+              <User size={14} className="text-[#1F7A3F]" />
+              {t('sectionPersonal')}
+            </h2>
 
-          {/* Email */}
-          <div>
-            <label className="block text-[11px] sm:text-sm font-semibold text-[#1F2937] mb-0.5 text-bangla-safe">
-              {t('emailLabel')}
-            </label>
-            <div className="relative">
-              <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                <Mail size={14} className="sm:hidden" />
-                <Mail size={16} className="hidden sm:block" />
-              </div>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                placeholder={t('emailPlaceholder')}
-                className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
-                  errors.email
-                    ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                    : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                }`}
-              />
-            </div>
-            {errors.email && (
-              <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                <AlertCircle size={10} />
-                {errors.email}
-              </p>
-            )}
-          </div>
-
-          {/* Country */}
-          <div>
-            <label className="block text-[11px] sm:text-sm font-semibold text-[#1F2937] mb-0.5 text-bangla-safe">
-              {t('countryLabel')}
-            </label>
-            <div className="relative">
-              <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none z-10">
-                <Globe size={14} className="sm:hidden" />
-                <Globe size={16} className="hidden sm:block" />
-              </div>
-              <select
-                value={formData.country}
-                onChange={(e) =>
-                  setFormData({ ...formData, country: e.target.value })
-                }
-                className={`w-full pl-8 sm:pl-10 pr-8 sm:pr-10 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-base text-[#1F2937] text-bangla-safe focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
-                  errors.country
-                    ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                    : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                }`}
-              >
-                {COUNTRIES.map((c) => (
-                  <option key={c.code} value={c.code}>
-                    {c.flag} {isBn ? c.name_bn : c.name_en} ({c.code})
-                  </option>
-                ))}
-              </select>
-              <div className="absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-                  <path
-                    d="M3 4.5L6 7.5L9 4.5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* First Name */}
+              <div className="w-full min-w-0">
+                <label className="block text-[11px] sm:text-xs font-semibold text-[#1F2937] mb-1 text-bangla-safe">
+                  {t('firstNameLabel')}
+                  <span className="text-red-500 ml-0.5">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <User size={14} className="sm:hidden" />
+                    <User size={16} className="hidden sm:block" />
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.firstName}
+                    onChange={(e) => handleChange('firstName', e.target.value)}
+                    placeholder={t('firstNamePh')}
+                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                      errors.firstName
+                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                    }`}
                   />
-                </svg>
+                </div>
+                {errors.firstName && (
+                  <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                    <AlertCircle size={10} />
+                    {errors.firstName}
+                  </p>
+                )}
+              </div>
+
+              {/* Last Name */}
+              <div className="w-full min-w-0">
+                <label className="block text-[11px] sm:text-xs font-semibold text-[#1F2937] mb-1 text-bangla-safe">
+                  {t('lastNameLabel')}
+                  <span className="text-red-500 ml-0.5">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <User size={14} className="sm:hidden" />
+                    <User size={16} className="hidden sm:block" />
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.lastName}
+                    onChange={(e) => handleChange('lastName', e.target.value)}
+                    placeholder={t('lastNamePh')}
+                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                      errors.lastName
+                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                    }`}
+                  />
+                </div>
+                {errors.lastName && (
+                  <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                    <AlertCircle size={10} />
+                    {errors.lastName}
+                  </p>
+                )}
+              </div>
+
+              {/* Username */}
+              <div className="w-full min-w-0 sm:col-span-2">
+                <label className="block text-[11px] sm:text-xs font-semibold text-[#1F2937] mb-1 text-bangla-safe">
+                  {t('usernameLabel')}
+                  <span className="text-red-500 ml-0.5">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <User size={14} className="sm:hidden" />
+                    <User size={16} className="hidden sm:block" />
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.username}
+                    onChange={(e) => handleChange('username', e.target.value)}
+                    placeholder={t('usernamePh')}
+                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                      errors.username
+                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                    }`}
+                  />
+                </div>
+                {errors.username && (
+                  <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                    <AlertCircle size={10} />
+                    {errors.username}
+                  </p>
+                )}
+              </div>
+
+              {/* Email */}
+              <div className="w-full min-w-0 sm:col-span-2">
+                <label className="block text-[11px] sm:text-xs font-semibold text-[#1F2937] mb-1 text-bangla-safe">
+                  {t('emailLabel')}
+                  <span className="text-red-500 ml-0.5">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <Mail size={14} className="sm:hidden" />
+                    <Mail size={16} className="hidden sm:block" />
+                  </div>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleChange('email', e.target.value)}
+                    placeholder={t('emailPh')}
+                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                      errors.email
+                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                    }`}
+                  />
+                </div>
+                {errors.email && (
+                  <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                    <AlertCircle size={10} />
+                    {errors.email}
+                  </p>
+                )}
+              </div>
+
+              {/* Mobile */}
+              <div className="w-full min-w-0 sm:col-span-2">
+                <label className="block text-[11px] sm:text-xs font-semibold text-[#1F2937] mb-1 text-bangla-safe">
+                  {t('mobileLabel')}
+                  <span className="text-red-500 ml-0.5">*</span>
+                </label>
+                <div className="relative flex">
+                  <div className="flex items-center gap-1 px-2 sm:px-3 py-2 sm:py-2.5 rounded-l-lg border border-r-0 border-[#E5E7EB] bg-[#F8FAF9] text-[#1F2937] font-semibold text-[11px] sm:text-sm min-w-[70px] sm:min-w-[90px]">
+                    <Phone size={12} className="text-[#1F7A3F] sm:hidden" />
+                    <Phone size={14} className="text-[#1F7A3F] hidden sm:block" />
+                    <span>{formData.country}</span>
+                  </div>
+                  <input
+                    type="tel"
+                    value={formData.mobile}
+                    onChange={(e) =>
+                      handleChange(
+                        'mobile',
+                        e.target.value.replace(/[^\d\s-]/g, '')
+                      )
+                    }
+                    placeholder={t('mobilePh')}
+                    className={`w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-r-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                      errors.mobile
+                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                    }`}
+                  />
+                </div>
+                {errors.mobile && (
+                  <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                    <AlertCircle size={10} />
+                    {errors.mobile}
+                  </p>
+                )}
               </div>
             </div>
-            {errors.country && (
-              <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                <AlertCircle size={10} />
-                {errors.country}
-              </p>
-            )}
           </div>
 
-          {/* Phone */}
-          <div>
-            <label className="block text-[11px] sm:text-sm font-semibold text-[#1F2937] mb-0.5 text-bangla-safe">
-              {t('phoneLabel')}
-            </label>
-            <div className="relative flex">
-              <div className="flex items-center gap-1 px-2 sm:px-3 py-2 sm:py-2.5 rounded-l-lg border border-r-0 border-[#E5E7EB] bg-[#F8FAF9] text-[#1F2937] font-semibold text-[11px] sm:text-sm min-w-[64px] sm:min-w-[85px]">
-                <Phone size={12} className="text-[#1F7A3F] sm:hidden" />
-                <Phone size={14} className="text-[#1F7A3F] hidden sm:block" />
-                <span>{formData.country}</span>
+          {/* Section 2: Location */}
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5">
+            <h2 className="text-xs sm:text-sm font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-1.5 mb-3 flex items-center gap-2 border-b border-[#F3F4F6]">
+              <MapPin size={14} className="text-[#1F7A3F]" />
+              {t('sectionLocation')}
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Country */}
+              <div className="w-full min-w-0">
+                <label className="block text-[11px] sm:text-xs font-semibold text-[#1F2937] mb-1 text-bangla-safe">
+                  {t('countryLabel')}
+                  <span className="text-red-500 ml-0.5">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none z-10">
+                    <Globe size={14} className="sm:hidden" />
+                    <Globe size={16} className="hidden sm:block" />
+                  </div>
+                  <select
+                    value={formData.country}
+                    onChange={(e) => handleChange('country', e.target.value)}
+                    className={`w-full pl-8 sm:pl-10 pr-8 sm:pr-10 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] text-bangla-safe focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
+                      errors.country
+                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                    }`}
+                  >
+                    {COUNTRIES.map((c) => (
+                      <option key={c.code} value={c.code}>
+                        {c.flag} {isBn ? c.name_bn : c.name_en} ({c.code})
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                      <path
+                        d="M3 4.5L6 7.5L9 4.5"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                {errors.country && (
+                  <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                    <AlertCircle size={10} />
+                    {errors.country}
+                  </p>
+                )}
               </div>
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    phone: e.target.value.replace(/[^\d\s-]/g, ''),
-                  })
-                }
-                placeholder={t('phonePlaceholder')}
-                className={`w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-r-lg border transition-all duration-200 bg-white text-[13px] sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
-                  errors.phone
-                    ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                    : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                }`}
-              />
+
+              {/* State */}
+              <div className="w-full min-w-0">
+                <label className="block text-[11px] sm:text-xs font-semibold text-[#1F2937] mb-1 text-bangla-safe">
+                  {t('stateLabel')}
+                </label>
+                <div className="relative">
+                  <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <Building2 size={14} className="sm:hidden" />
+                    <Building2 size={16} className="hidden sm:block" />
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.state}
+                    onChange={(e) => handleChange('state', e.target.value)}
+                    placeholder={t('statePh')}
+                    className="w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20"
+                  />
+                </div>
+              </div>
+
+              {/* City */}
+              <div className="w-full min-w-0">
+                <label className="block text-[11px] sm:text-xs font-semibold text-[#1F2937] mb-1 text-bangla-safe">
+                  {t('cityLabel')}
+                </label>
+                <div className="relative">
+                  <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <Home size={14} className="sm:hidden" />
+                    <Home size={16} className="hidden sm:block" />
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.city}
+                    onChange={(e) => handleChange('city', e.target.value)}
+                    placeholder={t('cityPh')}
+                    className="w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20"
+                  />
+                </div>
+              </div>
+
+              {/* Zip Code */}
+              <div className="w-full min-w-0">
+                <label className="block text-[11px] sm:text-xs font-semibold text-[#1F2937] mb-1 text-bangla-safe">
+                  {t('zipCodeLabel')}
+                </label>
+                <div className="relative">
+                  <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <Hash size={14} className="sm:hidden" />
+                    <Hash size={16} className="hidden sm:block" />
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.zipCode}
+                    onChange={(e) =>
+                      handleChange(
+                        'zipCode',
+                        e.target.value.replace(/[^\d]/g, '')
+                      )
+                    }
+                    placeholder={t('zipCodePh')}
+                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                      errors.zipCode
+                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                    }`}
+                  />
+                </div>
+                {errors.zipCode && (
+                  <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                    <AlertCircle size={10} />
+                    {errors.zipCode}
+                  </p>
+                )}
+              </div>
+
+              {/* Address — Full width */}
+              <div className="w-full min-w-0 sm:col-span-2">
+                <label className="block text-[11px] sm:text-xs font-semibold text-[#1F2937] mb-1 text-bangla-safe">
+                  {t('addressLabel')}
+                </label>
+                <div className="relative">
+                  <div className="absolute left-2.5 sm:left-3 top-2.5 sm:top-3 text-[#9CA3AF] pointer-events-none">
+                    <MapPin size={14} className="sm:hidden" />
+                    <MapPin size={16} className="hidden sm:block" />
+                  </div>
+                  <textarea
+                    value={formData.address}
+                    onChange={(e) => handleChange('address', e.target.value)}
+                    placeholder={t('addressPh')}
+                    rows={3}
+                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 resize-none ${
+                      errors.address
+                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                    }`}
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-0.5">
+                  {errors.address ? (
+                    <p className="text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                      <AlertCircle size={10} />
+                      {errors.address}
+                    </p>
+                  ) : (
+                    <span />
+                  )}
+                  <span className="text-[10px] text-[#9CA3AF]">
+                    {formData.address.length}/200
+                  </span>
+                </div>
+              </div>
             </div>
-            {errors.phone && (
-              <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                <AlertCircle size={10} />
-                {errors.phone}
-              </p>
-            )}
           </div>
 
-          {/* Password */}
-          <div>
-            <label className="block text-[11px] sm:text-sm font-semibold text-[#1F2937] mb-0.5 text-bangla-safe">
-              {t('passwordLabel')}
-            </label>
-            <div className="relative">
-              <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                <Lock size={14} className="sm:hidden" />
-                <Lock size={16} className="hidden sm:block" />
-              </div>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-                placeholder={t('passwordPlaceholder')}
-                className={`w-full pl-8 sm:pl-10 pr-10 sm:pr-12 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
-                  errors.password
-                    ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                    : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                }`}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#1F7A3F] transition-colors p-1"
-                aria-label="Toggle password"
-              >
-                {showPassword ? (
-                  <EyeOff size={14} className="sm:hidden" />
-                ) : (
-                  <Eye size={14} className="sm:hidden" />
-                )}
-                {showPassword ? (
-                  <EyeOff size={16} className="hidden sm:block" />
-                ) : (
-                  <Eye size={16} className="hidden sm:block" />
-                )}
-              </button>
-            </div>
-            {errors.password && (
-              <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                <AlertCircle size={10} />
-                {errors.password}
-              </p>
-            )}
-          </div>
+          {/* Section 3: Security */}
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5">
+            <h2 className="text-xs sm:text-sm font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-1.5 mb-3 flex items-center gap-2 border-b border-[#F3F4F6]">
+              <Lock size={14} className="text-[#1F7A3F]" />
+              {t('sectionSecurity')}
+            </h2>
 
-          {/* Confirm Password */}
-          <div>
-            <label className="block text-[11px] sm:text-sm font-semibold text-[#1F2937] mb-0.5 text-bangla-safe">
-              {t('confirmPasswordLabel')}
-            </label>
-            <div className="relative">
-              <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                <Lock size={14} className="sm:hidden" />
-                <Lock size={16} className="hidden sm:block" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Password */}
+              <div className="w-full min-w-0">
+                <label className="block text-[11px] sm:text-xs font-semibold text-[#1F2937] mb-1 text-bangla-safe">
+                  {t('passwordLabel')}
+                  <span className="text-red-500 ml-0.5">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <Lock size={14} className="sm:hidden" />
+                    <Lock size={16} className="hidden sm:block" />
+                  </div>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={formData.password}
+                    onChange={(e) => handleChange('password', e.target.value)}
+                    placeholder={t('passwordPh')}
+                    className={`w-full pl-8 sm:pl-10 pr-10 sm:pr-12 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                      errors.password
+                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#1F7A3F] transition-colors p-1"
+                    aria-label="Toggle password"
+                  >
+                    {showPassword ? (
+                      <EyeOff size={14} className="sm:hidden" />
+                    ) : (
+                      <Eye size={14} className="sm:hidden" />
+                    )}
+                    {showPassword ? (
+                      <EyeOff size={16} className="hidden sm:block" />
+                    ) : (
+                      <Eye size={16} className="hidden sm:block" />
+                    )}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                    <AlertCircle size={10} />
+                    {errors.password}
+                  </p>
+                )}
               </div>
-              <input
-                type={showConfirmPassword ? 'text' : 'password'}
-                value={formData.confirmPassword}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    confirmPassword: e.target.value,
-                  })
-                }
-                placeholder={t('confirmPasswordPlaceholder')}
-                className={`w-full pl-8 sm:pl-10 pr-10 sm:pr-12 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
-                  errors.confirmPassword
-                    ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                    : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                }`}
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#1F7A3F] transition-colors p-1"
-                aria-label="Toggle password"
-              >
-                {showConfirmPassword ? (
-                  <EyeOff size={14} className="sm:hidden" />
-                ) : (
-                  <Eye size={14} className="sm:hidden" />
+
+              {/* Confirm Password */}
+              <div className="w-full min-w-0">
+                <label className="block text-[11px] sm:text-xs font-semibold text-[#1F2937] mb-1 text-bangla-safe">
+                  {t('confirmPasswordLabel')}
+                  <span className="text-red-500 ml-0.5">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <Lock size={14} className="sm:hidden" />
+                    <Lock size={16} className="hidden sm:block" />
+                  </div>
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={formData.confirmPassword}
+                    onChange={(e) =>
+                      handleChange('confirmPassword', e.target.value)
+                    }
+                    placeholder={t('confirmPasswordPh')}
+                    className={`w-full pl-8 sm:pl-10 pr-10 sm:pr-12 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                      errors.confirmPassword
+                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowConfirmPassword(!showConfirmPassword)
+                    }
+                    className="absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#1F7A3F] transition-colors p-1"
+                    aria-label="Toggle password"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff size={14} className="sm:hidden" />
+                    ) : (
+                      <Eye size={14} className="sm:hidden" />
+                    )}
+                    {showConfirmPassword ? (
+                      <EyeOff size={16} className="hidden sm:block" />
+                    ) : (
+                      <Eye size={16} className="hidden sm:block" />
+                    )}
+                  </button>
+                </div>
+                {errors.confirmPassword && (
+                  <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                    <AlertCircle size={10} />
+                    {errors.confirmPassword}
+                  </p>
                 )}
-                {showConfirmPassword ? (
-                  <EyeOff size={16} className="hidden sm:block" />
-                ) : (
-                  <Eye size={16} className="hidden sm:block" />
-                )}
-              </button>
+              </div>
             </div>
-            {errors.confirmPassword && (
-              <p className="mt-0.5 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                <AlertCircle size={10} />
-                {errors.confirmPassword}
-              </p>
-            )}
           </div>
 
           {/* Submit */}
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-white text-[13px] sm:text-base bg-[#1F7A3F] hover:bg-[#155E30] shadow-md shadow-[#1F7A3F]/20 hover:shadow-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98] mt-1"
+            className="w-full flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-white text-[13px] sm:text-base bg-[#1F7A3F] hover:bg-[#155E30] shadow-md shadow-[#1F7A3F]/20 hover:shadow-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98]"
           >
             {isLoading ? (
               <>
@@ -526,6 +857,10 @@ export default function RegisterPage() {
             </Link>
           </p>
         </form>
+
+        <p className="text-center text-[10px] sm:text-xs text-[#9CA3AF] mt-4 text-bangla-safe">
+          © {new Date().getFullYear()} Zarif Land Care Center
+        </p>
       </motion.div>
     </section>
   );
