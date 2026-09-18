@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -16,8 +16,10 @@ import {
   Shield,
   LogOut,
   Circle,
-  Bell,
   Mail,
+  User,
+  Lock,
+  Settings,
 } from 'lucide-react';
 
 const LOGO_URL =
@@ -42,12 +44,35 @@ export default function DashboardLayout({
   const isBn = locale === 'bn';
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isDeedsOpen, setIsDeedsOpen] = useState(
     pathname.includes('/dashboard/deeds')
   );
   const [isKhatianOpen, setIsKhatianOpen] = useState(
     pathname.includes('/dashboard/khatian')
   );
+
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // Click outside → close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Close dropdown when path changes
+  useEffect(() => {
+    setIsProfileOpen(false);
+  }, [pathname]);
 
   const content = {
     dashboard_bn: 'ড্যাশবোর্ড',
@@ -74,6 +99,10 @@ export default function DashboardLayout({
     security_en: '2FA Security',
     logout_bn: 'লগআউট',
     logout_en: 'Log Out',
+    myProfile_bn: 'আমার প্রোফাইল',
+    myProfile_en: 'My Profile',
+    changePassword_bn: 'পাসওয়ার্ড পরিবর্তন',
+    changePassword_en: 'Change Password',
   };
 
   const t = (key: string) =>
@@ -347,7 +376,7 @@ export default function DashboardLayout({
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col lg:ml-72 min-w-0">
-        {/* Top Bar — Title REMOVED to avoid duplicate */}
+        {/* Top Bar — No Title, No Bell */}
         <header className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB] shadow-sm">
           <div className="flex items-center justify-between px-4 sm:px-6 py-3">
             {/* Left — Hamburger (mobile only) */}
@@ -359,25 +388,100 @@ export default function DashboardLayout({
               <Menu size={20} />
             </button>
 
-            {/* Right — Notifications + User */}
+            {/* Right — Profile Avatar with Dropdown */}
             <div className="flex items-center gap-2 sm:gap-3 ml-auto">
-              <button
-                className="relative w-10 h-10 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB] flex items-center justify-center text-[#1F2937] hover:bg-[#1F7A3F]/10 hover:border-[#1F7A3F]/30 transition-all"
-                aria-label="Notifications"
-              >
-                <Bell size={18} />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#22C55E] rounded-full" />
-              </button>
-
-              <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB]">
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center">
-                  <span className="text-white text-xs font-bold uppercase">
-                    {user.username.charAt(0)}
+              <div className="relative" ref={profileRef}>
+                {/* Profile Button */}
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB] hover:border-[#1F7A3F]/30 hover:bg-[#1F7A3F]/5 transition-all"
+                  aria-label="Open profile menu"
+                >
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center flex-shrink-0">
+                    <span className="text-white text-xs font-bold uppercase">
+                      {user.username.charAt(0)}
+                    </span>
+                  </div>
+                  <span className="hidden sm:inline text-sm font-semibold text-[#1F2937] text-bangla-safe max-w-[100px] truncate">
+                    {user.username}
                   </span>
-                </div>
-                <span className="hidden sm:inline text-sm font-semibold text-[#1F2937] text-bangla-safe max-w-[100px] truncate">
-                  {user.username}
-                </span>
+                  <ChevronDown
+                    size={14}
+                    className={`text-[#6B7280] transition-transform duration-300 ${
+                      isProfileOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+
+                {/* Profile Dropdown */}
+                <AnimatePresence>
+                  {isProfileOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 mt-2 w-56 z-[100] bg-white border border-[#E5E7EB] rounded-xl shadow-2xl overflow-hidden"
+                    >
+                      {/* User Info Header */}
+                      <div className="px-4 py-3 bg-[#F8FAF9] border-b border-[#E5E7EB]">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center flex-shrink-0">
+                            <span className="text-white text-sm font-bold uppercase">
+                              {user.username.charAt(0)}
+                            </span>
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-bold text-[#1F2937] text-bangla-safe truncate">
+                              {user.username}
+                            </p>
+                            <p className="text-[10px] text-[#6B7280] truncate">
+                              {user.email}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Menu Items */}
+                      <div className="py-1">
+                        {/* My Profile */}
+                        <Link
+                          href={`/${isBn ? '' : locale + '/'}dashboard/profile`}
+                          onClick={() => setIsProfileOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#1F2937] hover:bg-[#1F7A3F]/5 hover:text-[#1F7A3F] transition-colors text-bangla-safe"
+                        >
+                          <User size={16} className="text-[#1F7A3F]" />
+                          <span>{t('myProfile')}</span>
+                        </Link>
+
+                        {/* Change Password */}
+                        <Link
+                          href={`/${isBn ? '' : locale + '/'}dashboard/change-password`}
+                          onClick={() => setIsProfileOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#1F2937] hover:bg-[#1F7A3F]/5 hover:text-[#1F7A3F] transition-colors text-bangla-safe"
+                        >
+                          <Lock size={16} className="text-[#1F7A3F]" />
+                          <span>{t('changePassword')}</span>
+                        </Link>
+
+                        {/* Divider */}
+                        <div className="my-1 border-t border-[#F3F4F6]" />
+
+                        {/* Logout */}
+                        <button
+                          onClick={() => {
+                            setIsProfileOpen(false);
+                            onLogout();
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors text-bangla-safe"
+                        >
+                          <LogOut size={16} />
+                          <span>{t('logout')}</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </div>
