@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -78,6 +78,39 @@ export default function DashboardLayout({
 
   const t = (key: string) =>
     isBn ? (content as any)[`${key}_bn`] : (content as any)[`${key}_en`];
+
+  // 🎯 Dynamic Page Title
+  const getPageTitle = (): string => {
+    const base = isBn ? '' : `/${locale}`;
+
+    // Dashboard
+    if (pathname === `${base}/dashboard` || pathname === '/dashboard') {
+      return t('dashboard');
+    }
+
+    // Deeds
+    if (pathname.includes('/dashboard/deeds/new')) return t('newDeed');
+    if (pathname.includes('/dashboard/deeds/approved'))
+      return t('approvedDeed');
+    if (pathname.includes('/dashboard/deeds/pending')) return t('pendingDeed');
+    if (pathname.includes('/dashboard/deeds')) return t('deeds');
+
+    // Khatian
+    if (pathname.includes('/dashboard/khatian/new')) return t('newKhatian');
+    if (pathname.includes('/dashboard/khatian/approved'))
+      return t('approvedKhatian');
+    if (pathname.includes('/dashboard/khatian/pending'))
+      return t('pendingKhatian');
+    if (pathname.includes('/dashboard/khatian')) return t('khatian');
+
+    // Support
+    if (pathname.includes('/dashboard/support')) return t('support');
+
+    // Security
+    if (pathname.includes('/dashboard/security')) return t('security');
+
+    return t('dashboard');
+  };
 
   const menuItems = [
     {
@@ -167,32 +200,25 @@ export default function DashboardLayout({
         </Link>
       </div>
 
-      {/* User Card — Full Name + Username + Email */}
+      {/* User Card */}
       <div className="px-4 py-5">
         <div className="relative rounded-2xl border-2 border-dashed border-[#22C55E]/40 bg-[#1F7A3F]/10 p-4 text-center">
-          {/* Avatar */}
           <div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center shadow-lg mb-3">
             <span className="text-white text-xl font-bold uppercase">
               {user.username.charAt(0)}
             </span>
           </div>
 
-          {/* Full Name (Username as display) */}
           <p className="text-white font-bold text-sm text-bangla-safe break-words leading-tight">
             {user.username}
           </p>
 
-          {/* Username with @ */}
           <p className="text-[#22C55E] text-[11px] font-medium mt-0.5 break-all">
             @{user.username}
           </p>
 
-          {/* Email */}
           <div className="mt-3 pt-3 border-t border-white/10 flex items-start justify-center gap-1.5">
-            <Mail
-              size={11}
-              className="text-[#22C55E] flex-shrink-0 mt-0.5"
-            />
+            <Mail size={11} className="text-[#22C55E] flex-shrink-0 mt-0.5" />
             <p className="text-gray-300 text-[10px] break-all text-left leading-tight">
               {user.email}
             </p>
@@ -365,8 +391,8 @@ export default function DashboardLayout({
               <Menu size={20} />
             </button>
 
-            <h1 className="text-base sm:text-lg lg:text-xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1 flex-1 lg:flex-none ml-3 lg:ml-0">
-              {t('dashboard')}
+            <h1 className="text-base sm:text-lg lg:text-xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1 flex-1 lg:flex-none ml-3 lg:ml-0 truncate">
+              {getPageTitle()}
             </h1>
 
             <div className="flex items-center gap-2 sm:gap-3">
