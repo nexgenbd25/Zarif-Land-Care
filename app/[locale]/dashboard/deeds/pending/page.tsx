@@ -224,10 +224,8 @@ export default function PendingDeedsPage() {
     donorFather_en: "Donor's Father",
     recipientFather_bn: 'গ্রহীতার পিতা',
     recipientFather_en: "Recipient's Father",
-    deedType_bn: 'দলিলের রকম',
-    deedType_en: 'Deed Type',
-    mobile_bn: 'মোবাইল',
-    mobile_en: 'Mobile',
+    valueLabel_bn: 'মূল্য',
+    valueLabel_en: 'Value',
     remarks_bn: 'মন্তব্য',
     remarks_en: 'Remarks',
     close_bn: 'বন্ধ করুন',
@@ -435,7 +433,6 @@ export default function PendingDeedsPage() {
                   transition={{ duration: 0.3, delay: idx * 0.03 }}
                   className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4"
                 >
-                  {/* Top row */}
                   <div className="flex items-center justify-between mb-3">
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold uppercase tracking-wider">
                       <FileText size={10} />#{deed.serialNo}
@@ -446,7 +443,6 @@ export default function PendingDeedsPage() {
                     </span>
                   </div>
 
-                  {/* Deed No + Value */}
                   <div className="flex items-center justify-between mb-3 pb-3 border-b border-[#F3F4F6]">
                     <div className="flex items-center gap-2">
                       <Hash size={14} className="text-[#1F7A3F]" />
@@ -459,7 +455,6 @@ export default function PendingDeedsPage() {
                     </span>
                   </div>
 
-                  {/* Info grid */}
                   <div className="grid grid-cols-2 gap-2.5 mb-3">
                     <div className="flex items-start gap-2">
                       <User
@@ -491,7 +486,6 @@ export default function PendingDeedsPage() {
                     </div>
                   </div>
 
-                  {/* Actions */}
                   <div className="pt-3 border-t border-[#F3F4F6]">
                     <button
                       onClick={() => setViewDeed(deed)}
@@ -551,10 +545,11 @@ export default function PendingDeedsPage() {
           </>
         )}
 
-        {/* View Modal */}
+        {/* ===== View Modal ===== */}
         <AnimatePresence>
           {viewDeed && (
             <>
+              {/* Backdrop */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -562,101 +557,105 @@ export default function PendingDeedsPage() {
                 onClick={() => setViewDeed(null)}
                 className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
               />
-              <motion.div
-                initial={{ opacity: 0, y: 50, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 50, scale: 0.95 }}
-                transition={{ duration: 0.25 }}
-                className="fixed inset-x-3 top-1/2 -translate-y-1/2 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:max-w-2xl sm:w-full z-[101] max-h-[92vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
-              >
-                {/* Modal Header */}
-                <div className="sticky top-0 bg-white border-b border-[#E5E7EB] px-4 sm:px-5 py-3.5 flex items-center justify-between z-10 rounded-t-2xl">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
-                      <FileText size={18} className="text-[#1F7A3F]" />
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-0.5 truncate">
-                        {t('viewTitle')}
-                      </h3>
-                      <p className="text-[10px] sm:text-[11px] text-[#6B7280] truncate">
-                        #{viewDeed.serialNo} • {viewDeed.deedNo}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setViewDeed(null)}
-                    className="w-9 h-9 rounded-lg bg-[#F8FAF9] hover:bg-[#E5E7EB] flex items-center justify-center text-[#4B5563] transition-colors flex-shrink-0"
-                    aria-label={t('close')}
-                  >
-                    <X size={18} />
-                  </button>
-                </div>
 
-                {/* Modal Body */}
-                <div className="p-4 sm:p-5 space-y-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    <DetailRow
-                      icon={Hash}
-                      label={t('deedNo')}
-                      value={viewDeed.deedNo}
-                    />
-                    <DetailRow
-                      icon={User}
-                      label={t('donor')}
-                      value={viewDeed.donorName}
-                    />
-                    <DetailRow
-                      icon={User}
-                      label={t('donorFather')}
-                      value={viewDeed.donorFatherName || '—'}
-                    />
-                    <DetailRow
-                      icon={User}
-                      label={t('recipient')}
-                      value={viewDeed.recipientName}
-                    />
-                    <DetailRow
-                      icon={User}
-                      label={t('recipientFather')}
-                      value={viewDeed.recipientFatherName || '—'}
-                    />
-                    <DetailRow
-                      icon={FileText}
-                      label={t('value')}
-                      value={formatValue(viewDeed.value)}
-                    />
-                  </div>
-
-                  {viewDeed.remarks && (
-                    <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
-                      <MessageSquare
-                        size={16}
-                        className="text-[#1F7A3F] flex-shrink-0 mt-0.5"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-1">
-                          {t('remarks')}
-                        </p>
-                        <p className="text-sm text-[#1F2937] text-bangla-safe break-words">
-                          {viewDeed.remarks}
+              {/* Modal Wrapper — Centered */}
+              <div className="fixed inset-0 z-[101] flex items-center justify-center p-3 sm:p-4 pointer-events-none">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                  transition={{ duration: 0.25 }}
+                  className="pointer-events-auto w-full max-w-2xl max-h-[92vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+                >
+                  {/* Modal Header */}
+                  <div className="bg-white border-b border-[#E5E7EB] px-4 sm:px-5 py-3.5 flex items-center justify-between flex-shrink-0">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
+                        <FileText size={18} className="text-[#1F7A3F]" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-0.5 truncate">
+                          {t('viewTitle')}
+                        </h3>
+                        <p className="text-[10px] sm:text-[11px] text-[#6B7280] truncate">
+                          #{viewDeed.serialNo} • {viewDeed.deedNo}
                         </p>
                       </div>
                     </div>
-                  )}
+                    <button
+                      onClick={() => setViewDeed(null)}
+                      className="w-9 h-9 rounded-lg bg-[#F8FAF9] hover:bg-[#E5E7EB] flex items-center justify-center text-[#4B5563] transition-colors flex-shrink-0"
+                      aria-label={t('close')}
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
 
-                  {/* Actions */}
-                  <div className="flex justify-end pt-3 border-t border-[#F3F4F6]">
+                  {/* Modal Body — Scrollable */}
+                  <div className="p-4 sm:p-5 space-y-3 overflow-y-auto flex-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      <DetailRow
+                        icon={Hash}
+                        label={t('deedNo')}
+                        value={viewDeed.deedNo}
+                      />
+                      <DetailRow
+                        icon={User}
+                        label={t('donor')}
+                        value={viewDeed.donorName}
+                      />
+                      <DetailRow
+                        icon={User}
+                        label={t('donorFather')}
+                        value={viewDeed.donorFatherName || '—'}
+                      />
+                      <DetailRow
+                        icon={User}
+                        label={t('recipient')}
+                        value={viewDeed.recipientName}
+                      />
+                      <DetailRow
+                        icon={User}
+                        label={t('recipientFather')}
+                        value={viewDeed.recipientFatherName || '—'}
+                      />
+                      <DetailRow
+                        icon={FileText}
+                        label={t('valueLabel')}
+                        value={formatValue(viewDeed.value)}
+                      />
+                    </div>
+
+                    {viewDeed.remarks && (
+                      <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
+                        <MessageSquare
+                          size={16}
+                          className="text-[#1F7A3F] flex-shrink-0 mt-0.5"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-1">
+                            {t('remarks')}
+                          </p>
+                          <p className="text-sm text-[#1F2937] text-bangla-safe break-words">
+                            {viewDeed.remarks}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Modal Footer */}
+                  <div className="px-4 sm:px-5 py-3 border-t border-[#F3F4F6] bg-white flex-shrink-0">
                     <button
                       type="button"
                       onClick={() => setViewDeed(null)}
-                      className="w-full sm:w-auto px-5 py-2.5 rounded-lg font-semibold text-sm text-[#4B5563] bg-white border border-[#E5E7EB] hover:bg-[#F8FAF9] transition-all text-bangla-safe"
+                      className="w-full px-5 py-2.5 rounded-lg font-semibold text-sm text-[#4B5563] bg-white border border-[#E5E7EB] hover:bg-[#F8FAF9] transition-all text-bangla-safe"
                     >
                       {t('close')}
                     </button>
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             </>
           )}
         </AnimatePresence>
