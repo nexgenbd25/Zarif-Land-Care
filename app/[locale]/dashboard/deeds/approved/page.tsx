@@ -57,8 +57,7 @@ const APPROVED_DEEDS: Deed[] = [
     deedType: 'কবলা',
     value: 115000,
     mobile: '0',
-    remarks:
-      'দলিলেল মূল রশিদ সিহাদ দেওয়ান অফিস থেকে নিয়া গেছে।',
+    remarks: 'দলিলেল মূল রশিদ সিহাদ দেওয়ান অফিস থেকে নিয়া গেছে।',
     pdfUrl: 'N/A',
   },
   {
@@ -303,7 +302,6 @@ export default function ApprovedDeedsPage() {
   };
 
   const handleDownload = (deed: Deed) => {
-    // TODO: API call for actual download
     alert(
       isBn
         ? `দলিল ${deed.deedNo} ডাউনলোড হচ্ছে...`
@@ -330,7 +328,7 @@ export default function ApprovedDeedsPage() {
   return (
     <DashboardLayout user={user} onLogout={handleLogout}>
       <div className="w-full max-w-7xl mx-auto">
-        {/* Header */}
+        {/* ===== Page Header (ONLY TITLE HERE) ===== */}
         <div className="mb-4 sm:mb-5">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
@@ -605,11 +603,10 @@ export default function ApprovedDeedsPage() {
           </>
         )}
 
-        {/* ===== View Modal — Centered, 2 Columns, No Footer ===== */}
+        {/* View Modal */}
         <AnimatePresence>
           {viewDeed && (
             <>
-              {/* Backdrop */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -618,7 +615,6 @@ export default function ApprovedDeedsPage() {
                 className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
               />
 
-              {/* Modal Wrapper — Centered */}
               <div className="fixed inset-0 z-[101] flex items-center justify-center p-3 sm:p-4 pointer-events-none">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -654,10 +650,9 @@ export default function ApprovedDeedsPage() {
                     </div>
                   </div>
 
-                  {/* Modal Body — 13 Fields in 2 Columns */}
+                  {/* Modal Body — 13 Fields */}
                   <div className="p-4 sm:p-5 overflow-y-auto flex-1">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                      {/* Row 1 */}
                       <DetailRow
                         icon={Hash}
                         label={t('serial')}
@@ -668,8 +663,6 @@ export default function ApprovedDeedsPage() {
                         label={t('deedNo')}
                         value={viewDeed.deedNo}
                       />
-
-                      {/* Row 2 */}
                       <DetailRow
                         icon={Calendar}
                         label={t('dateLabel')}
@@ -680,8 +673,6 @@ export default function ApprovedDeedsPage() {
                         label={t('deedType')}
                         value={viewDeed.deedType}
                       />
-
-                      {/* Row 3 */}
                       <DetailRow
                         icon={User}
                         label={t('donor')}
@@ -692,8 +683,6 @@ export default function ApprovedDeedsPage() {
                         label={t('donorFather')}
                         value={viewDeed.donorFatherName || '0'}
                       />
-
-                      {/* Row 4 */}
                       <DetailRow
                         icon={User}
                         label={t('recipient')}
@@ -704,8 +693,6 @@ export default function ApprovedDeedsPage() {
                         label={t('recipientFather')}
                         value={viewDeed.recipientFatherName || '0'}
                       />
-
-                      {/* Row 5 */}
                       <DetailRow
                         icon={MapPin}
                         label={t('mouza')}
@@ -716,8 +703,6 @@ export default function ApprovedDeedsPage() {
                         label={t('valueLabel')}
                         value={formatValue(viewDeed.value)}
                       />
-
-                      {/* Row 6 */}
                       <DetailRow
                         icon={Phone}
                         label={t('mobileLabel')}
@@ -761,7 +746,7 @@ export default function ApprovedDeedsPage() {
                       </div>
                     </div>
 
-                    {/* Download Button — Full Width inside body */}
+                    {/* Download Button */}
                     <div className="mt-2.5">
                       <button
                         type="button"
@@ -775,8 +760,6 @@ export default function ApprovedDeedsPage() {
                       </button>
                     </div>
                   </div>
-
-                  {/* ❌ NO FOOTER */}
                 </motion.div>
               </div>
             </>
@@ -787,7 +770,6 @@ export default function ApprovedDeedsPage() {
   );
 }
 
-// ===== Detail Row Component =====
 function DetailRow({
   icon: Icon,
   label,
