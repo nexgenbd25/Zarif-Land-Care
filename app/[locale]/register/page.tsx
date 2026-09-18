@@ -22,7 +22,6 @@ import {
   Building2,
   Hash,
   Home,
-  Users,
 } from 'lucide-react';
 import { demoRegister } from '@/lib/auth';
 
@@ -222,64 +221,57 @@ export default function RegisterPage() {
   const validate = () => {
     const newErrors: FormErrors = {};
 
-    // First Name — Min 2 chars
     if (!formData.firstName.trim()) {
       newErrors.firstName = t('required');
     } else if (formData.firstName.trim().length < 2) {
       newErrors.firstName = t('firstNameShort');
     }
 
-    // Last Name — Min 2 chars
     if (!formData.lastName.trim()) {
       newErrors.lastName = t('required');
     } else if (formData.lastName.trim().length < 2) {
       newErrors.lastName = t('lastNameShort');
     }
 
-    // Username — Min 3 chars
     if (!formData.username.trim()) {
       newErrors.username = t('required');
     } else if (formData.username.trim().length < 3) {
       newErrors.username = t('usernameShort');
     }
 
-    // Email — Valid format
     if (!formData.email.trim()) {
       newErrors.email = t('required');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = t('invalidEmail');
     }
 
-    // Country — Required
     if (!formData.country) {
       newErrors.country = t('required');
     }
 
-    // Mobile — 6-15 digit
     if (!formData.mobile.trim()) {
       newErrors.mobile = t('required');
     } else if (!/^\d{6,15}$/.test(formData.mobile.replace(/\D/g, ''))) {
       newErrors.mobile = t('invalidMobile');
     }
 
-    // Address — Optional, max 200
     if (formData.address.length > 200) {
       newErrors.address = t('addressLong');
     }
 
-    // Zip Code — Optional, 4-10 digit
-    if (formData.zipCode.trim() && !/^\d{4,10}$/.test(formData.zipCode.replace(/\D/g, ''))) {
+    if (
+      formData.zipCode.trim() &&
+      !/^\d{4,10}$/.test(formData.zipCode.replace(/\D/g, ''))
+    ) {
       newErrors.zipCode = t('invalidZip');
     }
 
-    // Password — Min 6
     if (!formData.password) {
       newErrors.password = t('required');
     } else if (formData.password.length < 6) {
       newErrors.password = t('passwordShort');
     }
 
-    // Confirm Password — Match
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = t('required');
     } else if (formData.password !== formData.confirmPassword) {
@@ -300,7 +292,6 @@ export default function RegisterPage() {
 
     setIsLoading(true);
 
-    // 🎯 DEMO REGISTER
     setTimeout(() => {
       const result = demoRegister({
         username: formData.username,
@@ -374,11 +365,11 @@ export default function RegisterPage() {
           </motion.div>
         )}
 
-        {/* ===== Form ===== */}
-        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+        {/* ===== Form (No Cards) ===== */}
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
           {/* Section 1: Personal Info */}
-          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5">
-            <h2 className="text-xs sm:text-sm font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-1.5 mb-3 flex items-center gap-2 border-b border-[#F3F4F6]">
+          <div>
+            <h2 className="text-xs sm:text-sm font-bold text-[#1F7A3F] text-bangla-heading pt-0.5 pb-2 mb-3 flex items-center gap-2 border-b border-[#1F7A3F]/20">
               <User size={14} className="text-[#1F7A3F]" />
               {t('sectionPersonal')}
             </h2>
@@ -548,8 +539,8 @@ export default function RegisterPage() {
           </div>
 
           {/* Section 2: Location */}
-          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5">
-            <h2 className="text-xs sm:text-sm font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-1.5 mb-3 flex items-center gap-2 border-b border-[#F3F4F6]">
+          <div>
+            <h2 className="text-xs sm:text-sm font-bold text-[#1F7A3F] text-bangla-heading pt-0.5 pb-2 mb-3 flex items-center gap-2 border-b border-[#1F7A3F]/20">
               <MapPin size={14} className="text-[#1F7A3F]" />
               {t('sectionLocation')}
             </h2>
@@ -716,8 +707,8 @@ export default function RegisterPage() {
           </div>
 
           {/* Section 3: Security */}
-          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5">
-            <h2 className="text-xs sm:text-sm font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-1.5 mb-3 flex items-center gap-2 border-b border-[#F3F4F6]">
+          <div>
+            <h2 className="text-xs sm:text-sm font-bold text-[#1F7A3F] text-bangla-heading pt-0.5 pb-2 mb-3 flex items-center gap-2 border-b border-[#1F7A3F]/20">
               <Lock size={14} className="text-[#1F7A3F]" />
               {t('sectionSecurity')}
             </h2>
