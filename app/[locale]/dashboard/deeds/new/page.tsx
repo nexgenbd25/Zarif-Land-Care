@@ -93,7 +93,6 @@ export default function NewDeedPage() {
     remarks: '',
   });
 
-  // Auth Check
   useEffect(() => {
     const currentUser = getDemoUser();
     if (!currentUser) {
@@ -104,7 +103,6 @@ export default function NewDeedPage() {
     setAuthChecked(true);
   }, [router, isBn, locale]);
 
-  // Auto Serial
   useEffect(() => {
     if (!authChecked) return;
 
@@ -338,7 +336,6 @@ export default function NewDeedPage() {
     </div>
   );
 
-  // Loading
   if (!authChecked || !user) {
     return (
       <div className="min-h-[100dvh] flex items-center justify-center bg-[#F8FAF9]">
@@ -363,9 +360,9 @@ export default function NewDeedPage() {
         transition={{ duration: 0.4 }}
         className="w-full max-w-4xl mx-auto"
       >
-        {/* Header */}
+        {/* ===== Page Header (ONLY TITLE HERE) ===== */}
         <div className="mb-5 sm:mb-6">
-          <div className="flex items-center gap-3 mb-1">
+          <div className="flex items-center gap-3">
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
               <FilePlus2 size={20} className="text-[#1F7A3F]" />
             </div>
@@ -445,7 +442,6 @@ export default function NewDeedPage() {
                 required: true,
               })}
 
-              {/* Deed Type — Manual Input */}
               {renderField({
                 icon: FileText,
                 label: t('deedType'),
@@ -462,7 +458,7 @@ export default function NewDeedPage() {
                 required: true,
               })}
 
-              {/* 🎯 Value Field — BDT symbol ৳ (Instead of Dollar) */}
+              {/* Value with ৳ */}
               <div className="w-full min-w-0">
                 <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
                   {t('value')}
