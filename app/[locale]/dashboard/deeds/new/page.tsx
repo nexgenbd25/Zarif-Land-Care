@@ -203,8 +203,8 @@ export default function NewDeedPage() {
     pdfHint_bn: 'শুধুমাত্র PDF, সর্বোচ্চ 10MB',
     pdfHint_en: 'PDF only, max 10MB',
 
-    save_bn: 'সংরক্ষণ করুন',
-    save_en: 'Save Deed',
+    save_bn: 'দলিল সংরক্ষণ করুন',
+    save_en: 'Save Deed Entry',
     cancel_bn: 'বাতিল',
     cancel_en: 'Cancel',
     saving_bn: 'সংরক্ষণ হচ্ছে...',
@@ -289,6 +289,7 @@ export default function NewDeedPage() {
     }, 1500);
   };
 
+  // 🎯 Reusable Field Component — wide + spacious
   const renderField = ({
     icon: Icon,
     label,
@@ -305,21 +306,21 @@ export default function NewDeedPage() {
     required?: boolean;
   }) => (
     <div className="w-full min-w-0">
-      <label className="block text-[11px] sm:text-xs lg:text-sm font-semibold text-[#1F2937] mb-1 sm:mb-1.5 text-bangla-safe">
+      <label className="block text-sm sm:text-[15px] font-semibold text-[#1F2937] mb-2 sm:mb-2.5 text-bangla-safe">
         {label}
-        {required && <span className="text-red-500 ml-0.5">*</span>}
+        {required && <span className="text-red-500 ml-1">*</span>}
       </label>
       <div className="relative w-full">
-        <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-          <Icon size={14} className="sm:hidden" />
-          <Icon size={16} className="hidden sm:block" />
+        <div className="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+          <Icon size={16} className="sm:hidden" />
+          <Icon size={18} className="hidden sm:block" />
         </div>
         <input
           type={type}
           value={formData[field]}
           onChange={(e) => handleChange(field, e.target.value)}
           placeholder={placeholder}
-          className={`w-full pl-8 sm:pl-10 pr-2.5 sm:pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+          className={`w-full pl-10 sm:pl-11 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-white text-sm sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
             errors[field as keyof FormErrors]
               ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
               : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -327,8 +328,8 @@ export default function NewDeedPage() {
         />
       </div>
       {errors[field as keyof FormErrors] && (
-        <p className="mt-1 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-          <AlertCircle size={10} />
+        <p className="mt-1.5 text-xs sm:text-sm text-red-600 flex items-center gap-1 text-bangla-safe">
+          <AlertCircle size={12} />
           {errors[field as keyof FormErrors]}
         </p>
       )}
@@ -360,14 +361,14 @@ export default function NewDeedPage() {
         className="w-full"
       >
         {/* ===== Page Header ===== */}
-        <div className="mb-4 sm:mb-5 lg:mb-6 w-full">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
-              <FilePlus2 size={18} className="text-[#1F7A3F] sm:hidden" />
-              <FilePlus2 size={20} className="text-[#1F7A3F] hidden sm:block" />
+        <div className="mb-5 sm:mb-6 lg:mb-8 w-full">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
+              <FilePlus2 size={20} className="text-[#1F7A3F] sm:hidden" />
+              <FilePlus2 size={22} className="text-[#1F7A3F] hidden sm:block" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5 leading-tight">
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5 leading-tight">
                 {t('pageTitle')}
               </h1>
             </div>
@@ -379,29 +380,28 @@ export default function NewDeedPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-3 sm:mb-4 flex items-start gap-2 p-2.5 sm:p-3 rounded-lg bg-[#DCFCE7] border border-[#22C55E]/30"
+            className="mb-4 sm:mb-5 flex items-start gap-2.5 p-3 sm:p-4 rounded-xl bg-[#DCFCE7] border border-[#22C55E]/30"
           >
             <CheckCircle
-              size={16}
+              size={18}
               className="text-[#15803D] flex-shrink-0 mt-0.5"
             />
-            <p className="text-[13px] sm:text-sm text-[#166534] text-bangla-safe">
+            <p className="text-sm sm:text-base text-[#166534] text-bangla-safe">
               {success}
             </p>
           </motion.div>
         )}
 
         {/* ===== Form ===== */}
-        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 w-full">
+        <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6 w-full">
           {/* ===== Section 1: Basic Info ===== */}
-          <div className="bg-white rounded-xl sm:rounded-2xl border border-[#E5E7EB] shadow-sm p-3.5 sm:p-5 lg:p-6 w-full">
-            <h2 className="text-[13px] sm:text-sm lg:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-3 sm:mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
-              <Hash size={14} className="text-[#1F7A3F]" />
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-5 sm:p-6 lg:p-8 w-full">
+            <h2 className="text-base sm:text-lg font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2.5 mb-5 flex items-center gap-2 border-b border-[#F3F4F6]">
+              <Hash size={16} className="text-[#1F7A3F]" />
               {t('sectionBasic')}
             </h2>
 
-            {/* 🎯 2 columns max — NO 3 columns */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 w-full">
               {renderField({
                 icon: Hash,
                 label: t('serialNo'),
@@ -442,14 +442,14 @@ export default function NewDeedPage() {
                 required: true,
               })}
 
-              {/* Value with ৳ */}
+              {/* Value */}
               <div className="w-full min-w-0">
-                <label className="block text-[11px] sm:text-xs lg:text-sm font-semibold text-[#1F2937] mb-1 sm:mb-1.5 text-bangla-safe">
+                <label className="block text-sm sm:text-[15px] font-semibold text-[#1F2937] mb-2 sm:mb-2.5 text-bangla-safe">
                   {t('value')}
-                  <span className="text-red-500 ml-0.5">*</span>
+                  <span className="text-red-500 ml-1">*</span>
                 </label>
                 <div className="relative w-full">
-                  <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none font-bold text-sm sm:text-base">
+                  <div className="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none font-bold text-base">
                     ৳
                   </div>
                   <input
@@ -457,7 +457,7 @@ export default function NewDeedPage() {
                     value={formData.value}
                     onChange={(e) => handleChange('value', e.target.value)}
                     placeholder={t('valuePh')}
-                    className={`w-full pl-8 sm:pl-10 pr-2.5 sm:pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                    className={`w-full pl-10 sm:pl-11 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-white text-sm sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
                       errors.value
                         ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                         : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -465,8 +465,8 @@ export default function NewDeedPage() {
                   />
                 </div>
                 {errors.value && (
-                  <p className="mt-1 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                    <AlertCircle size={10} />
+                  <p className="mt-1.5 text-xs sm:text-sm text-red-600 flex items-center gap-1 text-bangla-safe">
+                    <AlertCircle size={12} />
                     {errors.value}
                   </p>
                 )}
@@ -475,13 +475,13 @@ export default function NewDeedPage() {
           </div>
 
           {/* ===== Section 2: Party Info ===== */}
-          <div className="bg-white rounded-xl sm:rounded-2xl border border-[#E5E7EB] shadow-sm p-3.5 sm:p-5 lg:p-6 w-full">
-            <h2 className="text-[13px] sm:text-sm lg:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-3 sm:mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
-              <Users size={14} className="text-[#1F7A3F]" />
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-5 sm:p-6 lg:p-8 w-full">
+            <h2 className="text-base sm:text-lg font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2.5 mb-5 flex items-center gap-2 border-b border-[#F3F4F6]">
+              <Users size={16} className="text-[#1F7A3F]" />
               {t('sectionParty')}
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 w-full">
               {renderField({
                 icon: User,
                 label: t('donorName'),
@@ -512,13 +512,13 @@ export default function NewDeedPage() {
           </div>
 
           {/* ===== Section 3: Contact ===== */}
-          <div className="bg-white rounded-xl sm:rounded-2xl border border-[#E5E7EB] shadow-sm p-3.5 sm:p-5 lg:p-6 w-full">
-            <h2 className="text-[13px] sm:text-sm lg:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-3 sm:mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
-              <Phone size={14} className="text-[#1F7A3F]" />
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-5 sm:p-6 lg:p-8 w-full">
+            <h2 className="text-base sm:text-lg font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2.5 mb-5 flex items-center gap-2 border-b border-[#F3F4F6]">
+              <Phone size={16} className="text-[#1F7A3F]" />
               {t('sectionContact')}
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 w-full">
               {renderField({
                 icon: Phone,
                 label: t('mobile'),
@@ -528,22 +528,22 @@ export default function NewDeedPage() {
                 required: true,
               })}
 
-              {/* Remarks */}
-              <div className="w-full min-w-0">
-                <label className="block text-[11px] sm:text-xs lg:text-sm font-semibold text-[#1F2937] mb-1 sm:mb-1.5 text-bangla-safe">
+              {/* Remarks — full width */}
+              <div className="w-full min-w-0 sm:col-span-2">
+                <label className="block text-sm sm:text-[15px] font-semibold text-[#1F2937] mb-2 sm:mb-2.5 text-bangla-safe">
                   {t('remarks')}
                 </label>
                 <div className="relative w-full">
-                  <div className="absolute left-2.5 sm:left-3 top-2.5 sm:top-3 text-[#9CA3AF] pointer-events-none">
-                    <MessageSquare size={14} className="sm:hidden" />
-                    <MessageSquare size={16} className="hidden sm:block" />
+                  <div className="absolute left-3 sm:left-3.5 top-3 sm:top-3.5 text-[#9CA3AF] pointer-events-none">
+                    <MessageSquare size={16} className="sm:hidden" />
+                    <MessageSquare size={18} className="hidden sm:block" />
                   </div>
                   <textarea
                     value={formData.remarks}
                     onChange={(e) => handleChange('remarks', e.target.value)}
                     placeholder={t('remarksPh')}
-                    rows={3}
-                    className="w-full pl-8 sm:pl-10 pr-2.5 sm:pr-3 py-2 sm:py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20 resize-none"
+                    rows={4}
+                    className="w-full pl-10 sm:pl-11 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-sm sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20 resize-none"
                   />
                 </div>
               </div>
@@ -551,9 +551,9 @@ export default function NewDeedPage() {
           </div>
 
           {/* ===== Section 4: PDF ===== */}
-          <div className="bg-white rounded-xl sm:rounded-2xl border border-[#E5E7EB] shadow-sm p-3.5 sm:p-5 lg:p-6 w-full">
-            <h2 className="text-[13px] sm:text-sm lg:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-3 sm:mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
-              <FileText size={14} className="text-[#1F7A3F]" />
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-5 sm:p-6 lg:p-8 w-full">
+            <h2 className="text-base sm:text-lg font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2.5 mb-5 flex items-center gap-2 border-b border-[#F3F4F6]">
+              <FileText size={16} className="text-[#1F7A3F]" />
               {t('sectionPdf')}
             </h2>
 
@@ -567,7 +567,7 @@ export default function NewDeedPage() {
 
             <div
               onClick={() => fileInputRef.current?.click()}
-              className={`relative cursor-pointer rounded-xl border-2 border-dashed p-4 sm:p-6 lg:p-8 text-center transition-all duration-200 w-full ${
+              className={`relative cursor-pointer rounded-xl border-2 border-dashed p-6 sm:p-8 text-center transition-all duration-200 w-full ${
                 errors.pdf
                   ? 'border-red-300 bg-red-50'
                   : pdfFile
@@ -576,19 +576,15 @@ export default function NewDeedPage() {
               }`}
             >
               {pdfFile ? (
-                <div className="flex items-center justify-center gap-2.5 sm:gap-3 flex-wrap sm:flex-nowrap">
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
-                    <FileText size={18} className="text-[#1F7A3F] sm:hidden" />
-                    <FileText
-                      size={20}
-                      className="text-[#1F7A3F] hidden sm:block"
-                    />
+                <div className="flex items-center justify-center gap-3 flex-wrap sm:flex-nowrap">
+                  <div className="w-12 h-12 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
+                    <FileText size={20} className="text-[#1F7A3F]" />
                   </div>
                   <div className="text-left min-w-0 flex-1">
-                    <p className="text-[12px] sm:text-sm font-semibold text-[#1F2937] text-bangla-safe break-all">
+                    <p className="text-sm sm:text-base font-semibold text-[#1F2937] text-bangla-safe break-all">
                       {pdfFile.name}
                     </p>
-                    <p className="text-[10px] sm:text-[11px] text-[#6B7280]">
+                    <p className="text-xs sm:text-sm text-[#6B7280]">
                       {(pdfFile.size / 1024 / 1024).toFixed(2)} MB
                     </p>
                   </div>
@@ -599,25 +595,21 @@ export default function NewDeedPage() {
                       setPdfFile(null);
                       if (fileInputRef.current) fileInputRef.current.value = '';
                     }}
-                    className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors flex-shrink-0"
+                    className="w-9 h-9 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors flex-shrink-0"
                     aria-label="Remove file"
                   >
-                    <X size={14} />
+                    <X size={16} />
                   </button>
                 </div>
               ) : (
                 <>
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 mx-auto rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center mb-2">
-                    <Upload size={18} className="text-[#1F7A3F] sm:hidden" />
-                    <Upload
-                      size={20}
-                      className="text-[#1F7A3F] hidden sm:block"
-                    />
+                  <div className="w-12 h-12 mx-auto rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center mb-3">
+                    <Upload size={22} className="text-[#1F7A3F]" />
                   </div>
-                  <p className="text-[12px] sm:text-sm font-semibold text-[#1F2937] text-bangla-safe mb-1">
+                  <p className="text-sm sm:text-base font-semibold text-[#1F2937] text-bangla-safe mb-1">
                     {t('pdfUpload')}
                   </p>
-                  <p className="text-[10px] sm:text-[11px] text-[#6B7280] text-bangla-safe">
+                  <p className="text-xs sm:text-sm text-[#6B7280] text-bangla-safe">
                     {t('pdfHint')}
                   </p>
                 </>
@@ -625,7 +617,7 @@ export default function NewDeedPage() {
             </div>
 
             {errors.pdf && (
-              <p className="mt-2 text-[10px] sm:text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+              <p className="mt-2.5 text-xs sm:text-sm text-red-600 flex items-center gap-1 text-bangla-safe">
                 <AlertCircle size={12} />
                 {errors.pdf}
               </p>
@@ -633,32 +625,27 @@ export default function NewDeedPage() {
           </div>
 
           {/* ===== Actions ===== */}
-          <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 sm:justify-end pt-1 w-full">
+          <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end pt-1 w-full">
             <button
               type="button"
               onClick={() => router.back()}
-              className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold text-[13px] sm:text-sm text-[#4B5563] bg-white border border-[#E5E7EB] hover:bg-[#F8FAF9] transition-all duration-200 text-bangla-safe"
+              className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 rounded-lg font-semibold text-sm sm:text-base text-[#4B5563] bg-white border border-[#E5E7EB] hover:bg-[#F8FAF9] transition-all duration-200 text-bangla-safe"
             >
               {t('cancel')}
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-white text-[13px] sm:text-sm bg-[#1F7A3F] hover:bg-[#155E30] shadow-md shadow-[#1F7A3F]/20 hover:shadow-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98]"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-lg font-bold text-white text-sm sm:text-base bg-[#1F7A3F] hover:bg-[#155E30] shadow-md shadow-[#1F7A3F]/20 hover:shadow-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98]"
             >
               {isLoading ? (
                 <>
-                  <Loader2 size={14} className="animate-spin sm:hidden" />
-                  <Loader2
-                    size={16}
-                    className="animate-spin hidden sm:block"
-                  />
+                  <Loader2 size={16} className="animate-spin" />
                   <span className="text-bangla-safe">{t('saving')}</span>
                 </>
               ) : (
                 <>
-                  <Save size={14} className="sm:hidden" />
-                  <Save size={16} className="hidden sm:block" />
+                  <Save size={16} />
                   <span className="text-bangla-safe">{t('save')}</span>
                 </>
               )}
