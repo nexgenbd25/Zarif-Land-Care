@@ -289,7 +289,7 @@ export default function NewDeedPage() {
     }, 1500);
   };
 
-  // 🎯 Reusable Field Component — wide + spacious
+  // 🎯 Reusable Field Component
   const renderField = ({
     icon: Icon,
     label,
@@ -358,7 +358,7 @@ export default function NewDeedPage() {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="w-full"
+        className="w-full max-w-full overflow-x-hidden"
       >
         {/* ===== Page Header ===== */}
         <div className="mb-5 sm:mb-6 lg:mb-8 w-full">
@@ -393,7 +393,10 @@ export default function NewDeedPage() {
         )}
 
         {/* ===== Form ===== */}
-        <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6 w-full">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5 sm:space-y-6 w-full max-w-full"
+        >
           {/* ===== Section 1: Basic Info ===== */}
           <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-5 sm:p-6 lg:p-8 w-full">
             <h2 className="text-base sm:text-lg font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2.5 mb-5 flex items-center gap-2 border-b border-[#F3F4F6]">
@@ -624,7 +627,7 @@ export default function NewDeedPage() {
             )}
           </div>
 
-          {/* ===== Actions ===== */}
+          {/* ===== Actions — FIXED ===== */}
           <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end pt-1 w-full">
             <button
               type="button"
