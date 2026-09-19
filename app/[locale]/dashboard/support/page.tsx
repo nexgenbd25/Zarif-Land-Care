@@ -59,7 +59,6 @@ export default function SupportPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [viewTicket, setViewTicket] = useState<TicketType | null>(null);
 
-  // 🎯 Load tickets
   useEffect(() => {
     let cancelled = false;
 
@@ -287,7 +286,6 @@ export default function SupportPage() {
 
   return (
     <div className="w-full max-w-7xl mx-auto">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
@@ -309,7 +307,6 @@ export default function SupportPage() {
         </Link>
       </div>
 
-      {/* Search + Filters */}
       <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-3 sm:p-4 mb-4">
         <div className="relative mb-3">
           <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
@@ -358,7 +355,6 @@ export default function SupportPage() {
         </div>
       </div>
 
-      {/* Content */}
       {filteredTickets.length === 0 ? (
         <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-8 sm:p-12 text-center">
           <div className="w-16 h-16 mx-auto rounded-full bg-[#F8FAF9] flex items-center justify-center mb-4">
@@ -447,7 +443,6 @@ export default function SupportPage() {
             })}
           </div>
 
-          {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#E5E7EB]">
               <button
@@ -493,7 +488,6 @@ export default function SupportPage() {
         </>
       )}
 
-      {/* View Modal */}
       <AnimatePresence>
         {viewTicket && (
           <>
@@ -538,7 +532,6 @@ export default function SupportPage() {
                 </div>
 
                 <div className="p-4 sm:p-5 space-y-3 overflow-y-auto flex-1">
-                  {/* Subject */}
                   <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
                     <div className="w-8 h-8 rounded-lg bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
                       <MessageSquare size={14} className="text-[#1F7A3F]" />
@@ -553,7 +546,6 @@ export default function SupportPage() {
                     </div>
                   </div>
 
-                  {/* Priority + Status + Date */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     <div className="flex items-center gap-2 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
                       <span
@@ -600,7 +592,6 @@ export default function SupportPage() {
                     </div>
                   </div>
 
-                  {/* Message */}
                   <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
                     <div className="w-8 h-8 rounded-lg bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
                       <Send size={14} className="text-[#1F7A3F]" />
@@ -615,7 +606,6 @@ export default function SupportPage() {
                     </div>
                   </div>
 
-                  {/* Attachments */}
                   {viewTicket.ticket_attachments &&
                     viewTicket.ticket_attachments.length > 0 && (
                       <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
