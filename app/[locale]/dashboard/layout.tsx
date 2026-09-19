@@ -39,19 +39,27 @@ export default function DashboardRootLayout({
       try {
         const supabase = createClient();
 
-        const {
-          data: { user: authUser },
-          error,
-        } = await supabase.auth.getUser();
+        // Get user with retry logic
+        let authUser = null;
+        for (let i = 0; i < 3; i++) {
+          const { data, error } = await supabase.auth.getUser();
+          if (!cancelled && data?.user && !error) {
+            authUser = data.user;
+            break;
+          }
+          // Wait 300ms before retry
+          if (i < 2) await new Promise((r) => setTimeout(r, 300));
+        }
 
         if (cancelled) return;
 
-        if (error || !authUser) {
+        if (!authUser) {
           setStatus('redirect');
           window.location.href = `${prefix}/login`;
           return;
         }
 
+        // Get profile
         const { data: profile } = await supabase
           .from('users')
           .select('id, first_name, last_name, username, email, role')
@@ -60,7 +68,7 @@ export default function DashboardRootLayout({
 
         if (cancelled) return;
 
-        // Admin → redirect to admin dashboard
+        // Admin → redirect to admin
         if (profile?.role === 'admin') {
           setStatus('redirect');
           window.location.href = `${prefix}/admin/dashboard`;
