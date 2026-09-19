@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Eye,
   EyeOff,
@@ -15,7 +15,7 @@ import {
   Phone,
   Globe,
   ArrowRight,
-  CheckCircle,
+  CheckCircle2,
   AlertCircle,
   Loader2,
   MapPin,
@@ -87,8 +87,10 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
-  const [success, setSuccess] = useState('');
-  const [generalError, setGeneralError] = useState('');
+  const [toast, setToast] = useState<{
+    type: 'success' | 'error';
+    message: string;
+  } | null>(null);
 
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -204,8 +206,8 @@ export default function RegisterPage() {
     passwordMismatch_bn: 'পাসওয়ার্ড মিলছে না',
     passwordMismatch_en: 'Passwords do not match',
 
-    registerSuccess_bn: '✅ অ্যাকাউন্ট তৈরি হয়েছে! লগইন করুন...',
-    registerSuccess_en: '✅ Account created! Please login...',
+    registerSuccess_bn: 'অ্যাকাউন্ট তৈরি হয়েছে! এখন লগইন করুন।',
+    registerSuccess_en: 'Account created! Now login.',
 
     emailInUse_bn: 'এই ইমেইল দিয়ে আগেই অ্যাকাউন্ট আছে',
     emailInUse_en: 'An account already exists with this email',
@@ -220,12 +222,19 @@ export default function RegisterPage() {
   const t = (key: string) =>
     isBn ? (content as any)[`${key}_bn`] : (content as any)[`${key}_en`];
 
+  // Auto-hide toast
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
+
   const handleChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
-    if (generalError) setGeneralError('');
   };
 
   const validate = () => {
@@ -294,8 +303,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSuccess('');
-    setGeneralError('');
+    setToast(null);
 
     if (!validate()) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -336,7 +344,7 @@ export default function RegisterPage() {
         return;
       }
 
-      // 🎯 Supabase Auth signup
+      // Supabase Auth signup
       const { data, error } = await supabase.auth.signUp({
         email: cleanEmail,
         password: formData.password,
@@ -361,7 +369,10 @@ export default function RegisterPage() {
         if (error.message.toLowerCase().includes('already registered')) {
           setErrors({ email: t('emailInUse') });
         } else {
-          setGeneralError(error.message);
+          setToast({
+            type: 'error',
+            message: error.message || 'Registration failed',
+          });
         }
 
         setIsLoading(false);
@@ -369,26 +380,34 @@ export default function RegisterPage() {
       }
 
       if (!data.user) {
-        setGeneralError(isBn ? 'রেজিস্ট্রেশন ব্যর্থ' : 'Registration failed');
+        setToast({
+          type: 'error',
+          message: isBn ? 'রেজিস্ট্রেশন ব্যর্থ' : 'Registration failed',
+        });
         setIsLoading(false);
         return;
       }
 
-      // 🎯 Success — show message then redirect to LOGIN page
-      setSuccess(t('registerSuccess'));
+      // Success — show toast then redirect
+      setToast({
+        type: 'success',
+        message: t('registerSuccess'),
+      });
       setIsLoading(false);
 
-      // 🎯 Sign out immediately (in case Supabase auto-logged in)
-      // This forces user to manually login
+      // Sign out immediately
       await supabase.auth.signOut();
 
-      // Redirect to login page after 2 seconds
+      // Redirect after 1.5s
       setTimeout(() => {
-        router.replace(`${prefix}/login?registered=true`);
+        window.location.href = `${prefix}/login?registered=true`;
       }, 1500);
     } catch (err: any) {
       console.error('Register exception:', err);
-      setGeneralError(err?.message || 'Registration failed');
+      setToast({
+        type: 'error',
+        message: err?.message || 'Registration failed',
+      });
       setIsLoading(false);
     }
   };
@@ -397,6 +416,74 @@ export default function RegisterPage() {
     <section className="relative min-h-[100dvh] w-full flex items-start sm:items-center justify-center px-4 py-4 sm:py-6 bg-gradient-to-br from-[#F0FDF4] via-white to-[#F0FDF4] overflow-hidden">
       <div className="absolute top-0 left-0 w-56 h-56 sm:w-72 sm:h-72 bg-[#1F7A3F]/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-[#22C55E]/5 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: -30, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -30, scale: 0.95 }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-md"
+          >
+            <div
+              className={`flex items-start gap-3 p-4 rounded-xl shadow-lg border-2 backdrop-blur-sm ${
+                toast.type === 'success'
+                  ? 'bg-[#DCFCE7]/95 border-[#22C55E]/40'
+                  : 'bg-red-50/95 border-red-300'
+              }`}
+            >
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  toast.type === 'success' ? 'bg-[#22C55E]' : 'bg-red-500'
+                }`}
+              >
+                {toast.type === 'success' ? (
+                  <CheckCircle2 size={18} className="text-white" />
+                ) : (
+                  <AlertCircle size={18} className="text-white" />
+                )}
+              </div>
+              <div className="flex-1 min-w-0 pt-1">
+                <p
+                  className={`text-sm font-semibold text-bangla-safe ${
+                    toast.type === 'success'
+                      ? 'text-[#166534]'
+                      : 'text-red-700'
+                  }`}
+                >
+                  {toast.message}
+                </p>
+              </div>
+              <button
+                onClick={() => setToast(null)}
+                className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
+                  toast.type === 'success'
+                    ? 'hover:bg-[#22C55E]/20 text-[#166534]'
+                    : 'hover:bg-red-200 text-red-700'
+                }`}
+                aria-label="Close"
+              >
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                >
+                  <path
+                    d="M9 3L3 9M3 3L9 9"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -427,40 +514,6 @@ export default function RegisterPage() {
             {t('subtitle')}
           </p>
         </div>
-
-        {/* General Error */}
-        {generalError && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-3 flex items-start gap-2 p-3 rounded-lg bg-red-50 border border-red-200"
-          >
-            <AlertCircle
-              size={16}
-              className="text-red-600 flex-shrink-0 mt-0.5"
-            />
-            <p className="text-xs sm:text-sm text-red-700 text-bangla-safe">
-              {generalError}
-            </p>
-          </motion.div>
-        )}
-
-        {/* Success */}
-        {success && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-3 flex items-start gap-2 p-3 rounded-lg bg-[#DCFCE7] border border-[#22C55E]/30"
-          >
-            <CheckCircle
-              size={16}
-              className="text-[#15803D] flex-shrink-0 mt-0.5"
-            />
-            <p className="text-xs sm:text-sm text-[#166534] text-bangla-safe">
-              {success}
-            </p>
-          </motion.div>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
           {/* Section 1: Personal Info */}
