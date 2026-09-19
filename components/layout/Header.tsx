@@ -41,16 +41,62 @@ export default function Header() {
     setIsMenuOpen(false);
   }, [pathname]);
 
-  // 🔒 Body scroll lock jokhon drawer open
+  // 🎯 FULL PAGE LOCK — Body + HTML — sob scroll bondho
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     if (isMenuOpen) {
+      const scrollBarWidth =
+        window.innerWidth - document.documentElement.clientWidth;
+
+      // Body lock
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = '0';
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+      document.body.style.paddingRight = `${scrollBarWidth}px`;
+
+      // HTML lock
+      document.documentElement.style.overflow = 'hidden';
+      document.documentElement.style.paddingRight = `${scrollBarWidth}px`;
     } else {
+      // Unlock
       document.body.style.overflow = 'unset';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      document.body.style.paddingRight = '';
+
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.paddingRight = '';
     }
+
     return () => {
       document.body.style.overflow = 'unset';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      document.body.style.paddingRight = '';
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.paddingRight = '';
     };
+  }, [isMenuOpen]);
+
+  // 🎯 ESC key diye close
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
   }, [isMenuOpen]);
 
   const menuItems = [
@@ -174,12 +220,12 @@ export default function Header() {
               <span>{t('login')}</span>
             </Link>
 
-            {/* Hamburger button */}
+            {/* Hamburger button — z-[10000] — sidebar er upore */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden p-2 rounded-md text-black 
                          hover:text-[#1F7A3F] hover:bg-[#1F7A3F]/5 
-                         transition-colors relative z-[110]"
+                         transition-colors relative z-[10000]"
               aria-label="Toggle menu"
               aria-expanded={isMenuOpen}
             >
@@ -217,18 +263,22 @@ export default function Header() {
       <AnimatePresence>
         {isMenuOpen && (
           <>
-            {/* Backdrop — z-[95] (drawer er niche, header er upore) */}
+            {/* Backdrop — z-[9998] — sidebar er niche, content er upore */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: BACKDROP_DURATION }}
               onClick={() => setIsMenuOpen(false)}
-              className="lg:hidden fixed inset-0 top-20 sm:top-22 
-                         bg-black/50 backdrop-blur-sm z-[95]"
+              className="lg:hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[9998]"
+              style={{
+                touchAction: 'none',
+                overscrollBehavior: 'none',
+                WebkitOverflowScrolling: 'touch',
+              }}
             />
 
-            {/* 🚪 Drawer — z-[100] (sobar upore) */}
+            {/* 🚪 Drawer — z-[9999] — SOBAR UPORE */}
             <motion.aside
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
@@ -237,13 +287,52 @@ export default function Header() {
                 duration: DRAWER_DURATION,
                 ease: SMOOTH_EASE,
               }}
-              className="lg:hidden fixed top-20 sm:top-22 left-0 bottom-0
+              className="lg:hidden fixed inset-y-0 left-0
                          w-[80%] max-w-[320px]
                          bg-white 
                          border-r border-neutral-light
-                         shadow-2xl z-[100]
-                         overflow-y-auto"
+                         shadow-2xl z-[9999]
+                         overflow-y-auto overflow-x-hidden"
+              style={{
+                transform: 'translate3d(0, 0, 0)',
+                backfaceVisibility: 'hidden',
+                willChange: 'transform',
+                touchAction: 'pan-y',
+                overscrollBehavior: 'contain',
+                WebkitOverflowScrolling: 'touch',
+              }}
             >
+              {/* Close Button — top right */}
+              <button
+                onClick={() => setIsMenuOpen(false)}
+                className="absolute top-4 right-4 w-10 h-10 rounded-full 
+                           bg-[#F8FAF9] hover:bg-[#1F7A3F]/10
+                           flex items-center justify-center 
+                           text-[#1F2937] hover:text-[#1F7A3F]
+                           transition-colors z-10"
+                aria-label="Close menu"
+              >
+                <X size={20} />
+              </button>
+
+              {/* Logo in drawer */}
+              <div className="px-5 pt-5 pb-4 border-b border-neutral-light">
+                <Link
+                  href={`/${isBn ? '' : locale}`}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-2"
+                >
+                  <Image
+                    src={LOGO_URL}
+                    alt="Zarif Landcare Center"
+                    width={200}
+                    height={60}
+                    className="h-12 w-auto object-contain"
+                    unoptimized
+                  />
+                </Link>
+              </div>
+
               <nav className="flex flex-col gap-1 p-5">
                 {menuItems.map((item, index) => {
                   const active = isActive(item.href);
