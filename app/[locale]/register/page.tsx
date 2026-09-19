@@ -22,7 +22,6 @@ import {
   Building2,
   Hash,
   Home,
-  MailCheck,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -90,7 +89,6 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [success, setSuccess] = useState('');
   const [generalError, setGeneralError] = useState('');
-  const [showEmailVerify, setShowEmailVerify] = useState(false);
 
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -206,13 +204,8 @@ export default function RegisterPage() {
     passwordMismatch_bn: 'পাসওয়ার্ড মিলছে না',
     passwordMismatch_en: 'Passwords do not match',
 
-    registerSuccess_bn: 'অ্যাকাউন্ট তৈরি হয়েছে!',
-    registerSuccess_en: 'Account created!',
-
-    registerSuccessWithEmail_bn:
-      'অ্যাকাউন্ট তৈরি হয়েছে! আপনার ইমেইল চেক করে ভেরিফাই করুন।',
-    registerSuccessWithEmail_en:
-      'Account created! Check your email to verify.',
+    registerSuccess_bn: '✅ অ্যাকাউন্ট তৈরি হয়েছে! লগইন করুন...',
+    registerSuccess_en: '✅ Account created! Please login...',
 
     emailInUse_bn: 'এই ইমেইল দিয়ে আগেই অ্যাকাউন্ট আছে',
     emailInUse_en: 'An account already exists with this email',
@@ -222,15 +215,6 @@ export default function RegisterPage() {
 
     loading_bn: 'অপেক্ষা করুন...',
     loading_en: 'Please wait...',
-
-    emailVerifyTitle_bn: 'ইমেইল ভেরিফিকেশন',
-    emailVerifyTitle_en: 'Email Verification',
-    emailVerifyMsg_bn:
-      'আপনার ইমেইলে একটি ভেরিফিকেশন লিংক পাঠানো হয়েছে। লিংকে ক্লিক করে অ্যাকাউন্ট সক্রিয় করুন।',
-    emailVerifyMsg_en:
-      'A verification link has been sent to your email. Click the link to activate your account.',
-    emailVerifyBtn_bn: 'লগইন পেজে যান',
-    emailVerifyBtn_en: 'Go to Login',
   };
 
   const t = (key: string) =>
@@ -326,7 +310,7 @@ export default function RegisterPage() {
       const cleanUsername = formData.username.trim().toLowerCase();
       const cleanEmail = formData.email.trim().toLowerCase();
 
-      // 🎯 Check username unique
+      // Check username unique
       const { data: existingUsername } = await supabase
         .from('users')
         .select('id')
@@ -339,7 +323,7 @@ export default function RegisterPage() {
         return;
       }
 
-      // 🎯 Check email unique
+      // Check email unique
       const { data: existingEmail } = await supabase
         .from('users')
         .select('id')
@@ -385,84 +369,29 @@ export default function RegisterPage() {
       }
 
       if (!data.user) {
-        setGeneralError(t('registerFailed'));
+        setGeneralError(isBn ? 'রেজিস্ট্রেশন ব্যর্থ' : 'Registration failed');
         setIsLoading(false);
         return;
       }
 
-      // 🎯 If email confirmation is enabled in Supabase
-      if (!data.session) {
-        // User needs to verify email
-        setSuccess(t('registerSuccessWithEmail'));
-        setShowEmailVerify(true);
-        setIsLoading(false);
-        return;
-      }
-
-      // 🎯 Auto logged in (email confirmation disabled)
+      // 🎯 Success — show message then redirect to LOGIN page
       setSuccess(t('registerSuccess'));
+      setIsLoading(false);
+
+      // 🎯 Sign out immediately (in case Supabase auto-logged in)
+      // This forces user to manually login
+      await supabase.auth.signOut();
+
+      // Redirect to login page after 2 seconds
       setTimeout(() => {
-        router.replace(`${prefix}/dashboard`);
-        router.refresh();
-      }, 800);
+        router.replace(`${prefix}/login?registered=true`);
+      }, 1500);
     } catch (err: any) {
       console.error('Register exception:', err);
       setGeneralError(err?.message || 'Registration failed');
       setIsLoading(false);
     }
   };
-
-  // 🎯 Email verify screen
-  if (showEmailVerify) {
-    return (
-      <section className="relative min-h-[100dvh] w-full flex items-center justify-center px-4 py-4 sm:py-6 bg-gradient-to-br from-[#F0FDF4] via-white to-[#F0FDF4] overflow-hidden">
-        <div className="absolute top-0 left-0 w-56 h-56 sm:w-72 sm:h-72 bg-[#1F7A3F]/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-[#22C55E]/5 rounded-full blur-3xl pointer-events-none" />
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="relative w-full max-w-md z-10"
-        >
-          <div className="text-center mb-5">
-            <Image
-              src={LOGO_URL}
-              alt="Zarif Landcare"
-              width={200}
-              height={60}
-              className="h-12 w-auto object-contain mx-auto"
-              unoptimized
-            />
-          </div>
-
-          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-lg p-6 sm:p-8 text-center">
-            <div className="relative mx-auto w-20 h-20 mb-5">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#22C55E] to-[#1F7A3F] shadow-xl shadow-[#22C55E]/30" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <MailCheck size={36} className="text-white" strokeWidth={2} />
-              </div>
-            </div>
-
-            <h2 className="text-xl sm:text-2xl font-bold text-[#1F2937] text-bangla-heading mb-3">
-              {t('emailVerifyTitle')}
-            </h2>
-            <p className="text-sm text-[#6B7280] text-bangla-safe leading-relaxed mb-6">
-              {t('emailVerifyMsg')}
-            </p>
-
-            <Link
-              href={`${prefix}/login`}
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-bold text-white text-sm bg-[#1F7A3F] hover:bg-[#155E30] transition-all duration-300"
-            >
-              {t('emailVerifyBtn')}
-              <ArrowRight size={16} />
-            </Link>
-          </div>
-        </motion.div>
-      </section>
-    );
-  }
 
   return (
     <section className="relative min-h-[100dvh] w-full flex items-start sm:items-center justify-center px-4 py-4 sm:py-6 bg-gradient-to-br from-[#F0FDF4] via-white to-[#F0FDF4] overflow-hidden">
