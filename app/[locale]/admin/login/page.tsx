@@ -1,7 +1,6 @@
-// app/[locale]/admin/login/page.tsx
-// Admin Login Page — role check সহ
-
 'use client';
+
+export const dynamic = 'force-dynamic';
 
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
@@ -43,12 +42,19 @@ function AdminLoginForm() {
 
   useEffect(() => {
     setMounted(true);
-    // URL থেকে error message পড়া
     const urlError = searchParams.get('error');
     if (urlError === 'login-required') {
-      setError(isBn ? 'অ্যাডমিন প্যানেলে ঢুকতে লগইন করুন' : 'Login required for admin panel');
+      setError(
+        isBn
+          ? 'অ্যাডমিন প্যানেলে ঢুকতে লগইন করুন'
+          : 'Login required for admin panel'
+      );
     } else if (urlError === 'admin-only') {
-      setError(isBn ? 'শুধুমাত্র অ্যাডমিন অ্যাক্সেস করতে পারবেন' : 'Only admins can access this');
+      setError(
+        isBn
+          ? 'শুধুমাত্র অ্যাডমিন অ্যাক্সেস করতে পারবেন'
+          : 'Only admins can access this'
+      );
     }
   }, [searchParams, isBn]);
 
@@ -79,10 +85,13 @@ function AdminLoginForm() {
     invalidEmail_en: 'Enter a valid email',
     invalidCred_bn: 'ভুল ইমেইল অথবা পাসওয়ার্ড',
     invalidCred_en: 'Invalid email or password',
-    notAdmin_bn: 'আপনি অ্যাডমিন নন। শুধুমাত্র অ্যাডমিন এই প্যানেলে ঢুকতে পারেন।',
+    notAdmin_bn:
+      'আপনি অ্যাডমিন নন। শুধুমাত্র অ্যাডমিন এই প্যানেলে ঢুকতে পারেন।',
     notAdmin_en: 'You are not an admin. Only admins can access this panel.',
-    securityNote_bn: 'এই লগইন পেজটি শুধুমাত্র অ্যাডমিনদের জন্য। সমস্ত কার্যক্রম রেকর্ড করা হয়।',
-    securityNote_en: 'This login page is for administrators only. All activity is logged.',
+    securityNote_bn:
+      'এই লগইন পেজটি শুধুমাত্র অ্যাডমিনদের জন্য। সমস্ত কার্যক্রম রেকর্ড করা হয়।',
+    securityNote_en:
+      'This login page is for administrators only. All activity is logged.',
   };
 
   const t = (key: string) =>
@@ -131,7 +140,6 @@ function AdminLoginForm() {
         .single();
 
       if (!profile || profile.role !== 'admin') {
-        // Logout করব কারণ user admin না
         await supabase.auth.signOut();
         setError(t('notAdmin'));
         setIsLoading(false);
