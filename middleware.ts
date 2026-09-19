@@ -16,36 +16,20 @@ const intlMiddleware = createMiddleware({
 });
 
 // ============================================
-// Helper: Get locale path prefix
+// Helper: Get locale prefix
 // ============================================
 function getLocalePrefix(pathname: string): string {
-  if (pathname.startsWith('/en/') || pathname === '/en') {
-    return '/en';
-  }
+  if (pathname.startsWith('/en/') || pathname === '/en') return '/en';
   return '';
 }
 
 // ============================================
-// Helper: Extract path without locale
+// Helper: Get path without locale
 // ============================================
 function getPathWithoutLocale(pathname: string): string {
-  if (pathname.startsWith('/en/')) {
-    return pathname.slice(3);
-  }
-  if (pathname === '/en') {
-    return '/';
-  }
+  if (pathname.startsWith('/en/')) return pathname.slice(3);
+  if (pathname === '/en') return '/';
   return pathname;
-}
-
-// ============================================
-// Helper: Extract locale
-// ============================================
-function getLocale(pathname: string): string {
-  if (pathname.startsWith('/en/') || pathname === '/en') {
-    return 'en';
-  }
-  return 'bn';
 }
 
 // ============================================
@@ -54,21 +38,14 @@ function getLocale(pathname: string): string {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // ============================================
-  // Step 1: Supabase Session Refresh
-  // ============================================
-  const { supabaseResponse, user } = await updateSession(request);
+  // Step 1: Supabase session refresh
+  const { supabaseResponse, user, supabase } = await updateSession(request);
 
-  // ============================================
-  // Step 2: Extract path info
-  // ============================================
+  // Step 2: Path info
   const pathWithoutLocale = getPathWithoutLocale(pathname);
   const localePrefix = getLocalePrefix(pathname);
-  const locale = getLocale(pathname);
 
-  // ============================================
-  // Step 3: Route Classification
-  // ============================================
+  // Step 3: Route classification
   const isAdminRoute = pathWithoutLocale.startsWith('/admin');
   const isUserRoute = pathWithoutLocale.startsWith('/user');
   const isAuthRoute =
@@ -76,31 +53,28 @@ export async function middleware(request: NextRequest) {
     pathWithoutLocale === '/register' ||
     pathWithoutLocale === '/forgot-password';
 
-  // ============================================
-  // Step 4: Fetch user role (if logged in)
-  // ============================================
+  // Step 4: Fetch role if logged in (but handle users table not existing yet)
   let userRole: string | null = null;
   if (user) {
-    const { data: profile } = await supabaseResponse // ekhane supabase client
-      ? await (await import('@/lib/supabase/server')).createClient()
-          .then((sb) =>
-            sb
-              .from('users')
-              .select('role')
-              .eq('id', user.id)
-              .single()
-          )
-      : { data: null };
-
-    userRole = profile?.role || 'user';
+    try {
+      const { data: profile } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+      userRole = profile?.role || 'user';
+    } catch {
+      // users table না থাকলে বা error হলে default user
+      userRole = 'user';
+    }
   }
 
   // ============================================
-  // Step 5: Route Protection Logic
+  // Step 5: Route Protection
   // ============================================
 
   // --- Admin Routes ---
-  if (isAdminRoute) {
+  if (isAdminRoute && !pathWithoutLocale.startsWith('/admin/login')) {
     // Not logged in → Login
     if (!user) {
       const loginUrl = new URL(`${localePrefix}/login`, request.url);
@@ -111,15 +85,10 @@ export async function middleware(request: NextRequest) {
 
     // Logged in but not admin → User dashboard
     if (userRole !== 'admin') {
-      const userDashUrl = new URL(
-        `${localePrefix}/user/dashboard`,
-        request.url
-      );
-      userDashUrl.searchParams.set('error', 'admin-only');
-      return NextResponse.redirect(userDashUrl);
+      const userDash = new URL(`${localePrefix}/user/dashboard`, request.url);
+      userDash.searchParams.set('error', 'admin-only');
+      return NextResponse.redirect(userDash);
     }
-
-    // ✅ Admin → allow
   }
 
   // --- User Routes ---
@@ -131,22 +100,15 @@ export async function middleware(request: NextRequest) {
       loginUrl.searchParams.set('error', 'login-required');
       return NextResponse.redirect(loginUrl);
     }
-
-    // ✅ Logged in → allow
   }
 
-  // --- Auth Routes (login, register) ---
-  if (isAuthRoute) {
-    // Already logged in → Redirect to their dashboard
-    if (user) {
-      const redirectUrl =
-        userRole === 'admin'
-          ? `${localePrefix}/admin/dashboard`
-          : `${localePrefix}/user/dashboard`;
-      return NextResponse.redirect(new URL(redirectUrl, request.url));
-    }
-
-    // ✅ Not logged in → allow
+  // --- Auth Routes (login, register, forgot-password) ---
+  if (isAuthRoute && user) {
+    const dest =
+      userRole === 'admin'
+        ? `${localePrefix}/admin/dashboard`
+        : `${localePrefix}/user/dashboard`;
+    return NextResponse.redirect(new URL(dest, request.url));
   }
 
   // ============================================
@@ -154,12 +116,9 @@ export async function middleware(request: NextRequest) {
   // ============================================
   const response = intlMiddleware(request);
 
-  // Supabase cookies copy করুন
+  // Copy Supabase cookies to final response
   supabaseResponse.cookies.getAll().forEach((cookie) => {
-    response.cookies.set(cookie.name, cookie.value, {
-      ...cookie,
-      // preserve options
-    });
+    response.cookies.set(cookie.name, cookie.value);
   });
 
   return response;
@@ -170,12 +129,6 @@ export async function middleware(request: NextRequest) {
 // ============================================
 export const config = {
   matcher: [
-    // সব route match করুন, but skip:
-    // - api routes
-    // - _next/static
-    // - _next/image
-    // - favicon
-    // - static files
     '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)',
   ],
 };
