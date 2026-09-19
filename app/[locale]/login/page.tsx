@@ -5,17 +5,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Eye,
   EyeOff,
   User,
   Lock,
   ArrowRight,
-  CheckCircle,
+  CheckCircle2,
   AlertCircle,
   Loader2,
-  Shield,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -37,21 +36,10 @@ function LoginForm() {
     identifier?: string;
     password?: string;
   }>({});
-  const [success, setSuccess] = useState('');
-  const [generalError, setGeneralError] = useState('');
-  const [justRegistered, setJustRegistered] = useState(false);
-
-  // 🎯 Check for "registered=true" from register page
-  useEffect(() => {
-    if (searchParams.get('registered') === 'true') {
-      setJustRegistered(true);
-      setSuccess(
-        isBn
-          ? '✅ অ্যাকাউন্ট তৈরি হয়েছে! এখন লগইন করুন।'
-          : '✅ Account created! Now login.'
-      );
-    }
-  }, [searchParams, isBn]);
+  const [toast, setToast] = useState<{
+    type: 'success' | 'error';
+    message: string;
+  } | null>(null);
 
   const content = {
     title_bn: 'স্বাগতম',
@@ -93,18 +81,35 @@ function LoginForm() {
     emailNotConfirmed_bn: 'ইমেইল কনফার্ম করা হয়নি। ইনবক্স চেক করুন।',
     emailNotConfirmed_en: 'Email not confirmed. Check your inbox.',
 
+    registerSuccess_bn: 'অ্যাকাউন্ট তৈরি হয়েছে! এখন লগইন করুন।',
+    registerSuccess_en: 'Account created! Now login.',
+
     loading_bn: 'অপেক্ষা করুন...',
     loading_en: 'Please wait...',
 
     or_bn: 'অথবা',
     or_en: 'OR',
-
-    adminLogin_bn: 'অ্যাডমিন লগইন',
-    adminLogin_en: 'Admin Login',
   };
 
   const t = (key: string) =>
     isBn ? (content as any)[`${key}_bn`] : (content as any)[`${key}_en`];
+
+  // Show toast from register redirect
+  useEffect(() => {
+    if (searchParams.get('registered') === 'true') {
+      setToast({ type: 'success', message: t('registerSuccess') });
+      // Clean URL
+      window.history.replaceState({}, '', `${prefix}/login`);
+    }
+  }, [searchParams, isBn, prefix]);
+
+  // Auto-hide toast after 4s
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
   const validate = () => {
     const newErrors: { identifier?: string; password?: string } = {};
@@ -117,12 +122,10 @@ function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSuccess('');
-    setGeneralError('');
-
     if (!validate()) return;
 
     setIsLoading(true);
+    setToast(null);
 
     try {
       const supabase = createClient();
@@ -138,7 +141,7 @@ function LoginForm() {
           .maybeSingle();
 
         if (!profile?.email) {
-          setGeneralError(t('loginFailed'));
+          setToast({ type: 'error', message: t('loginFailed') });
           setIsLoading(false);
           return;
         }
@@ -146,7 +149,7 @@ function LoginForm() {
         loginEmail = profile.email;
       }
 
-      // Supabase Auth sign in
+      // Supabase Auth
       const { data, error } = await supabase.auth.signInWithPassword({
         email: loginEmail.toLowerCase(),
         password: password,
@@ -156,9 +159,9 @@ function LoginForm() {
         console.error('Login error:', error);
 
         if (error.message.includes('Email not confirmed')) {
-          setGeneralError(t('emailNotConfirmed'));
+          setToast({ type: 'error', message: t('emailNotConfirmed') });
         } else {
-          setGeneralError(t('loginFailed'));
+          setToast({ type: 'error', message: t('loginFailed') });
         }
 
         setIsLoading(false);
@@ -166,38 +169,110 @@ function LoginForm() {
       }
 
       if (!data.user) {
-        setGeneralError(t('loginFailed'));
+        setToast({ type: 'error', message: t('loginFailed') });
         setIsLoading(false);
         return;
       }
 
-      // Role check → redirect
+      // Get user role
       const { data: profile } = await supabase
         .from('users')
         .select('role')
         .eq('id', data.user.id)
         .maybeSingle();
 
-      setSuccess(t('loginSuccess'));
+      // Show success toast
+      setToast({ type: 'success', message: t('loginSuccess') });
 
+      // 🎯 Redirect based on role after short delay
       setTimeout(() => {
-        if (profile?.role === 'admin') {
-          window.location.href = `${prefix}/admin/dashboard`;
-        } else {
-          window.location.href = `${prefix}/dashboard`;
-        }
-      }, 500);
-    } catch (err: any) {
+        const redirectUrl =
+          profile?.role === 'admin'
+            ? `${prefix}/admin/dashboard`
+            : `${prefix}/dashboard`;
+        window.location.href = redirectUrl;
+      }, 800);
+    } catch (err) {
       console.error('Login exception:', err);
-      setGeneralError(t('loginFailed'));
+      setToast({ type: 'error', message: t('loginFailed') });
       setIsLoading(false);
     }
   };
 
   return (
     <section className="relative min-h-[100dvh] w-full flex items-center justify-center px-4 py-3 sm:py-6 bg-gradient-to-br from-[#F0FDF4] via-white to-[#F0FDF4] overflow-hidden">
+      {/* Background decorations */}
       <div className="absolute top-0 left-0 w-56 h-56 sm:w-72 sm:h-72 bg-[#1F7A3F]/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-[#22C55E]/5 rounded-full blur-3xl pointer-events-none" />
+
+      {/* 🎯 Toast Notification */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: -30, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -30, scale: 0.95 }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-md"
+          >
+            <div
+              className={`flex items-start gap-3 p-4 rounded-xl shadow-lg border-2 backdrop-blur-sm ${
+                toast.type === 'success'
+                  ? 'bg-[#DCFCE7]/95 border-[#22C55E]/40'
+                  : 'bg-red-50/95 border-red-300'
+              }`}
+            >
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  toast.type === 'success' ? 'bg-[#22C55E]' : 'bg-red-500'
+                }`}
+              >
+                {toast.type === 'success' ? (
+                  <CheckCircle2 size={18} className="text-white" />
+                ) : (
+                  <AlertCircle size={18} className="text-white" />
+                )}
+              </div>
+              <div className="flex-1 min-w-0 pt-1">
+                <p
+                  className={`text-sm font-semibold text-bangla-safe ${
+                    toast.type === 'success'
+                      ? 'text-[#166534]'
+                      : 'text-red-700'
+                  }`}
+                >
+                  {toast.message}
+                </p>
+              </div>
+              <button
+                onClick={() => setToast(null)}
+                className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
+                  toast.type === 'success'
+                    ? 'hover:bg-[#22C55E]/20 text-[#166534]'
+                    : 'hover:bg-red-200 text-red-700'
+                }`}
+                aria-label="Close"
+              >
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9 3L3 9M3 3L9 9"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -229,40 +304,6 @@ function LoginForm() {
           </p>
         </div>
 
-        {/* General Error */}
-        {generalError && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-3 flex items-start gap-2 p-3 rounded-lg bg-red-50 border border-red-200"
-          >
-            <AlertCircle
-              size={16}
-              className="text-red-600 flex-shrink-0 mt-0.5"
-            />
-            <p className="text-xs sm:text-sm text-red-700 text-bangla-safe">
-              {generalError}
-            </p>
-          </motion.div>
-        )}
-
-        {/* Success */}
-        {success && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-3 flex items-start gap-2 p-3 rounded-lg bg-[#DCFCE7] border border-[#22C55E]/30"
-          >
-            <CheckCircle
-              size={16}
-              className="text-[#15803D] flex-shrink-0 mt-0.5"
-            />
-            <p className="text-xs sm:text-sm text-[#166534] text-bangla-safe">
-              {success}
-            </p>
-          </motion.div>
-        )}
-
         <form onSubmit={handleSubmit} className="space-y-2.5 sm:space-y-3">
           {/* Identifier */}
           <div>
@@ -281,7 +322,6 @@ function LoginForm() {
                   setIdentifier(e.target.value);
                   if (errors.identifier)
                     setErrors({ ...errors, identifier: undefined });
-                  if (generalError) setGeneralError('');
                 }}
                 placeholder={t('identifierPlaceholder')}
                 disabled={isLoading}
@@ -317,7 +357,6 @@ function LoginForm() {
                   setPassword(e.target.value);
                   if (errors.password)
                     setErrors({ ...errors, password: undefined });
-                  if (generalError) setGeneralError('');
                 }}
                 placeholder={t('passwordPlaceholder')}
                 disabled={isLoading}
@@ -412,17 +451,6 @@ function LoginForm() {
             <ArrowRight size={16} className="hidden sm:block" />
           </Link>
         </form>
-
-        {/* Admin Login Link */}
-        <div className="mt-5 text-center">
-          <Link
-            href={`${prefix}/admin/login`}
-            className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-[#6B7280] hover:text-[#1F7A3F] transition-colors text-bangla-safe group"
-          >
-            <Shield size={12} />
-            <span className="font-semibold">{t('adminLogin')}</span>
-          </Link>
-        </div>
       </motion.div>
     </section>
   );
