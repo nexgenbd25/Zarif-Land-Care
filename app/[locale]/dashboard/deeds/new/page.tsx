@@ -129,15 +129,6 @@ export default function NewDeedPage() {
     pageTitle_bn: 'নতুন দলিল এন্ট্রি',
     pageTitle_en: 'New Deed Entry',
 
-    sectionBasic_bn: 'দলিলের মূল তথ্য',
-    sectionBasic_en: 'Deed Information',
-    sectionParty_bn: 'দাতা ও গ্রহীতার তথ্য',
-    sectionParty_en: 'Donor & Recipient Info',
-    sectionContact_bn: 'যোগাযোগ ও মন্তব্য',
-    sectionContact_en: 'Contact & Notes',
-    sectionPdf_bn: 'দলিল PDF',
-    sectionPdf_en: 'Deed PDF',
-
     serialNo_bn: 'ক্রমিক নং',
     serialNo_en: 'Serial No',
     serialLoading_bn: 'লোড হচ্ছে...',
@@ -145,68 +136,42 @@ export default function NewDeedPage() {
 
     deedNo_bn: 'দলিল নং',
     deedNo_en: 'Deed No',
-    deedNoPh_bn: 'যেমন: 1234/2025',
-    deedNoPh_en: 'e.g. 1234/2025',
 
     date_bn: 'তারিখ',
     date_en: 'Date',
 
     donorName_bn: 'দাতার নাম',
     donorName_en: 'Donor Name',
-    donorNamePh_bn: 'দাতার পূর্ণ নাম',
-    donorNamePh_en: 'Donor full name',
 
     donorFatherName_bn: 'দাতার পিতার নাম',
     donorFatherName_en: "Donor's Father Name",
-    donorFatherNamePh_bn: 'দাতার পিতার নাম',
-    donorFatherNamePh_en: "Donor's father name",
 
     recipientName_bn: 'গ্রহীতার নাম',
     recipientName_en: 'Recipient Name',
-    recipientNamePh_bn: 'গ্রহীতার পূর্ণ নাম',
-    recipientNamePh_en: 'Recipient full name',
 
     recipientFatherName_bn: 'গ্রহীতার পিতার নাম',
     recipientFatherName_en: "Recipient's Father Name",
-    recipientFatherNamePh_bn: 'গ্রহীতার পিতার নাম',
-    recipientFatherNamePh_en: "Recipient's father name",
 
     mouzaName_bn: 'মৌজার নাম',
     mouzaName_en: 'Mouza Name',
-    mouzaNamePh_bn: 'মৌজার নাম',
-    mouzaNamePh_en: 'Mouza name',
 
     deedType_bn: 'দলিলের রকম',
     deedType_en: 'Deed Type',
-    deedTypePh_bn: 'যেমন: বিক্রয় দলিল / দানপত্র / হেবা দলিল',
-    deedTypePh_en: 'e.g. Sale Deed / Gift Deed / Heba Deed',
 
-    value_bn: 'মূল্য (টাকা)',
-    value_en: 'Value (BDT)',
-    valuePh_bn: 'যেমন: ৫,০০,০০০',
-    valuePh_en: 'e.g. 500000',
+    value_bn: 'মূল্য',
+    value_en: 'Value',
 
     mobile_bn: 'মোবাইল নম্বর',
     mobile_en: 'Mobile Number',
-    mobilePh_bn: 'যেমন: 01788766735',
-    mobilePh_en: 'e.g. 01788766735',
 
     remarks_bn: 'মন্তব্য',
     remarks_en: 'Remarks',
-    remarksPh_bn: 'অতিরিক্ত তথ্য (ঐচ্ছিক)',
-    remarksPh_en: 'Additional notes (optional)',
 
     pdf_bn: 'দলিল PDF',
     pdf_en: 'Deed PDF',
-    pdfUpload_bn: 'PDF আপলোড করুন',
-    pdfUpload_en: 'Upload PDF',
-    pdfHint_bn: 'শুধুমাত্র PDF, সর্বোচ্চ 10MB',
-    pdfHint_en: 'PDF only, max 10MB',
 
-    save_bn: 'দলিল সংরক্ষণ করুন',
+    save_bn: 'Save Deed Entry',
     save_en: 'Save Deed Entry',
-    cancel_bn: 'বাতিল',
-    cancel_en: 'Cancel',
     saving_bn: 'সংরক্ষণ হচ্ছে...',
     saving_en: 'Saving...',
 
@@ -289,38 +254,34 @@ export default function NewDeedPage() {
     }, 1500);
   };
 
-  // 🎯 Reusable Field Component
+  // 🎯 Reusable Field — Green Theme
   const renderField = ({
     icon: Icon,
     label,
     field,
-    placeholder,
     type = 'text',
     required = false,
   }: {
     icon: any;
     label: string;
     field: keyof FormData;
-    placeholder?: string;
     type?: string;
     required?: boolean;
   }) => (
     <div className="w-full min-w-0">
-      <label className="block text-sm sm:text-[15px] font-semibold text-[#1F2937] mb-2 sm:mb-2.5 text-bangla-safe">
+      <label className="block text-sm font-semibold text-[#1F2937] mb-2 text-bangla-safe">
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
       <div className="relative w-full">
-        <div className="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-          <Icon size={16} className="sm:hidden" />
-          <Icon size={18} className="hidden sm:block" />
+        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+          <Icon size={16} />
         </div>
         <input
           type={type}
           value={formData[field]}
           onChange={(e) => handleChange(field, e.target.value)}
-          placeholder={placeholder}
-          className={`w-full pl-10 sm:pl-11 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-white text-sm sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+          className={`w-full pl-11 pr-4 py-3 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
             errors[field as keyof FormErrors]
               ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
               : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -328,7 +289,7 @@ export default function NewDeedPage() {
         />
       </div>
       {errors[field as keyof FormErrors] && (
-        <p className="mt-1.5 text-xs sm:text-sm text-red-600 flex items-center gap-1 text-bangla-safe">
+        <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
           <AlertCircle size={12} />
           {errors[field as keyof FormErrors]}
         </p>
@@ -360,19 +321,11 @@ export default function NewDeedPage() {
         transition={{ duration: 0.4 }}
         className="w-full max-w-full overflow-x-hidden"
       >
-        {/* ===== Page Header ===== */}
-        <div className="mb-5 sm:mb-6 lg:mb-8 w-full">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
-              <FilePlus2 size={20} className="text-[#1F7A3F] sm:hidden" />
-              <FilePlus2 size={22} className="text-[#1F7A3F] hidden sm:block" />
-            </div>
-            <div className="min-w-0">
-              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5 leading-tight">
-                {t('pageTitle')}
-              </h1>
-            </div>
-          </div>
+        {/* ===== Page Title ===== */}
+        <div className="mb-5 sm:mb-6 w-full">
+          <h1 className="text-lg sm:text-xl font-bold text-[#1F2937] text-bangla-heading">
+            {t('pageTitle')}
+          </h1>
         </div>
 
         {/* ===== Success ===== */}
@@ -380,44 +333,50 @@ export default function NewDeedPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-4 sm:mb-5 flex items-start gap-2.5 p-3 sm:p-4 rounded-xl bg-[#DCFCE7] border border-[#22C55E]/30"
+            className="mb-4 flex items-start gap-2.5 p-3 sm:p-4 rounded-xl bg-[#DCFCE7] border border-[#22C55E]/30"
           >
             <CheckCircle
               size={18}
               className="text-[#15803D] flex-shrink-0 mt-0.5"
             />
-            <p className="text-sm sm:text-base text-[#166534] text-bangla-safe">
+            <p className="text-sm text-[#166534] text-bangla-safe">
               {success}
             </p>
           </motion.div>
         )}
 
         {/* ===== Form ===== */}
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5 sm:space-y-6 w-full max-w-full"
-        >
-          {/* ===== Section 1: Basic Info ===== */}
-          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-5 sm:p-6 lg:p-8 w-full">
-            <h2 className="text-base sm:text-lg font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2.5 mb-5 flex items-center gap-2 border-b border-[#F3F4F6]">
-              <Hash size={16} className="text-[#1F7A3F]" />
-              {t('sectionBasic')}
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 w-full">
-              {renderField({
-                icon: Hash,
-                label: t('serialNo'),
-                field: 'serialNo',
-                placeholder: t('serialNoPh'),
-                required: true,
-              })}
+        <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-full">
+          {/* ===== Card 1 ===== */}
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-5 sm:p-6 lg:p-7 w-full">
+            {/* Row 1: 3 columns */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 w-full mb-4 sm:mb-5">
+              {/* Serial No */}
+              <div className="w-full min-w-0">
+                <label className="block text-sm font-semibold text-[#1F2937] mb-2 text-bangla-safe">
+                  {t('serialNo')}
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
+                <div className="relative w-full">
+                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                    <Hash size={16} />
+                  </div>
+                  <input
+                    type="text"
+                    value={
+                      serialLoading ? t('serialLoading') : formData.serialNo
+                    }
+                    readOnly
+                    disabled
+                    className="w-full pl-11 pr-4 py-3 rounded-lg border border-[#E5E7EB] bg-[#F8FAF9] text-sm text-[#1F7A3F] font-bold text-bangla-safe cursor-not-allowed focus:outline-none"
+                  />
+                </div>
+              </div>
 
               {renderField({
                 icon: FileText,
                 label: t('deedNo'),
                 field: 'deedNo',
-                placeholder: t('deedNoPh'),
                 required: true,
               })}
 
@@ -428,169 +387,119 @@ export default function NewDeedPage() {
                 type: 'date',
                 required: true,
               })}
-
-              {renderField({
-                icon: FileText,
-                label: t('deedType'),
-                field: 'deedType',
-                placeholder: t('deedTypePh'),
-                required: true,
-              })}
-
-              {renderField({
-                icon: MapPin,
-                label: t('mouzaName'),
-                field: 'mouzaName',
-                placeholder: t('mouzaNamePh'),
-                required: true,
-              })}
-
-              {/* Value */}
-              <div className="w-full min-w-0">
-                <label className="block text-sm sm:text-[15px] font-semibold text-[#1F2937] mb-2 sm:mb-2.5 text-bangla-safe">
-                  {t('value')}
-                  <span className="text-red-500 ml-1">*</span>
-                </label>
-                <div className="relative w-full">
-                  <div className="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none font-bold text-base">
-                    ৳
-                  </div>
-                  <input
-                    type="text"
-                    value={formData.value}
-                    onChange={(e) => handleChange('value', e.target.value)}
-                    placeholder={t('valuePh')}
-                    className={`w-full pl-10 sm:pl-11 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-white text-sm sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
-                      errors.value
-                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                    }`}
-                  />
-                </div>
-                {errors.value && (
-                  <p className="mt-1.5 text-xs sm:text-sm text-red-600 flex items-center gap-1 text-bangla-safe">
-                    <AlertCircle size={12} />
-                    {errors.value}
-                  </p>
-                )}
-              </div>
             </div>
-          </div>
 
-          {/* ===== Section 2: Party Info ===== */}
-          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-5 sm:p-6 lg:p-8 w-full">
-            <h2 className="text-base sm:text-lg font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2.5 mb-5 flex items-center gap-2 border-b border-[#F3F4F6]">
-              <Users size={16} className="text-[#1F7A3F]" />
-              {t('sectionParty')}
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 w-full">
+            {/* Row 2: 2 columns */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 w-full mb-4 sm:mb-5">
               {renderField({
                 icon: User,
                 label: t('donorName'),
                 field: 'donorName',
-                placeholder: t('donorNamePh'),
                 required: true,
               })}
               {renderField({
                 icon: User,
                 label: t('donorFatherName'),
                 field: 'donorFatherName',
-                placeholder: t('donorFatherNamePh'),
               })}
+            </div>
+
+            {/* Row 3: 2 columns */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 w-full mb-4 sm:mb-5">
               {renderField({
                 icon: User,
                 label: t('recipientName'),
                 field: 'recipientName',
-                placeholder: t('recipientNamePh'),
                 required: true,
               })}
               {renderField({
                 icon: User,
                 label: t('recipientFatherName'),
                 field: 'recipientFatherName',
-                placeholder: t('recipientFatherNamePh'),
               })}
             </div>
-          </div>
 
-          {/* ===== Section 3: Contact ===== */}
-          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-5 sm:p-6 lg:p-8 w-full">
-            <h2 className="text-base sm:text-lg font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2.5 mb-5 flex items-center gap-2 border-b border-[#F3F4F6]">
-              <Phone size={16} className="text-[#1F7A3F]" />
-              {t('sectionContact')}
-            </h2>
+            {/* Row 4: 2 columns */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 w-full mb-4 sm:mb-5">
+              {renderField({
+                icon: MapPin,
+                label: t('mouzaName'),
+                field: 'mouzaName',
+                required: true,
+              })}
+              {renderField({
+                icon: FileText,
+                label: t('deedType'),
+                field: 'deedType',
+                required: true,
+              })}
+            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 w-full">
+            {/* Row 5: 2 columns */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 w-full mb-4 sm:mb-5">
+              {renderField({
+                icon: FileText,
+                label: t('value'),
+                field: 'value',
+                required: true,
+              })}
               {renderField({
                 icon: Phone,
                 label: t('mobile'),
                 field: 'mobile',
-                placeholder: t('mobilePh'),
                 type: 'tel',
                 required: true,
               })}
+            </div>
 
-              {/* Remarks — full width */}
-              <div className="w-full min-w-0 sm:col-span-2">
-                <label className="block text-sm sm:text-[15px] font-semibold text-[#1F2937] mb-2 sm:mb-2.5 text-bangla-safe">
-                  {t('remarks')}
-                </label>
-                <div className="relative w-full">
-                  <div className="absolute left-3 sm:left-3.5 top-3 sm:top-3.5 text-[#9CA3AF] pointer-events-none">
-                    <MessageSquare size={16} className="sm:hidden" />
-                    <MessageSquare size={18} className="hidden sm:block" />
-                  </div>
-                  <textarea
-                    value={formData.remarks}
-                    onChange={(e) => handleChange('remarks', e.target.value)}
-                    placeholder={t('remarksPh')}
-                    rows={4}
-                    className="w-full pl-10 sm:pl-11 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-sm sm:text-base text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20 resize-none"
-                  />
+            {/* Row 6: Remarks — Full width */}
+            <div className="w-full min-w-0 mb-4 sm:mb-5">
+              <label className="block text-sm font-semibold text-[#1F2937] mb-2 text-bangla-safe">
+                {t('remarks')}
+              </label>
+              <div className="relative w-full">
+                <div className="absolute left-3.5 top-3.5 text-[#9CA3AF] pointer-events-none">
+                  <MessageSquare size={16} />
                 </div>
+                <textarea
+                  value={formData.remarks}
+                  onChange={(e) => handleChange('remarks', e.target.value)}
+                  rows={4}
+                  className="w-full pl-11 pr-4 py-3 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20 resize-none"
+                />
               </div>
             </div>
-          </div>
 
-          {/* ===== Section 4: PDF ===== */}
-          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-5 sm:p-6 lg:p-8 w-full">
-            <h2 className="text-base sm:text-lg font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2.5 mb-5 flex items-center gap-2 border-b border-[#F3F4F6]">
-              <FileText size={16} className="text-[#1F7A3F]" />
-              {t('sectionPdf')}
-            </h2>
+            {/* Row 7: PDF — Full width */}
+            <div className="w-full min-w-0">
+              <label className="block text-sm font-semibold text-[#1F2937] mb-2 text-bangla-safe">
+                {t('pdf')}
+              </label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/pdf"
+                onChange={handleFileChange}
+                className="hidden"
+              />
 
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="application/pdf"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-
-            <div
-              onClick={() => fileInputRef.current?.click()}
-              className={`relative cursor-pointer rounded-xl border-2 border-dashed p-6 sm:p-8 text-center transition-all duration-200 w-full ${
-                errors.pdf
-                  ? 'border-red-300 bg-red-50'
-                  : pdfFile
-                  ? 'border-[#22C55E] bg-[#F0FDF4]'
-                  : 'border-[#E5E7EB] bg-[#F8FAF9] hover:border-[#1F7A3F]/40 hover:bg-[#1F7A3F]/5'
-              }`}
-            >
-              {pdfFile ? (
-                <div className="flex items-center justify-center gap-3 flex-wrap sm:flex-nowrap">
-                  <div className="w-12 h-12 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
-                    <FileText size={20} className="text-[#1F7A3F]" />
-                  </div>
-                  <div className="text-left min-w-0 flex-1">
-                    <p className="text-sm sm:text-base font-semibold text-[#1F2937] text-bangla-safe break-all">
-                      {pdfFile.name}
-                    </p>
-                    <p className="text-xs sm:text-sm text-[#6B7280]">
-                      {(pdfFile.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                  </div>
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className={`relative cursor-pointer rounded-lg border transition-all duration-200 p-3 w-full flex items-center gap-3 ${
+                  errors.pdf
+                    ? 'border-red-300 bg-red-50'
+                    : pdfFile
+                    ? 'border-[#22C55E] bg-[#F0FDF4]'
+                    : 'border-[#E5E7EB] bg-white hover:border-[#1F7A3F]/40'
+                }`}
+              >
+                <div className="inline-flex items-center justify-center px-4 py-2 rounded-md bg-[#F8FAF9] border border-[#E5E7EB] text-sm font-semibold text-[#1F7A3F] hover:bg-[#1F7A3F]/5 transition-colors shrink-0">
+                  Choose File
+                </div>
+                <span className="text-sm text-[#6B7280] text-bangla-safe truncate flex-1">
+                  {pdfFile ? pdfFile.name : 'No file chosen'}
+                </span>
+                {pdfFile && (
                   <button
                     type="button"
                     onClick={(e) => {
@@ -598,62 +507,38 @@ export default function NewDeedPage() {
                       setPdfFile(null);
                       if (fileInputRef.current) fileInputRef.current.value = '';
                     }}
-                    className="w-9 h-9 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors flex-shrink-0"
+                    className="w-7 h-7 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors shrink-0"
                     aria-label="Remove file"
                   >
-                    <X size={16} />
+                    <X size={14} />
                   </button>
-                </div>
-              ) : (
-                <>
-                  <div className="w-12 h-12 mx-auto rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center mb-3">
-                    <Upload size={22} className="text-[#1F7A3F]" />
-                  </div>
-                  <p className="text-sm sm:text-base font-semibold text-[#1F2937] text-bangla-safe mb-1">
-                    {t('pdfUpload')}
-                  </p>
-                  <p className="text-xs sm:text-sm text-[#6B7280] text-bangla-safe">
-                    {t('pdfHint')}
-                  </p>
-                </>
+                )}
+              </div>
+
+              {errors.pdf && (
+                <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                  <AlertCircle size={12} />
+                  {errors.pdf}
+                </p>
               )}
             </div>
+          </div>
 
-            {errors.pdf && (
-              <p className="mt-2.5 text-xs sm:text-sm text-red-600 flex items-center gap-1 text-bangla-safe">
-                <AlertCircle size={12} />
-                {errors.pdf}
-              </p>
+          {/* ===== Save Button — Full Width Green ===== */}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-bold text-white text-base bg-[#1F7A3F] hover:bg-[#155E30] shadow-md shadow-[#1F7A3F]/20 hover:shadow-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.99]"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                <span className="text-bangla-safe">{t('saving')}</span>
+              </>
+            ) : (
+              <span className="text-bangla-safe">{t('save')}</span>
             )}
-          </div>
-
-          {/* ===== Actions — FIXED ===== */}
-          <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end pt-1 w-full">
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 rounded-lg font-semibold text-sm sm:text-base text-[#4B5563] bg-white border border-[#E5E7EB] hover:bg-[#F8FAF9] transition-all duration-200 text-bangla-safe"
-            >
-              {t('cancel')}
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-lg font-bold text-white text-sm sm:text-base bg-[#1F7A3F] hover:bg-[#155E30] shadow-md shadow-[#1F7A3F]/20 hover:shadow-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98]"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 size={16} className="animate-spin" />
-                  <span className="text-bangla-safe">{t('saving')}</span>
-                </>
-              ) : (
-                <>
-                  <Save size={16} />
-                  <span className="text-bangla-safe">{t('save')}</span>
-                </>
-              )}
-            </button>
-          </div>
+          </button>
         </form>
       </motion.div>
     </DashboardLayout>
