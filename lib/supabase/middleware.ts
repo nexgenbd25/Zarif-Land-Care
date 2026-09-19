@@ -1,5 +1,6 @@
 // lib/supabase/middleware.ts
 // Middleware এ Supabase session refresh + return user
+// Role query middleware এ করা হয় না (middleware.ts এ createAdminClient দিয়ে করা হয়)
 
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
@@ -38,7 +39,7 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // ⚠️ getUser() call না করলে session refresh হবে না
+  // ⚠️ getUser() — session refresh + user (RLS-safe)
   const {
     data: { user },
   } = await supabase.auth.getUser();
