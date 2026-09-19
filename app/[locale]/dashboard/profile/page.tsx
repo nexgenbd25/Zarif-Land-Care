@@ -1,16 +1,18 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   User,
   Mail,
   Phone,
   Globe,
   Loader2,
-  CheckCircle,
+  CheckCircle2,
   AlertCircle,
   Save,
   MapPin,
@@ -19,9 +21,9 @@ import {
   Home,
   Lock,
   AtSign,
+  X,
 } from 'lucide-react';
-import { getDemoUser, clearDemoUser, saveDemoUser, DemoUser } from '@/lib/auth';
-import DashboardLayout from '../DashboardLayout';
+import { createClient } from '@/lib/supabase/client';
 
 interface FormData {
   firstName: string;
@@ -63,10 +65,9 @@ export default function ProfilePage() {
   const locale = useLocale();
   const router = useRouter();
   const isBn = locale === 'bn';
+  const prefix = isBn ? '' : `/${locale}`;
 
-  const [user, setUser] = useState<DemoUser | null>(null);
-  const [authChecked, setAuthChecked] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -82,34 +83,72 @@ export default function ProfilePage() {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
-  const [success, setSuccess] = useState('');
 
+  const [toast, setToast] = useState<{
+    type: 'success' | 'error';
+    message: string;
+  } | null>(null);
+
+  // 🎯 Load user profile from Supabase
   useEffect(() => {
-    const currentUser = getDemoUser();
-    if (!currentUser) {
-      router.push(`/${isBn ? '' : locale + '/'}login`);
-      return;
-    }
-    setUser(currentUser);
-    setFormData({
-      firstName: currentUser.firstName || '',
-      lastName: currentUser.lastName || '',
-      username: currentUser.username || '',
-      email: currentUser.email || '',
-      country: currentUser.country || '+880',
-      phone: currentUser.phone || '',
-      address: currentUser.address || '',
-      state: currentUser.state || '',
-      city: currentUser.city || '',
-      zipCode: currentUser.zipCode || '',
-    });
-    setAuthChecked(true);
-  }, [router, isBn, locale]);
+    async function loadProfile() {
+      try {
+        const supabase = createClient();
+        const {
+          data: { user: authUser },
+        } = await supabase.auth.getUser();
 
-  const handleLogout = () => {
-    clearDemoUser();
-    router.push(`/${isBn ? '' : locale + '/'}login`);
-  };
+        if (!authUser) {
+          window.location.href = `${prefix}/login`;
+          return;
+        }
+
+        const { data: profile } = await supabase
+          .from('users')
+          .select(
+            'first_name, last_name, username, email, country_code, mobile, address, state, city, zip_code'
+          )
+          .eq('id', authUser.id)
+          .maybeSingle();
+
+        if (profile) {
+          setFormData({
+            firstName: profile.first_name || '',
+            lastName: profile.last_name || '',
+            username: profile.username || '',
+            email: profile.email || authUser.email || '',
+            country: profile.country_code || '+880',
+            phone: profile.mobile || '',
+            address: profile.address || '',
+            state: profile.state || '',
+            city: profile.city || '',
+            zipCode: profile.zip_code || '',
+          });
+        } else {
+          // Fallback to auth user
+          setFormData((prev) => ({
+            ...prev,
+            email: authUser.email || '',
+            username: authUser.email?.split('@')[0] || '',
+          }));
+        }
+      } catch (err) {
+        console.error('Load profile error:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadProfile();
+  }, [prefix]);
+
+  // Auto-hide toast
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
   const content = {
     pageTitle_bn: 'আমার প্রোফাইল',
@@ -191,6 +230,10 @@ export default function ProfilePage() {
 
     success_bn: 'প্রোফাইল সফলভাবে সংরক্ষিত হয়েছে!',
     success_en: 'Profile updated successfully!',
+    loadFailed_bn: 'প্রোফাইল লোড করা যায়নি',
+    loadFailed_en: 'Failed to load profile',
+    saveFailed_bn: 'প্রোফাইল সংরক্ষণ করা যায়নি',
+    saveFailed_en: 'Failed to save profile',
     loading_bn: 'লোড হচ্ছে...',
     loading_en: 'Loading...',
   };
@@ -254,38 +297,75 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSuccess('');
+    setToast(null);
     if (!validate()) return;
 
     setIsLoading(true);
 
-    setTimeout(() => {
-      if (user) {
-        const updatedUser: DemoUser = {
-          ...user,
-          firstName: formData.firstName.trim(),
-          lastName: formData.lastName.trim(),
-          username: user.username,
-          email: formData.email.trim().toLowerCase(),
-          country: formData.country,
-          phone: formData.phone,
-          address: formData.address,
-          state: formData.state,
-          city: formData.city,
-          zipCode: formData.zipCode,
-        };
-        saveDemoUser(updatedUser);
-        setUser(updatedUser);
+    try {
+      const supabase = createClient();
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser();
+
+      if (!authUser) {
+        setToast({
+          type: 'error',
+          message: isBn ? 'সেশন মেয়াদোত্তীর্ণ' : 'Session expired',
+        });
+        setIsLoading(false);
+        window.location.href = `${prefix}/login`;
+        return;
       }
+
+      // 🎯 Update users table
+      const { error } = await supabase
+        .from('users')
+        .update({
+          first_name: formData.firstName.trim(),
+          last_name: formData.lastName.trim(),
+          email: formData.email.trim().toLowerCase(),
+          country_code: formData.country,
+          mobile: formData.phone.trim(),
+          address: formData.address.trim(),
+          state: formData.state.trim(),
+          city: formData.city.trim(),
+          zip_code: formData.zipCode.trim(),
+        })
+        .eq('id', authUser.id);
+
+      if (error) {
+        console.error('Update profile error:', error);
+        setToast({
+          type: 'error',
+          message: `${t('saveFailed')}: ${error.message}`,
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // 🎯 Also update auth email if changed
+      if (authUser.email !== formData.email.trim().toLowerCase()) {
+        await supabase.auth.updateUser({
+          email: formData.email.trim().toLowerCase(),
+        });
+      }
+
+      setToast({ type: 'success', message: t('success') });
       setIsLoading(false);
-      setSuccess(t('success'));
-      setTimeout(() => setSuccess(''), 3000);
-    }, 1000);
+    } catch (err: any) {
+      console.error('Save profile exception:', err);
+      setToast({
+        type: 'error',
+        message: err?.message || 'Something went wrong',
+      });
+      setIsLoading(false);
+    }
   };
 
-  if (!authChecked || !user) {
+  if (loading) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-[#F8FAF9]">
+      <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <Loader2
             size={40}
@@ -299,438 +379,475 @@ export default function ProfilePage() {
     );
   }
 
-  // 🎯 Full Name
-  const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
-  const displayName = fullName || user.username;
-  const avatarLetter = (user.firstName || user.username || 'U')
+  const fullName = `${formData.firstName || ''} ${formData.lastName || ''}`.trim();
+  const displayName = fullName || formData.username;
+  const avatarLetter = (formData.firstName || formData.username || 'U')
     .charAt(0)
     .toUpperCase();
 
-  // 🎯 Username lowercase
-  const displayUsername = (user.username || '')
+  const displayUsername = (formData.username || '')
     .toLowerCase()
     .replace(/\s+/g, '');
 
-  // 🎯 Email lowercase
-  const displayEmail = (user.email || '').toLowerCase();
+  const displayEmail = (formData.email || '').toLowerCase();
 
   return (
-    <DashboardLayout user={user} onLogout={handleLogout}>
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="w-full max-w-3xl mx-auto"
-      >
-        {/* Header */}
-        <div className="mb-5 sm:mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
-              <User size={20} className="text-[#1F7A3F]" />
-            </div>
-            <div className="min-w-0">
-              <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5 leading-tight">
-                {t('pageTitle')}
-              </h1>
-            </div>
-          </div>
-        </div>
-
-        {/* Success */}
-        {success && (
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="w-full max-w-3xl mx-auto"
+    >
+      {/* 🎯 Toast */}
+      <AnimatePresence>
+        {toast && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-4 flex items-start gap-2 p-3 rounded-lg bg-[#DCFCE7] border border-[#22C55E]/30"
+            initial={{ opacity: 0, y: -30, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -30, scale: 0.95 }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-3 left-3 right-3 sm:top-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-[100] sm:w-full sm:max-w-md"
           >
-            <CheckCircle
-              size={18}
-              className="text-[#15803D] flex-shrink-0 mt-0.5"
-            />
-            <p className="text-sm text-[#166534] text-bangla-safe">
-              {success}
-            </p>
-          </motion.div>
-        )}
-
-        {/* ===== Avatar Card — Only 3 lines (no badge) ===== */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="relative bg-white rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden mb-4"
-        >
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#1F7A3F] via-[#22C55E] to-[#1F7A3F]" />
-
-          <div className="p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center flex-shrink-0 shadow-lg">
-              <span className="text-white text-3xl sm:text-4xl font-bold uppercase">
-                {avatarLetter}
-              </span>
-            </div>
-            <div className="text-center sm:text-left min-w-0 flex-1">
-              {/* Line 1: Full Name */}
-              <h2 className="text-xl sm:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1">
-                {displayName}
-              </h2>
-              {/* Line 2: Username */}
-              <p className="text-sm text-[#1F7A3F] font-semibold text-bangla-safe break-all mb-1">
-                {displayUsername}
-              </p>
-              {/* Line 3: Email */}
-              <p className="text-sm text-[#6B7280] text-bangla-safe break-all">
-                {displayEmail}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* ===== Profile Form ===== */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-          className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm"
-        >
-          <form onSubmit={handleSubmit} className="p-4 sm:p-5 lg:p-6">
-            {/* Section 1: Personal */}
-            <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
-              <User size={16} className="text-[#1F7A3F]" />
-              {t('sectionPersonal')}
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-6">
-              {/* First Name */}
-              <div className="w-full min-w-0">
-                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('firstNameLabel')}
-                  <span className="text-red-500 ml-0.5">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                    <User size={16} />
-                  </div>
-                  <input
-                    type="text"
-                    value={formData.firstName}
-                    onChange={(e) => handleChange('firstName', e.target.value)}
-                    placeholder={t('firstNamePh')}
-                    className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
-                      errors.firstName
-                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                    }`}
-                  />
-                </div>
-                {errors.firstName && (
-                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                    <AlertCircle size={12} />
-                    {errors.firstName}
-                  </p>
+            <div
+              className={`flex items-start gap-3 p-3 sm:p-4 rounded-xl shadow-lg border-2 backdrop-blur-sm ${
+                toast.type === 'success'
+                  ? 'bg-[#DCFCE7]/95 border-[#22C55E]/40'
+                  : 'bg-red-50/95 border-red-300'
+              }`}
+            >
+              <div
+                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  toast.type === 'success' ? 'bg-[#22C55E]' : 'bg-red-500'
+                }`}
+              >
+                {toast.type === 'success' ? (
+                  <CheckCircle2 size={16} className="text-white" />
+                ) : (
+                  <AlertCircle size={16} className="text-white" />
                 )}
               </div>
-
-              {/* Last Name */}
-              <div className="w-full min-w-0">
-                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('lastNameLabel')}
-                  <span className="text-red-500 ml-0.5">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                    <User size={16} />
-                  </div>
-                  <input
-                    type="text"
-                    value={formData.lastName}
-                    onChange={(e) => handleChange('lastName', e.target.value)}
-                    placeholder={t('lastNamePh')}
-                    className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
-                      errors.lastName
-                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                    }`}
-                  />
-                </div>
-                {errors.lastName && (
-                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                    <AlertCircle size={12} />
-                    {errors.lastName}
-                  </p>
-                )}
-              </div>
-
-              {/* Username — READ-ONLY */}
-              <div className="w-full min-w-0 md:col-span-2">
-                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe flex items-center gap-1.5">
-                  {t('usernameLabel')}
-                  <Lock size={11} className="text-[#6B7280]" />
-                </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                    <AtSign size={16} />
-                  </div>
-                  <input
-                    type="text"
-                    value={formData.username}
-                    readOnly
-                    disabled
-                    className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] bg-[#F8FAF9] text-sm text-[#6B7280] font-medium text-bangla-safe cursor-not-allowed focus:outline-none"
-                  />
-                </div>
-                <p className="mt-1 text-[10px] text-[#6B7280] flex items-center gap-1 text-bangla-safe">
-                  <Lock size={10} />
-                  {t('usernameLocked')}
+              <div className="flex-1 min-w-0 pt-0.5 sm:pt-1">
+                <p
+                  className={`text-xs sm:text-sm font-semibold text-bangla-safe leading-snug ${
+                    toast.type === 'success'
+                      ? 'text-[#166534]'
+                      : 'text-red-700'
+                  }`}
+                >
+                  {toast.message}
                 </p>
               </div>
-
-              {/* Email */}
-              <div className="w-full min-w-0 md:col-span-2">
-                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('emailLabel')}
-                  <span className="text-red-500 ml-0.5">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                    <Mail size={16} />
-                  </div>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => handleChange('email', e.target.value)}
-                    placeholder={t('emailPh')}
-                    className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
-                      errors.email
-                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                    }`}
-                  />
-                </div>
-                {errors.email && (
-                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                    <AlertCircle size={12} />
-                    {errors.email}
-                  </p>
-                )}
-              </div>
-
-              {/* Country */}
-              <div className="w-full min-w-0">
-                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('countryLabel')}
-                  <span className="text-red-500 ml-0.5">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none z-10">
-                    <Globe size={16} />
-                  </div>
-                  <select
-                    value={formData.country}
-                    onChange={(e) => handleChange('country', e.target.value)}
-                    className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-[#E5E7EB] bg-white text-sm text-[#1F2937] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20 appearance-none cursor-pointer"
-                  >
-                    {COUNTRIES.map((c) => (
-                      <option key={c.code} value={c.code}>
-                        {c.flag} {isBn ? c.name_bn : c.name_en} ({c.code})
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                      <path
-                        d="M3 4.5L6 7.5L9 4.5"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-
-              {/* Phone */}
-              <div className="w-full min-w-0">
-                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('phoneLabel')}
-                </label>
-                <div className="relative flex">
-                  <div className="flex items-center gap-1 px-2.5 sm:px-3 py-2.5 rounded-l-lg border border-r-0 border-[#E5E7EB] bg-[#F8FAF9] text-[#1F2937] font-semibold text-xs sm:text-sm min-w-[72px] sm:min-w-[85px]">
-                    <Phone size={14} className="text-[#1F7A3F]" />
-                    <span>{formData.country}</span>
-                  </div>
-                  <input
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) =>
-                      handleChange(
-                        'phone',
-                        e.target.value.replace(/[^\d\s-]/g, '')
-                      )
-                    }
-                    placeholder={t('phonePh')}
-                    className={`w-full px-3 sm:px-4 py-2.5 rounded-r-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
-                      errors.phone
-                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                    }`}
-                  />
-                </div>
-                {errors.phone && (
-                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                    <AlertCircle size={12} />
-                    {errors.phone}
-                  </p>
-                )}
-              </div>
+              <button
+                onClick={() => setToast(null)}
+                className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
+                  toast.type === 'success'
+                    ? 'hover:bg-[#22C55E]/20 text-[#166534]'
+                    : 'hover:bg-red-200 text-red-700'
+                }`}
+                aria-label="Close"
+              >
+                <X size={14} />
+              </button>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-            {/* Section 2: Location */}
-            <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
-              <MapPin size={16} className="text-[#1F7A3F]" />
-              {t('sectionLocation')}
+      {/* Header */}
+      <div className="mb-5 sm:mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
+            <User size={20} className="text-[#1F7A3F]" />
+          </div>
+          <div className="min-w-0">
+            <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5 leading-tight">
+              {t('pageTitle')}
+            </h1>
+          </div>
+        </div>
+      </div>
+
+      {/* Avatar Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="relative bg-white rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden mb-4"
+      >
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#1F7A3F] via-[#22C55E] to-[#1F7A3F]" />
+
+        <div className="p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-[#1F7A3F] to-[#155E30] flex items-center justify-center flex-shrink-0 shadow-lg">
+            <span className="text-white text-3xl sm:text-4xl font-bold uppercase">
+              {avatarLetter}
+            </span>
+          </div>
+          <div className="text-center sm:text-left min-w-0 flex-1">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-1">
+              {displayName}
             </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-6">
-              {/* State */}
-              <div className="w-full min-w-0">
-                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('stateLabel')}
-                </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                    <Building2 size={16} />
-                  </div>
-                  <input
-                    type="text"
-                    value={formData.state}
-                    onChange={(e) => handleChange('state', e.target.value)}
-                    placeholder={t('statePh')}
-                    className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20"
-                  />
-                </div>
-              </div>
-
-              {/* City */}
-              <div className="w-full min-w-0">
-                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('cityLabel')}
-                </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                    <Home size={16} />
-                  </div>
-                  <input
-                    type="text"
-                    value={formData.city}
-                    onChange={(e) => handleChange('city', e.target.value)}
-                    placeholder={t('cityPh')}
-                    className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20"
-                  />
-                </div>
-              </div>
-
-              {/* Zip Code */}
-              <div className="w-full min-w-0">
-                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('zipCodeLabel')}
-                </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                    <Hash size={16} />
-                  </div>
-                  <input
-                    type="text"
-                    value={formData.zipCode}
-                    onChange={(e) =>
-                      handleChange(
-                        'zipCode',
-                        e.target.value.replace(/[^\d]/g, '')
-                      )
-                    }
-                    placeholder={t('zipCodePh')}
-                    className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
-                      errors.zipCode
-                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                    }`}
-                  />
-                </div>
-                {errors.zipCode && (
-                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                    <AlertCircle size={12} />
-                    {errors.zipCode}
-                  </p>
-                )}
-              </div>
-
-              {/* Address — Full width */}
-              <div className="w-full min-w-0 md:col-span-2">
-                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('addressLabel')}
-                </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-3 text-[#9CA3AF] pointer-events-none">
-                    <MapPin size={16} />
-                  </div>
-                  <textarea
-                    value={formData.address}
-                    onChange={(e) => handleChange('address', e.target.value)}
-                    placeholder={t('addressPh')}
-                    rows={3}
-                    className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 resize-none ${
-                      errors.address
-                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                    }`}
-                  />
-                </div>
-                <div className="flex items-center justify-between mt-0.5">
-                  {errors.address ? (
-                    <p className="text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                      <AlertCircle size={12} />
-                      {errors.address}
-                    </p>
-                  ) : (
-                    <span />
-                  )}
-                  <span className="text-[10px] text-[#9CA3AF]">
-                    {formData.address.length}/200
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 sm:justify-end pt-5 mt-5 border-t border-[#F3F4F6]">
-              <button
-                type="button"
-                onClick={() => router.back()}
-                className="w-full sm:w-auto px-6 py-3 rounded-lg font-semibold text-sm text-[#4B5563] bg-white border border-[#E5E7EB] hover:bg-[#F8FAF9] transition-all duration-200 text-bangla-safe"
-              >
-                {t('cancel')}
-              </button>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-bold text-white text-sm bg-[#1F7A3F] hover:bg-[#155E30] shadow-md shadow-[#1F7A3F]/20 hover:shadow-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98]"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 size={16} className="animate-spin" />
-                    <span className="text-bangla-safe">{t('saving')}</span>
-                  </>
-                ) : (
-                  <>
-                    <Save size={16} />
-                    <span className="text-bangla-safe">{t('save')}</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
-        </motion.div>
+            <p className="text-sm text-[#1F7A3F] font-semibold text-bangla-safe break-all mb-1">
+              {displayUsername}
+            </p>
+            <p className="text-sm text-[#6B7280] text-bangla-safe break-all">
+              {displayEmail}
+            </p>
+          </div>
+        </div>
       </motion.div>
-    </DashboardLayout>
+
+      {/* Profile Form */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+        className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm"
+      >
+        <form onSubmit={handleSubmit} className="p-4 sm:p-5 lg:p-6">
+          {/* Section 1: Personal */}
+          <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
+            <User size={16} className="text-[#1F7A3F]" />
+            {t('sectionPersonal')}
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-6">
+            {/* First Name */}
+            <div className="w-full min-w-0">
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                {t('firstNameLabel')}
+                <span className="text-red-500 ml-0.5">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                  <User size={16} />
+                </div>
+                <input
+                  type="text"
+                  value={formData.firstName}
+                  onChange={(e) => handleChange('firstName', e.target.value)}
+                  placeholder={t('firstNamePh')}
+                  disabled={isLoading}
+                  className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
+                    errors.firstName
+                      ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                      : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                  }`}
+                />
+              </div>
+              {errors.firstName && (
+                <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                  <AlertCircle size={12} />
+                  {errors.firstName}
+                </p>
+              )}
+            </div>
+
+            {/* Last Name */}
+            <div className="w-full min-w-0">
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                {t('lastNameLabel')}
+                <span className="text-red-500 ml-0.5">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                  <User size={16} />
+                </div>
+                <input
+                  type="text"
+                  value={formData.lastName}
+                  onChange={(e) => handleChange('lastName', e.target.value)}
+                  placeholder={t('lastNamePh')}
+                  disabled={isLoading}
+                  className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
+                    errors.lastName
+                      ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                      : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                  }`}
+                />
+              </div>
+              {errors.lastName && (
+                <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                  <AlertCircle size={12} />
+                  {errors.lastName}
+                </p>
+              )}
+            </div>
+
+            {/* Username — READ-ONLY */}
+            <div className="w-full min-w-0 md:col-span-2">
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe flex items-center gap-1.5">
+                {t('usernameLabel')}
+                <Lock size={11} className="text-[#6B7280]" />
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                  <AtSign size={16} />
+                </div>
+                <input
+                  type="text"
+                  value={formData.username}
+                  readOnly
+                  disabled
+                  className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] bg-[#F8FAF9] text-sm text-[#6B7280] font-medium text-bangla-safe cursor-not-allowed focus:outline-none"
+                />
+              </div>
+              <p className="mt-1 text-[10px] text-[#6B7280] flex items-center gap-1 text-bangla-safe">
+                <Lock size={10} />
+                {t('usernameLocked')}
+              </p>
+            </div>
+
+            {/* Email */}
+            <div className="w-full min-w-0 md:col-span-2">
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                {t('emailLabel')}
+                <span className="text-red-500 ml-0.5">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                  <Mail size={16} />
+                </div>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => handleChange('email', e.target.value)}
+                  placeholder={t('emailPh')}
+                  disabled={isLoading}
+                  className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
+                    errors.email
+                      ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                      : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                  }`}
+                />
+              </div>
+              {errors.email && (
+                <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                  <AlertCircle size={12} />
+                  {errors.email}
+                </p>
+              )}
+            </div>
+
+            {/* Country */}
+            <div className="w-full min-w-0">
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                {t('countryLabel')}
+                <span className="text-red-500 ml-0.5">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none z-10">
+                  <Globe size={16} />
+                </div>
+                <select
+                  value={formData.country}
+                  onChange={(e) => handleChange('country', e.target.value)}
+                  disabled={isLoading}
+                  className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-[#E5E7EB] bg-white text-sm text-[#1F2937] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20 appearance-none cursor-pointer disabled:opacity-60"
+                >
+                  {COUNTRIES.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.flag} {isBn ? c.name_bn : c.name_en} ({c.code})
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M3 4.5L6 7.5L9 4.5"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Phone */}
+            <div className="w-full min-w-0">
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                {t('phoneLabel')}
+              </label>
+              <div className="relative flex">
+                <div className="flex items-center gap-1 px-2.5 sm:px-3 py-2.5 rounded-l-lg border border-r-0 border-[#E5E7EB] bg-[#F8FAF9] text-[#1F2937] font-semibold text-xs sm:text-sm min-w-[72px] sm:min-w-[85px]">
+                  <Phone size={14} className="text-[#1F7A3F]" />
+                  <span>{formData.country}</span>
+                </div>
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) =>
+                    handleChange(
+                      'phone',
+                      e.target.value.replace(/[^\d\s-]/g, '')
+                    )
+                  }
+                  placeholder={t('phonePh')}
+                  disabled={isLoading}
+                  className={`w-full px-3 sm:px-4 py-2.5 rounded-r-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
+                    errors.phone
+                      ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                      : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                  }`}
+                />
+              </div>
+              {errors.phone && (
+                <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                  <AlertCircle size={12} />
+                  {errors.phone}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Section 2: Location */}
+          <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
+            <MapPin size={16} className="text-[#1F7A3F]" />
+            {t('sectionLocation')}
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-6">
+            {/* State */}
+            <div className="w-full min-w-0">
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                {t('stateLabel')}
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                  <Building2 size={16} />
+                </div>
+                <input
+                  type="text"
+                  value={formData.state}
+                  onChange={(e) => handleChange('state', e.target.value)}
+                  placeholder={t('statePh')}
+                  disabled={isLoading}
+                  className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20 disabled:opacity-60"
+                />
+              </div>
+            </div>
+
+            {/* City */}
+            <div className="w-full min-w-0">
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                {t('cityLabel')}
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                  <Home size={16} />
+                </div>
+                <input
+                  type="text"
+                  value={formData.city}
+                  onChange={(e) => handleChange('city', e.target.value)}
+                  placeholder={t('cityPh')}
+                  disabled={isLoading}
+                  className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20 disabled:opacity-60"
+                />
+              </div>
+            </div>
+
+            {/* Zip Code */}
+            <div className="w-full min-w-0">
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                {t('zipCodeLabel')}
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                  <Hash size={16} />
+                </div>
+                <input
+                  type="text"
+                  value={formData.zipCode}
+                  onChange={(e) =>
+                    handleChange('zipCode', e.target.value.replace(/[^\d]/g, ''))
+                  }
+                  placeholder={t('zipCodePh')}
+                  disabled={isLoading}
+                  className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
+                    errors.zipCode
+                      ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                      : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                  }`}
+                />
+              </div>
+              {errors.zipCode && (
+                <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                  <AlertCircle size={12} />
+                  {errors.zipCode}
+                </p>
+              )}
+            </div>
+
+            {/* Address */}
+            <div className="w-full min-w-0 md:col-span-2">
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                {t('addressLabel')}
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-3 text-[#9CA3AF] pointer-events-none">
+                  <MapPin size={16} />
+                </div>
+                <textarea
+                  value={formData.address}
+                  onChange={(e) => handleChange('address', e.target.value)}
+                  placeholder={t('addressPh')}
+                  rows={3}
+                  disabled={isLoading}
+                  className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 resize-none disabled:opacity-60 ${
+                    errors.address
+                      ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                      : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                  }`}
+                />
+              </div>
+              <div className="flex items-center justify-between mt-0.5">
+                {errors.address ? (
+                  <p className="text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                    <AlertCircle size={12} />
+                    {errors.address}
+                  </p>
+                ) : (
+                  <span />
+                )}
+                <span className="text-[10px] text-[#9CA3AF]">
+                  {formData.address.length}/200
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 sm:justify-end pt-5 mt-5 border-t border-[#F3F4F6]">
+            <button
+              type="button"
+              onClick={() => router.back()}
+              disabled={isLoading}
+              className="w-full sm:w-auto px-6 py-3 rounded-lg font-semibold text-sm text-[#4B5563] bg-white border border-[#E5E7EB] hover:bg-[#F8FAF9] transition-all duration-200 text-bangla-safe disabled:opacity-60"
+            >
+              {t('cancel')}
+            </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-bold text-white text-sm bg-[#1F7A3F] hover:bg-[#155E30] shadow-md shadow-[#1F7A3F]/20 hover:shadow-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98]"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  <span className="text-bangla-safe">{t('saving')}</span>
+                </>
+              ) : (
+                <>
+                  <Save size={16} />
+                  <span className="text-bangla-safe">{t('save')}</span>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </motion.div>
+    </motion.div>
   );
 }
