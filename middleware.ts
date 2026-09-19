@@ -1,3 +1,6 @@
+// middleware.ts
+// Only i18n handling — Auth check runs in layout/page level
+
 import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
 import { locales, defaultLocale } from './i18n';
@@ -9,12 +12,7 @@ const intlMiddleware = createMiddleware({
 });
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  // ✅ শুধু i18n handle করব middleware এ
-  // Auth check admin layout এ হবে (client-side)
-  // এতে cookie/middleware race condition হবে না
-
+  // 🎯 ONLY i18n — NO auth check here (prevents redirect loops)
   return intlMiddleware(request);
 }
 
