@@ -122,7 +122,6 @@ export default function PendingKhatianPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [viewKhatian, setViewKhatian] = useState<Khatian | null>(null);
 
-  // Body scroll lock when modal open
   useBodyScrollLock(!!viewKhatian);
 
   useEffect(() => {
@@ -228,7 +227,6 @@ export default function PendingKhatianPage() {
   return (
     <DashboardLayout user={user} onLogout={handleLogout}>
       <div className="w-full max-w-7xl mx-auto">
-        {/* Header */}
         <div className="mb-4 sm:mb-5">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center flex-shrink-0">
@@ -242,7 +240,6 @@ export default function PendingKhatianPage() {
           </div>
         </div>
 
-        {/* Search Bar */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-3 sm:p-4 mb-4">
           <div className="relative">
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
@@ -268,7 +265,6 @@ export default function PendingKhatianPage() {
           </div>
         </div>
 
-        {/* Content */}
         {filteredKhatians.length === 0 ? (
           <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-8 sm:p-12 text-center">
             <div className="w-16 h-16 mx-auto rounded-full bg-[#F8FAF9] flex items-center justify-center mb-4">
@@ -280,7 +276,6 @@ export default function PendingKhatianPage() {
           </div>
         ) : (
           <>
-            {/* Desktop Table */}
             <div className="hidden lg:block bg-white rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
@@ -367,7 +362,6 @@ export default function PendingKhatianPage() {
               </div>
             </div>
 
-            {/* Mobile Cards */}
             <div className="lg:hidden space-y-3">
               {paginatedKhatians.map((k, idx) => (
                 <motion.div
@@ -377,4 +371,271 @@ export default function PendingKhatianPage() {
                   transition={{ duration: 0.3, delay: idx * 0.03 }}
                   className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4"
                 >
-                  <div
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold uppercase tracking-wider">
+                      <FileText size={10} />#{k.serialNo}
+                    </span>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold uppercase tracking-wider">
+                      <Clock size={10} />
+                      {t('pendingStatus')}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 mb-3 pb-3 border-b border-[#F3F4F6]">
+                    <Hash size={14} className="text-[#1F7A3F]" />
+                    <span className="text-sm font-bold text-[#1F2937]">
+                      {k.khatianNo}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2.5 mb-3">
+                    <div className="flex items-start gap-2">
+                      <User
+                        size={14}
+                        className="text-[#1F7A3F] mt-0.5 flex-shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] font-bold mb-0.5">
+                          {t('owner')}
+                        </p>
+                        <p className="text-xs text-[#1F2937] text-bangla-safe break-words">
+                          {k.ownerName}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <MapPin
+                        size={14}
+                        className="text-[#1F7A3F] mt-0.5 flex-shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] font-bold mb-0.5">
+                          {t('mouza')}
+                        </p>
+                        <p className="text-xs text-[#1F2937] text-bangla-safe break-words">
+                          {k.mouzaName}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-[#F3F4F6]">
+                    <button
+                      onClick={() => setViewKhatian(k)}
+                      className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-blue-50 text-blue-600 text-xs font-semibold hover:bg-blue-100 transition-colors text-bangla-safe"
+                    >
+                      <Eye size={12} />
+                      {t('view')}
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#E5E7EB]">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#4B5563] bg-white border border-[#E5E7EB] hover:bg-[#F8FAF9] disabled:opacity-40 disabled:cursor-not-allowed transition-all text-bangla-safe"
+                >
+                  <ChevronLeft size={14} />
+                  <span className="hidden sm:inline">{t('prev')}</span>
+                </button>
+
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }).map((_, i) => {
+                    const page = i + 1;
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => setCurrentPage(page)}
+                        className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
+                          currentPage === page
+                            ? 'bg-[#1F7A3F] text-white shadow-sm'
+                            : 'text-[#4B5563] hover:bg-[#F8FAF9]'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <button
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#4B5563] bg-white border border-[#E5E7EB] hover:bg-[#F8FAF9] disabled:opacity-40 disabled:cursor-not-allowed transition-all text-bangla-safe"
+                >
+                  <span className="hidden sm:inline">{t('next')}</span>
+                  <ChevronRight size={14} />
+                </button>
+              </div>
+            )}
+          </>
+        )}
+
+        <AnimatePresence>
+          {viewKhatian && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setViewKhatian(null)}
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
+              />
+
+              <div
+                className="fixed inset-0 z-[101] flex items-center justify-center p-3 sm:p-4 pointer-events-none"
+                style={{ overflowAnchor: 'none' }}
+              >
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                  transition={{ duration: 0.25 }}
+                  className="pointer-events-auto w-full max-w-3xl max-h-[92vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+                  style={{
+                    transform: 'translateZ(0)',
+                    backfaceVisibility: 'hidden',
+                  }}
+                >
+                  <div className="bg-white border-b border-[#E5E7EB] px-4 sm:px-5 py-3.5 flex-shrink-0">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
+                          <FileText size={18} className="text-[#1F7A3F]" />
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-0.5 pb-0.5 truncate">
+                            {t('viewTitle')}
+                          </h3>
+                          <p className="text-[10px] sm:text-[11px] text-[#6B7280] truncate">
+                            {t('serial')}: {viewKhatian.serialNo} •{' '}
+                            {t('khatianNo')}: {viewKhatian.khatianNo}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setViewKhatian(null)}
+                        className="w-9 h-9 rounded-lg bg-[#F8FAF9] hover:bg-[#E5E7EB] flex items-center justify-center text-[#4B5563] transition-colors flex-shrink-0"
+                        aria-label="Close"
+                      >
+                        <X size={18} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="p-4 sm:p-5 overflow-y-auto flex-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      <DetailRow
+                        icon={Hash}
+                        label={t('serial')}
+                        value={viewKhatian.serialNo}
+                      />
+                      <DetailRow
+                        icon={FileText}
+                        label={t('khatianNo')}
+                        value={viewKhatian.khatianNo}
+                      />
+                      <DetailRow
+                        icon={MapPin}
+                        label={t('mouza')}
+                        value={viewKhatian.mouzaName}
+                      />
+                      <DetailRow
+                        icon={Layers}
+                        label={t('khatianType')}
+                        value={viewKhatian.khatianType}
+                      />
+                      <DetailRow
+                        icon={User}
+                        label={t('owner')}
+                        value={viewKhatian.ownerName}
+                      />
+                      <DetailRow
+                        icon={Map}
+                        label={t('dagNo')}
+                        value={viewKhatian.dagNo}
+                      />
+                      <DetailRow
+                        icon={Maximize2}
+                        label={t('landAmount')}
+                        value={viewKhatian.landAmount}
+                      />
+                      <DetailRow
+                        icon={FileText}
+                        label={t('pdfLabel')}
+                        value={viewKhatian.pdfUrl || 'N/A'}
+                      />
+                    </div>
+
+                    <div className="mt-2.5 flex items-center gap-2.5 p-3 rounded-xl bg-orange-50 border border-orange-200">
+                      <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+                        <Clock size={14} className="text-orange-600" />
+                      </div>
+                      <div className="min-w-0 flex-1 flex items-center justify-between gap-2">
+                        <p className="text-[10px] uppercase tracking-wider text-orange-700 font-bold">
+                          {t('status')}
+                        </p>
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-500 text-white text-[10px] font-bold uppercase tracking-wider">
+                          <Clock size={10} />
+                          {t('pendingStatus')}
+                        </span>
+                      </div>
+                    </div>
+
+                    {viewKhatian.remarks && (
+                      <div className="mt-2.5 flex items-start gap-2.5 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
+                        <div className="w-8 h-8 rounded-lg bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
+                          <MessageSquare size={14} className="text-[#1F7A3F]" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-0.5">
+                            {t('remarks')}
+                          </p>
+                          <p className="text-sm text-[#1F2937] text-bangla-safe break-words">
+                            {viewKhatian.remarks || '—'}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </div>
+            </>
+          )}
+        </AnimatePresence>
+      </div>
+    </DashboardLayout>
+  );
+}
+
+function DetailRow({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: any;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
+      <div className="w-8 h-8 rounded-lg bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
+        <Icon size={14} className="text-[#1F7A3F]" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-0.5">
+          {label}
+        </p>
+        <p className="text-sm text-[#1F2937] text-bangla-safe break-words">
+          {value}
+        </p>
+      </div>
+    </div>
+  );
+}
