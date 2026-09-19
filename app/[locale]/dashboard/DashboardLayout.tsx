@@ -5,35 +5,30 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Menu,
-  X,
-  ChevronDown,
-  LogOut,
-  User,
-  Lock,
-} from 'lucide-react';
+import { Menu, X, ChevronDown, LogOut, User, Lock } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 import DashboardSidebar from './DashboardSidebar';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
+  locale: string;
   user: {
-    firstName?: string;
-    lastName?: string;
+    id: string;
+    firstName: string;
+    lastName: string;
     username: string;
     email: string;
   };
-  onLogout: () => void;
 }
 
 export default function DashboardLayout({
   children,
+  locale,
   user,
-  onLogout,
 }: DashboardLayoutProps) {
-  const locale = useLocale();
   const pathname = usePathname();
   const isBn = locale === 'bn';
+  const prefix = isBn ? '' : `/${locale}`;
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -51,6 +46,14 @@ export default function DashboardLayout({
     .replace(/\s+/g, '');
   const displayEmail = (user.email || '').toLowerCase();
 
+  // 🎯 Logout
+  const handleLogout = useCallback(async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    window.location.href = `${prefix}/login`;
+  }, [prefix]);
+
+  // Click outside to close profile
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -69,49 +72,27 @@ export default function DashboardLayout({
     setIsProfileOpen(false);
   }, [pathname]);
 
+  // Body scroll lock
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     if (isSidebarOpen) {
       const scrollBarWidth =
         window.innerWidth - document.documentElement.clientWidth;
-
       document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = '0';
-      document.body.style.left = '0';
-      document.body.style.right = '0';
-      document.body.style.width = '100%';
       document.body.style.paddingRight = `${scrollBarWidth}px`;
-
-      document.documentElement.style.overflow = 'hidden';
-      document.documentElement.style.paddingRight = `${scrollBarWidth}px`;
     } else {
       document.body.style.overflow = 'unset';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.width = '';
       document.body.style.paddingRight = '';
-
-      document.documentElement.style.overflow = '';
-      document.documentElement.style.paddingRight = '';
     }
 
     return () => {
       document.body.style.overflow = 'unset';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.width = '';
       document.body.style.paddingRight = '';
-      document.documentElement.style.overflow = '';
-      document.documentElement.style.paddingRight = '';
     };
   }, [isSidebarOpen]);
 
+  // ESC to close
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isSidebarOpen) {
@@ -124,19 +105,6 @@ export default function DashboardLayout({
 
   const handleCloseSidebar = useCallback(() => setIsSidebarOpen(false), []);
   const handleOpenSidebar = useCallback(() => setIsSidebarOpen(true), []);
-  const handleLogout = useCallback(() => onLogout(), [onLogout]);
-
-  const content = {
-    myProfile_bn: 'আমার প্রোফাইল',
-    myProfile_en: 'My Profile',
-    changePassword_bn: 'পাসওয়ার্ড পরিবর্তন',
-    changePassword_en: 'Change Password',
-    logout_bn: 'লগআউট',
-    logout_en: 'Log Out',
-  };
-
-  const t = (key: string) =>
-    isBn ? (content as any)[`${key}_bn`] : (content as any)[`${key}_en`];
 
   return (
     <div
@@ -146,7 +114,7 @@ export default function DashboardLayout({
         maxWidth: '100vw',
       }}
     >
-      {/* ===== Desktop Sidebar ===== */}
+      {/* Desktop Sidebar */}
       <aside
         className="hidden lg:flex lg:flex-col sidebar-fixed bg-gradient-to-b from-[#0F3D1F] via-[#0A2E17] to-[#061B0D] text-white z-40"
         style={{
@@ -162,7 +130,7 @@ export default function DashboardLayout({
         <DashboardSidebar user={user} onLogout={handleLogout} />
       </aside>
 
-      {/* ===== Mobile Sidebar ===== */}
+      {/* Mobile Sidebar */}
       <AnimatePresence>
         {isSidebarOpen && (
           <>
@@ -211,7 +179,7 @@ export default function DashboardLayout({
         )}
       </AnimatePresence>
 
-      {/* ===== Main Content — PROPERLY CALCULATED ===== */}
+      {/* Main Content */}
       <div
         className="flex flex-col min-h-screen w-full lg:pl-72"
         style={{
@@ -286,21 +254,23 @@ export default function DashboardLayout({
 
                       <div className="py-1">
                         <Link
-                          href={`/${isBn ? '' : locale + '/'}dashboard/profile`}
+                          href={`${prefix}/dashboard/profile`}
                           onClick={() => setIsProfileOpen(false)}
                           className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#1F2937] hover:bg-[#1F7A3F]/5 hover:text-[#1F7A3F] transition-colors text-bangla-safe"
                         >
                           <User size={16} className="text-[#1F7A3F]" />
-                          <span>{t('myProfile')}</span>
+                          <span>{isBn ? 'আমার প্রোফাইল' : 'My Profile'}</span>
                         </Link>
 
                         <Link
-                          href={`/${isBn ? '' : locale + '/'}dashboard/change-password`}
+                          href={`${prefix}/dashboard/change-password`}
                           onClick={() => setIsProfileOpen(false)}
                           className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#1F2937] hover:bg-[#1F7A3F]/5 hover:text-[#1F7A3F] transition-colors text-bangla-safe"
                         >
                           <Lock size={16} className="text-[#1F7A3F]" />
-                          <span>{t('changePassword')}</span>
+                          <span>
+                            {isBn ? 'পাসওয়ার্ড পরিবর্তন' : 'Change Password'}
+                          </span>
                         </Link>
 
                         <div className="my-1 border-t border-[#F3F4F6]" />
@@ -308,12 +278,12 @@ export default function DashboardLayout({
                         <button
                           onClick={() => {
                             setIsProfileOpen(false);
-                            onLogout();
+                            handleLogout();
                           }}
                           className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors text-bangla-safe"
                         >
                           <LogOut size={16} />
-                          <span>{t('logout')}</span>
+                          <span>{isBn ? 'লগ আউট' : 'Log Out'}</span>
                         </button>
                       </div>
                     </motion.div>
@@ -324,7 +294,7 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        {/* ===== Main Content Area ===== */}
+        {/* Main Content */}
         <main
           className="flex-1 p-3 sm:p-4 lg:p-6 w-full"
           style={{
@@ -334,9 +304,7 @@ export default function DashboardLayout({
             overflowAnchor: 'none',
           }}
         >
-          <div className="w-full max-w-7xl mx-auto">
-            {children}
-          </div>
+          <div className="w-full max-w-7xl mx-auto">{children}</div>
         </main>
       </div>
     </div>
