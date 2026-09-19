@@ -69,7 +69,6 @@ export default function DashboardLayout({
     setIsProfileOpen(false);
   }, [pathname]);
 
-  // 🎯 Mobile sidebar open hole — FULL PAGE LOCK
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -141,14 +140,14 @@ export default function DashboardLayout({
 
   return (
     <div
-      className="min-h-screen bg-[#F8FAF9] relative"
+      className="min-h-screen bg-[#F8FAF9]"
       style={{
         overflowX: 'hidden',
         width: '100%',
         maxWidth: '100%',
       }}
     >
-      {/* ===== Desktop Sidebar — UNTOUCHED ===== */}
+      {/* ===== Desktop Sidebar ===== */}
       <aside
         className="hidden lg:flex lg:flex-col sidebar-fixed bg-gradient-to-b from-[#0F3D1F] via-[#0A2E17] to-[#061B0D] text-white z-40"
         style={{
@@ -164,7 +163,7 @@ export default function DashboardLayout({
         <DashboardSidebar user={user} onLogout={handleLogout} />
       </aside>
 
-      {/* ===== Mobile Sidebar — UNTOUCHED ===== */}
+      {/* ===== Mobile Sidebar ===== */}
       <AnimatePresence>
         {isSidebarOpen && (
           <>
@@ -178,7 +177,6 @@ export default function DashboardLayout({
               style={{
                 touchAction: 'none',
                 overscrollBehavior: 'none',
-                WebkitOverflowScrolling: 'touch',
               }}
             />
 
@@ -194,7 +192,6 @@ export default function DashboardLayout({
                 willChange: 'transform',
                 touchAction: 'pan-y',
                 overscrollBehavior: 'contain',
-                WebkitOverflowScrolling: 'touch',
               }}
             >
               <button
@@ -226,7 +223,7 @@ export default function DashboardLayout({
       >
         {/* Top Bar */}
         <header className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB] shadow-sm w-full">
-          <div className="flex items-center justify-between px-3 sm:px-4 lg:px-6 py-3">
+          <div className="flex items-center justify-between px-4 sm:px-6 py-3">
             <button
               onClick={handleOpenSidebar}
               className="lg:hidden w-10 h-10 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB] flex items-center justify-center text-[#1F2937] hover:bg-[#1F7A3F]/10 hover:border-[#1F7A3F]/30 transition-all shrink-0"
@@ -328,7 +325,7 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        {/* ===== Main Content Area — FIXED ===== */}
+        {/* ===== Main Content Area ===== */}
         <main
           className="flex-1 p-3 sm:p-4 lg:p-6 w-full"
           style={{
