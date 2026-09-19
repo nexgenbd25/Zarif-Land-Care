@@ -1,22 +1,24 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+export const dynamic = 'force-dynamic';
+
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Lock,
   Loader2,
-  CheckCircle,
+  CheckCircle2,
   AlertCircle,
   Save,
   Eye,
   EyeOff,
   Shield,
   Key,
+  X,
 } from 'lucide-react';
-import { getDemoUser, clearDemoUser, DemoUser } from '@/lib/auth';
-import DashboardLayout from '../DashboardLayout';
+import { createClient } from '@/lib/supabase/client';
 
 interface FormData {
   currentPassword: string;
@@ -34,9 +36,7 @@ export default function ChangePasswordPage() {
   const locale = useLocale();
   const router = useRouter();
   const isBn = locale === 'bn';
-
-  const [user, setUser] = useState<DemoUser | null>(null);
-  const [authChecked, setAuthChecked] = useState(false);
+  const prefix = isBn ? '' : `/${locale}`;
 
   const [formData, setFormData] = useState<FormData>({
     currentPassword: '',
@@ -50,22 +50,11 @@ export default function ChangePasswordPage() {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
-  const [success, setSuccess] = useState('');
 
-  useEffect(() => {
-    const currentUser = getDemoUser();
-    if (!currentUser) {
-      router.push(`/${isBn ? '' : locale + '/'}login`);
-      return;
-    }
-    setUser(currentUser);
-    setAuthChecked(true);
-  }, [router, isBn, locale]);
-
-  const handleLogout = () => {
-    clearDemoUser();
-    router.push(`/${isBn ? '' : locale + '/'}login`);
-  };
+  const [toast, setToast] = useState<{
+    type: 'success' | 'error';
+    message: string;
+  } | null>(null);
 
   const content = {
     pageTitle_bn: 'পাসওয়ার্ড পরিবর্তন',
@@ -102,14 +91,13 @@ export default function ChangePasswordPage() {
     passwordSame_en: 'New password must be different from current',
     success_bn: 'পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!',
     success_en: 'Password changed successfully!',
+    wrongCurrent_bn: 'বর্তমান পাসওয়ার্ড ভুল',
+    wrongCurrent_en: 'Current password is incorrect',
     loading_bn: 'লোড হচ্ছে...',
     loading_en: 'Loading...',
     securityTip_bn:
       'আপনার অ্যাকাউন্ট সুরক্ষিত রাখতে শক্তিশালী পাসওয়ার্ড ব্যবহার করুন।',
-    securityTip_en:
-      'Use a strong password to keep your account safe.',
-    demoNote_bn: 'ডেমো মোড: যেকোনো পাসওয়ার্ড দিলেই কাজ করবে',
-    demoNote_en: 'Demo mode: Any password will work',
+    securityTip_en: 'Use a strong password to keep your account safe.',
   };
 
   const t = (key: string) =>
@@ -149,23 +137,82 @@ export default function ChangePasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSuccess('');
+    setToast(null);
     if (!validate()) return;
 
     setIsLoading(true);
 
-    // TODO: Replace with actual API call
-    setTimeout(() => {
-      setIsLoading(false);
-      setSuccess(t('success'));
+    try {
+      const supabase = createClient();
+
+      // 🎯 Step 1: Verify current password by trying to sign in
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user?.email) {
+        setToast({
+          type: 'error',
+          message: isBn ? 'সেশন মেয়াদোত্তীর্ণ' : 'Session expired',
+        });
+        setIsLoading(false);
+        router.push(`${prefix}/login`);
+        return;
+      }
+
+      // Verify current password
+      const { error: verifyError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: formData.currentPassword,
+      });
+
+      if (verifyError) {
+        setToast({ type: 'error', message: t('wrongCurrent') });
+        setErrors({ currentPassword: t('wrongCurrent') });
+        setIsLoading(false);
+        return;
+      }
+
+      // 🎯 Step 2: Update password
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: formData.newPassword,
+      });
+
+      if (updateError) {
+        console.error('Update password error:', updateError);
+        setToast({
+          type: 'error',
+          message: updateError.message || 'Failed to update password',
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // 🎯 Success
+      setToast({ type: 'success', message: t('success') });
       setFormData({
         currentPassword: '',
         newPassword: '',
         confirmPassword: '',
       });
-      setTimeout(() => setSuccess(''), 3000);
-    }, 1200);
+      setIsLoading(false);
+    } catch (err: any) {
+      console.error('Change password exception:', err);
+      setToast({
+        type: 'error',
+        message: err?.message || 'Something went wrong',
+      });
+      setIsLoading(false);
+    }
   };
+
+  // Auto-hide toast
+  useState(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  });
 
   const getPasswordStrength = () => {
     const pw = formData.newPassword;
@@ -196,292 +243,303 @@ export default function ChangePasswordPage() {
     };
   };
 
-  if (!authChecked || !user) {
-    return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-[#F8FAF9]">
-        <div className="text-center">
-          <Loader2
-            size={40}
-            className="animate-spin text-[#1F7A3F] mx-auto mb-4"
-          />
-          <p className="text-sm text-[#6B7280] text-bangla-safe">
-            {t('loading')}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   const strength = getPasswordStrength();
 
   return (
-    <DashboardLayout user={user} onLogout={handleLogout}>
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="w-full max-w-2xl mx-auto"
-      >
-        {/* Header */}
-        <div className="mb-5 sm:mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
-              <Lock size={20} className="text-[#1F7A3F]" />
-            </div>
-            <div className="min-w-0">
-              <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5 leading-tight">
-                {t('pageTitle')}
-              </h1>
-            </div>
-          </div>
-        </div>
-
-        {/* Success */}
-        {success && (
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="w-full max-w-2xl mx-auto"
+    >
+      {/* 🎯 Toast Notification */}
+      <AnimatePresence>
+        {toast && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-4 flex items-start gap-2 p-3 rounded-lg bg-[#DCFCE7] border border-[#22C55E]/30"
+            initial={{ opacity: 0, y: -30, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -30, scale: 0.95 }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-3 left-3 right-3 sm:top-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-[100] sm:w-full sm:max-w-md"
           >
-            <CheckCircle
-              size={18}
-              className="text-[#15803D] flex-shrink-0 mt-0.5"
-            />
-            <p className="text-sm text-[#166534] text-bangla-safe">
-              {success}
-            </p>
-          </motion.div>
-        )}
-
-        {/* Demo Note */}
-        <div className="mb-4 flex items-start gap-2 p-3 rounded-lg bg-[#FEF3C7] border border-[#FCD34D]/40">
-          <Shield
-            size={16}
-            className="text-[#B45309] flex-shrink-0 mt-0.5"
-          />
-          <p className="text-[11px] sm:text-xs text-[#92400E] text-bangla-safe leading-relaxed">
-            {t('demoNote')}
-          </p>
-        </div>
-
-        {/* Form Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-          className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm"
-        >
-          <form onSubmit={handleSubmit} className="p-4 sm:p-5 lg:p-6">
-            <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
-              <Key size={16} className="text-[#1F7A3F]" />
-              {t('sectionTitle')}
-            </h2>
-
-            <div className="space-y-4">
-              {/* Current Password */}
-              <div className="w-full min-w-0">
-                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('currentPassword')}
-                  <span className="text-red-500 ml-0.5">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                    <Lock size={16} />
-                  </div>
-                  <input
-                    type={showCurrent ? 'text' : 'password'}
-                    value={formData.currentPassword}
-                    onChange={(e) =>
-                      handleChange('currentPassword', e.target.value)
-                    }
-                    placeholder={t('currentPasswordPh')}
-                    className={`w-full pl-10 pr-11 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
-                      errors.currentPassword
-                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                    }`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowCurrent(!showCurrent)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#1F7A3F] transition-colors p-1"
-                    aria-label="Toggle password"
-                  >
-                    {showCurrent ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-                {errors.currentPassword && (
-                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                    <AlertCircle size={12} />
-                    {errors.currentPassword}
-                  </p>
+            <div
+              className={`flex items-start gap-3 p-3 sm:p-4 rounded-xl shadow-lg border-2 backdrop-blur-sm ${
+                toast.type === 'success'
+                  ? 'bg-[#DCFCE7]/95 border-[#22C55E]/40'
+                  : 'bg-red-50/95 border-red-300'
+              }`}
+            >
+              <div
+                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  toast.type === 'success' ? 'bg-[#22C55E]' : 'bg-red-500'
+                }`}
+              >
+                {toast.type === 'success' ? (
+                  <CheckCircle2 size={16} className="text-white" />
+                ) : (
+                  <AlertCircle size={16} className="text-white" />
                 )}
               </div>
-
-              {/* New Password */}
-              <div className="w-full min-w-0">
-                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('newPassword')}
-                  <span className="text-red-500 ml-0.5">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                    <Lock size={16} />
-                  </div>
-                  <input
-                    type={showNew ? 'text' : 'password'}
-                    value={formData.newPassword}
-                    onChange={(e) =>
-                      handleChange('newPassword', e.target.value)
-                    }
-                    placeholder={t('newPasswordPh')}
-                    className={`w-full pl-10 pr-11 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
-                      errors.newPassword
-                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                    }`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowNew(!showNew)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#1F7A3F] transition-colors p-1"
-                    aria-label="Toggle password"
-                  >
-                    {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-
-                {/* Password Strength */}
-                {formData.newPassword && (
-                  <div className="mt-2">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold">
-                        {isBn ? 'পাসওয়ার্ড শক্তি' : 'Password Strength'}
-                      </span>
-                      <span
-                        className={`text-[10px] font-bold ${
-                          strength.level === 1
-                            ? 'text-red-500'
-                            : strength.level === 2
-                            ? 'text-orange-500'
-                            : 'text-green-500'
-                        }`}
-                      >
-                        {strength.label}
-                      </span>
-                    </div>
-                    <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{
-                          width:
-                            strength.level === 1
-                              ? '33%'
-                              : strength.level === 2
-                              ? '66%'
-                              : '100%',
-                        }}
-                        transition={{ duration: 0.3 }}
-                        className={`h-full ${strength.color} rounded-full`}
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {errors.newPassword && (
-                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                    <AlertCircle size={12} />
-                    {errors.newPassword}
-                  </p>
-                )}
-
-                <p className="mt-1 text-[10px] text-[#6B7280] text-bangla-safe">
-                  {t('passwordHint')}
+              <div className="flex-1 min-w-0 pt-0.5 sm:pt-1">
+                <p
+                  className={`text-xs sm:text-sm font-semibold text-bangla-safe leading-snug ${
+                    toast.type === 'success'
+                      ? 'text-[#166534]'
+                      : 'text-red-700'
+                  }`}
+                >
+                  {toast.message}
                 </p>
               </div>
+              <button
+                onClick={() => setToast(null)}
+                className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
+                  toast.type === 'success'
+                    ? 'hover:bg-[#22C55E]/20 text-[#166534]'
+                    : 'hover:bg-red-200 text-red-700'
+                }`}
+                aria-label="Close"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-              {/* Confirm Password */}
-              <div className="w-full min-w-0">
-                <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
-                  {t('confirmPassword')}
-                  <span className="text-red-500 ml-0.5">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                    <Lock size={16} />
-                  </div>
-                  <input
-                    type={showConfirm ? 'text' : 'password'}
-                    value={formData.confirmPassword}
-                    onChange={(e) =>
-                      handleChange('confirmPassword', e.target.value)
-                    }
-                    placeholder={t('confirmPasswordPh')}
-                    className={`w-full pl-10 pr-11 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
-                      errors.confirmPassword
-                        ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                        : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
-                    }`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirm(!showConfirm)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#1F7A3F] transition-colors p-1"
-                    aria-label="Toggle password"
-                  >
-                    {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
+      {/* Header */}
+      <div className="mb-5 sm:mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
+            <Lock size={20} className="text-[#1F7A3F]" />
+          </div>
+          <div className="min-w-0">
+            <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5 leading-tight">
+              {t('pageTitle')}
+            </h1>
+          </div>
+        </div>
+      </div>
+
+      {/* Form Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+        className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm"
+      >
+        <form onSubmit={handleSubmit} className="p-4 sm:p-5 lg:p-6">
+          <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
+            <Key size={16} className="text-[#1F7A3F]" />
+            {t('sectionTitle')}
+          </h2>
+
+          <div className="space-y-4">
+            {/* Current Password */}
+            <div className="w-full min-w-0">
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                {t('currentPassword')}
+                <span className="text-red-500 ml-0.5">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                  <Lock size={16} />
                 </div>
-                {errors.confirmPassword && (
-                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
-                    <AlertCircle size={12} />
-                    {errors.confirmPassword}
-                  </p>
-                )}
+                <input
+                  type={showCurrent ? 'text' : 'password'}
+                  value={formData.currentPassword}
+                  onChange={(e) =>
+                    handleChange('currentPassword', e.target.value)
+                  }
+                  placeholder={t('currentPasswordPh')}
+                  disabled={isLoading}
+                  className={`w-full pl-10 pr-11 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
+                    errors.currentPassword
+                      ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                      : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrent(!showCurrent)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#1F7A3F] transition-colors p-1"
+                  aria-label="Toggle password"
+                >
+                  {showCurrent ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
+              {errors.currentPassword && (
+                <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                  <AlertCircle size={12} />
+                  {errors.currentPassword}
+                </p>
+              )}
             </div>
 
-            {/* Security Tip */}
-            <div className="mt-5 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB] flex items-start gap-2">
-              <Shield
-                size={14}
-                className="text-[#1F7A3F] flex-shrink-0 mt-0.5"
-              />
-              <p className="text-[11px] sm:text-xs text-[#6B7280] text-bangla-safe leading-relaxed">
-                {t('securityTip')}
+            {/* New Password */}
+            <div className="w-full min-w-0">
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                {t('newPassword')}
+                <span className="text-red-500 ml-0.5">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                  <Lock size={16} />
+                </div>
+                <input
+                  type={showNew ? 'text' : 'password'}
+                  value={formData.newPassword}
+                  onChange={(e) => handleChange('newPassword', e.target.value)}
+                  placeholder={t('newPasswordPh')}
+                  disabled={isLoading}
+                  className={`w-full pl-10 pr-11 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
+                    errors.newPassword
+                      ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                      : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNew(!showNew)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#1F7A3F] transition-colors p-1"
+                  aria-label="Toggle password"
+                >
+                  {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+
+              {/* Password Strength */}
+              {formData.newPassword && (
+                <div className="mt-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold">
+                      {isBn ? 'পাসওয়ার্ড শক্তি' : 'Password Strength'}
+                    </span>
+                    <span
+                      className={`text-[10px] font-bold ${
+                        strength.level === 1
+                          ? 'text-red-500'
+                          : strength.level === 2
+                          ? 'text-orange-500'
+                          : 'text-green-500'
+                      }`}
+                    >
+                      {strength.label}
+                    </span>
+                  </div>
+                  <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{
+                        width:
+                          strength.level === 1
+                            ? '33%'
+                            : strength.level === 2
+                            ? '66%'
+                            : '100%',
+                      }}
+                      transition={{ duration: 0.3 }}
+                      className={`h-full ${strength.color} rounded-full`}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {errors.newPassword && (
+                <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                  <AlertCircle size={12} />
+                  {errors.newPassword}
+                </p>
+              )}
+
+              <p className="mt-1 text-[10px] text-[#6B7280] text-bangla-safe">
+                {t('passwordHint')}
               </p>
             </div>
 
-            {/* Actions */}
-            <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 sm:justify-end pt-5 mt-5 border-t border-[#F3F4F6]">
-              <button
-                type="button"
-                onClick={() => router.back()}
-                className="w-full sm:w-auto px-6 py-3 rounded-lg font-semibold text-sm text-[#4B5563] bg-white border border-[#E5E7EB] hover:bg-[#F8FAF9] transition-all duration-200 text-bangla-safe"
-              >
-                {t('cancel')}
-              </button>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-bold text-white text-sm bg-[#1F7A3F] hover:bg-[#155E30] shadow-md shadow-[#1F7A3F]/20 hover:shadow-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98]"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 size={16} className="animate-spin" />
-                    <span className="text-bangla-safe">{t('saving')}</span>
-                  </>
-                ) : (
-                  <>
-                    <Save size={16} />
-                    <span className="text-bangla-safe">{t('save')}</span>
-                  </>
-                )}
-              </button>
+            {/* Confirm Password */}
+            <div className="w-full min-w-0">
+              <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
+                {t('confirmPassword')}
+                <span className="text-red-500 ml-0.5">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                  <Lock size={16} />
+                </div>
+                <input
+                  type={showConfirm ? 'text' : 'password'}
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    handleChange('confirmPassword', e.target.value)
+                  }
+                  placeholder={t('confirmPasswordPh')}
+                  disabled={isLoading}
+                  className={`w-full pl-10 pr-11 py-2.5 rounded-lg border transition-all duration-200 bg-white text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
+                    errors.confirmPassword
+                      ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+                      : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm(!showConfirm)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#1F7A3F] transition-colors p-1"
+                  aria-label="Toggle password"
+                >
+                  {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              {errors.confirmPassword && (
+                <p className="mt-1 text-xs text-red-600 flex items-center gap-1 text-bangla-safe">
+                  <AlertCircle size={12} />
+                  {errors.confirmPassword}
+                </p>
+              )}
             </div>
-          </form>
-        </motion.div>
+          </div>
+
+          {/* Security Tip */}
+          <div className="mt-5 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB] flex items-start gap-2">
+            <Shield
+              size={14}
+              className="text-[#1F7A3F] flex-shrink-0 mt-0.5"
+            />
+            <p className="text-[11px] sm:text-xs text-[#6B7280] text-bangla-safe leading-relaxed">
+              {t('securityTip')}
+            </p>
+          </div>
+
+          {/* Actions */}
+          <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 sm:justify-end pt-5 mt-5 border-t border-[#F3F4F6]">
+            <button
+              type="button"
+              onClick={() => router.back()}
+              disabled={isLoading}
+              className="w-full sm:w-auto px-6 py-3 rounded-lg font-semibold text-sm text-[#4B5563] bg-white border border-[#E5E7EB] hover:bg-[#F8FAF9] transition-all duration-200 text-bangla-safe disabled:opacity-60"
+            >
+              {t('cancel')}
+            </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-bold text-white text-sm bg-[#1F7A3F] hover:bg-[#155E30] shadow-md shadow-[#1F7A3F]/20 hover:shadow-lg transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98]"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  <span className="text-bangla-safe">{t('saving')}</span>
+                </>
+              ) : (
+                <>
+                  <Save size={16} />
+                  <span className="text-bangla-safe">{t('save')}</span>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
       </motion.div>
-    </DashboardLayout>
+    </motion.div>
   );
 }
