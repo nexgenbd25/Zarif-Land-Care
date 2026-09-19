@@ -1,6 +1,3 @@
-// app/[locale]/admin/layout.tsx
-// Admin layout with role check
-
 'use client';
 
 export const dynamic = 'force-dynamic';
@@ -27,7 +24,6 @@ export default function AdminRootLayout({
   const [status, setStatus] = useState<'checking' | 'ok' | 'denied'>('checking');
 
   useEffect(() => {
-    // Skip check on login page
     if (isLoginPage) {
       setStatus('ok');
       return;
@@ -39,39 +35,45 @@ export default function AdminRootLayout({
       try {
         const supabase = createClient();
 
-        // Get user
+        // 🎯 getUser দিয়ে fresh session check
         const {
           data: { user },
+          error: userError,
         } = await supabase.auth.getUser();
 
-        if (!user) {
-          if (!cancelled) {
-            router.push(`${prefix}/admin/login`);
-          }
+        if (cancelled) return;
+
+        if (userError || !user) {
+          console.log('No user, redirecting to login');
+          router.replace(`${prefix}/admin/login`);
           return;
         }
 
-        // Get role
-        const { data: profile } = await supabase
+        console.log('User found:', user.email);
+
+        // 🎯 Role check
+        const { data: profile, error: profileError } = await supabase
           .from('users')
           .select('role')
           .eq('id', user.id)
           .maybeSingle();
 
-        if (!cancelled) {
-          if (profile?.role === 'admin') {
-            setStatus('ok');
-          } else {
-            setStatus('denied');
-            setTimeout(() => {
-              router.push(`${prefix}/admin/login`);
-            }, 2000);
-          }
+        if (cancelled) return;
+
+        console.log('Profile:', profile, 'Error:', profileError);
+
+        if (profile?.role === 'admin') {
+          setStatus('ok');
+        } else {
+          setStatus('denied');
+          setTimeout(() => {
+            router.replace(`${prefix}/admin/login`);
+          }, 2500);
         }
       } catch (err) {
         console.error('Admin check error:', err);
         if (!cancelled) {
-          router.push(`${prefix}/admin/login`);
+          router.replace(`${prefix}/admin/login`);
         }
       }
     }
@@ -83,17 +85,18 @@ export default function AdminRootLayout({
     };
   }, [pathname, isLoginPage, router, prefix]);
 
-  // Login page: render directly
   if (isLoginPage) {
     return <>{children}</>;
   }
 
-  // Checking
   if (status === 'checking') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0F3D1F] via-[#0A2E17] to-[#061B0D]">
         <div className="text-center">
-          <Loader2 size={48} className="animate-spin text-[#22C55E] mx-auto mb-4" />
+          <Loader2
+            size={48}
+            className="animate-spin text-[#22C55E] mx-auto mb-4"
+          />
           <p className="text-gray-400 text-sm">
             {isBn ? 'যাচাই করা হচ্ছে...' : 'Verifying access...'}
           </p>
@@ -102,7 +105,6 @@ export default function AdminRootLayout({
     );
   }
 
-  // Denied
   if (status === 'denied') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0F3D1F] via-[#0A2E17] to-[#061B0D] px-4">
@@ -121,6 +123,5 @@ export default function AdminRootLayout({
     );
   }
 
-  // OK — render admin panel
   return <AdminLayout locale={locale}>{children}</AdminLayout>;
 }
