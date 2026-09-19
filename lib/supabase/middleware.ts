@@ -1,5 +1,5 @@
 // lib/supabase/middleware.ts
-// Middleware এ Supabase session refresh + route protection
+// Middleware এ Supabase session refresh + return user
 
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
@@ -32,7 +32,7 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // ⚠️ গুরুত্বপূর্ণ: getUser() call না করলে session refresh হবে না
+  // ⚠️ getUser() call না করলে session refresh হবে না
   const {
     data: { user },
   } = await supabase.auth.getUser();
