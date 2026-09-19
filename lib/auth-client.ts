@@ -1,5 +1,6 @@
 // lib/auth-client.ts
 // Client-side auth helpers (browser only)
+// ⚠️ শুধু Client Components এ use করুন
 
 'use client';
 
@@ -8,21 +9,21 @@ import { createClient } from '@/lib/supabase/client';
 // ============================================
 // Types
 // ============================================
-export type UserRole = 'user' | 'admin';
+export type ClientUserRole = 'user' | 'admin';
 
-export interface AuthUser {
+export interface ClientAuthUser {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
   username: string;
-  role: UserRole;
+  role: ClientUserRole;
 }
 
 // ============================================
 // Get Current User (Client-side)
 // ============================================
-export async function getCurrentUserClient(): Promise<AuthUser | null> {
+export async function getClientUser(): Promise<ClientAuthUser | null> {
   const supabase = createClient();
 
   const {
@@ -54,7 +55,7 @@ export async function getCurrentUserClient(): Promise<AuthUser | null> {
     firstName: profile.first_name || '',
     lastName: profile.last_name || '',
     username: profile.username || '',
-    role: (profile.role as UserRole) || 'user',
+    role: (profile.role as ClientUserRole) || 'user',
   };
 }
 
@@ -64,7 +65,9 @@ export async function getCurrentUserClient(): Promise<AuthUser | null> {
 export async function signOutClient() {
   const supabase = createClient();
   await supabase.auth.signOut();
-  window.location.href = '/login';
+  if (typeof window !== 'undefined') {
+    window.location.href = '/login';
+  }
 }
 
 // ============================================
@@ -103,5 +106,34 @@ export async function signUpClient(params: {
         mobile: params.mobile || '',
       },
     },
+  });
+}
+
+// ============================================
+// Get Session (Client-side)
+// ============================================
+export async function getClientSession() {
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  return session;
+}
+
+// ============================================
+// Reset Password (Client-side)
+// ============================================
+export async function resetPasswordClient(email: string) {
+  const supabase = createClient();
+  return await supabase.auth.resetPasswordForEmail(email);
+}
+
+// ============================================
+// Update Password (Client-side)
+// ============================================
+export async function updatePasswordClient(newPassword: string) {
+  const supabase = createClient();
+  return await supabase.auth.updateUser({
+    password: newPassword,
   });
 }
