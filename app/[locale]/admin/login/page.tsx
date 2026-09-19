@@ -3,7 +3,6 @@
 export const dynamic = 'force-dynamic';
 
 import { useState, useEffect, Suspense } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale } from 'next-intl';
@@ -17,8 +16,6 @@ import {
   AlertCircle,
   Loader2,
   Shield,
-  ArrowLeft,
-  Info,
 } from 'lucide-react';
 import { signInClient } from '@/lib/auth-client';
 import { createClient } from '@/lib/supabase/client';
@@ -59,8 +56,6 @@ function AdminLoginForm() {
   }, [searchParams, isBn]);
 
   const content = {
-    badge_bn: 'শুধুমাত্র অ্যাডমিন',
-    badge_en: 'ADMIN ONLY',
     title_bn: 'অ্যাডমিন লগইন',
     title_en: 'Admin Login',
     subtitle_bn: 'শুধুমাত্র অনুমোদিত অ্যাডমিন অ্যাক্সেস করতে পারবেন',
@@ -73,12 +68,10 @@ function AdminLoginForm() {
     passwordLabel_en: 'Password',
     passwordPh_bn: 'পাসওয়ার্ড লিখুন',
     passwordPh_en: 'Enter password',
-    loginBtn_bn: 'অ্যাডমিন লগইন',
-    loginBtn_en: 'Admin Sign In',
+    loginBtn_bn: 'লগইন করুন',
+    loginBtn_en: 'Sign In',
     loggingIn_bn: 'লগইন হচ্ছে...',
     loggingIn_en: 'Signing in...',
-    userLogin_bn: 'ইউজার লগইন',
-    userLogin_en: 'User Login',
     required_bn: 'এই ঘরটি পূরণ করুন',
     required_en: 'This field is required',
     invalidEmail_bn: 'সঠিক ইমেইল দিন',
@@ -88,10 +81,6 @@ function AdminLoginForm() {
     notAdmin_bn:
       'আপনি অ্যাডমিন নন। শুধুমাত্র অ্যাডমিন এই প্যানেলে ঢুকতে পারেন।',
     notAdmin_en: 'You are not an admin. Only admins can access this panel.',
-    securityNote_bn:
-      'এই লগইন পেজটি শুধুমাত্র অ্যাডমিনদের জন্য। সমস্ত কার্যক্রম রেকর্ড করা হয়।',
-    securityNote_en:
-      'This login page is for administrators only. All activity is logged.',
   };
 
   const t = (key: string) =>
@@ -122,7 +111,6 @@ function AdminLoginForm() {
     setIsLoading(true);
 
     try {
-      // Supabase Auth এ sign in
       const { data, error: signInError } = await signInClient(email, password);
 
       if (signInError || !data.user) {
@@ -131,7 +119,6 @@ function AdminLoginForm() {
         return;
       }
 
-      // Role check — users table থেকে
       const supabase = createClient();
       const { data: profile } = await supabase
         .from('users')
@@ -146,7 +133,6 @@ function AdminLoginForm() {
         return;
       }
 
-      // ✅ Admin verified! Dashboard এ redirect
       router.push(`${prefix}/admin/dashboard`);
       router.refresh();
     } catch (err) {
@@ -185,20 +171,6 @@ function AdminLoginForm() {
         transition={{ duration: 0.5 }}
         className="relative w-full max-w-md z-10"
       >
-        {/* Back to Home */}
-        <Link
-          href={`${prefix}/`}
-          className="inline-flex items-center gap-2 text-xs sm:text-sm text-gray-400 hover:text-[#22C55E] transition-colors mb-5 group"
-        >
-          <ArrowLeft
-            size={14}
-            className="transition-transform group-hover:-translate-x-1"
-          />
-          <span className="text-bangla-safe">
-            {isBn ? 'হোমে ফিরুন' : 'Back to Home'}
-          </span>
-        </Link>
-
         {/* Card */}
         <div className="relative rounded-3xl overflow-hidden shadow-2xl">
           {/* Gradient border */}
@@ -210,16 +182,14 @@ function AdminLoginForm() {
           <div className="relative p-6 sm:p-8">
             {/* Logo */}
             <div className="text-center mb-6">
-              <Link href={`${prefix}/`} className="inline-block group">
-                <Image
-                  src={LOGO_URL}
-                  alt="Zarif Landcare"
-                  width={160}
-                  height={48}
-                  className="h-12 w-auto object-contain mx-auto transition-transform duration-300 group-hover:scale-105"
-                  unoptimized
-                />
-              </Link>
+              <Image
+                src={LOGO_URL}
+                alt="Zarif Landcare"
+                width={160}
+                height={48}
+                className="h-12 w-auto object-contain mx-auto"
+                unoptimized
+              />
             </div>
 
             {/* Shield Icon */}
@@ -232,16 +202,6 @@ function AdminLoginForm() {
                   strokeWidth={2}
                 />
               </div>
-            </div>
-
-            {/* Badge */}
-            <div className="text-center mb-3">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#22C55E]/10 border border-[#22C55E]/30">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#22C55E]">
-                  {t('badge')}
-                </span>
-              </span>
             </div>
 
             {/* Title */}
@@ -345,37 +305,6 @@ function AdminLoginForm() {
                 )}
               </button>
             </form>
-
-            {/* Divider */}
-            <div className="relative flex items-center gap-3 my-5">
-              <div className="flex-1 h-px bg-white/10" />
-              <span className="text-[10px] text-gray-500 uppercase tracking-wider">
-                {isBn ? 'অথবা' : 'OR'}
-              </span>
-              <div className="flex-1 h-px bg-white/10" />
-            </div>
-
-            {/* User Login Link */}
-            <Link
-              href={`${prefix}/login`}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-gray-300 hover:text-[#22C55E] bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#22C55E]/30 transition-all text-bangla-safe"
-            >
-              {t('userLogin')}
-              <ArrowRight size={14} />
-            </Link>
-
-            {/* Security Note */}
-            <div className="mt-5 p-3 rounded-lg bg-[#22C55E]/5 border border-[#22C55E]/20">
-              <div className="flex items-start gap-2">
-                <Info
-                  size={13}
-                  className="text-[#22C55E] flex-shrink-0 mt-0.5"
-                />
-                <p className="text-[10px] sm:text-xs text-gray-400 text-bangla-safe leading-relaxed">
-                  {t('securityNote')}
-                </p>
-              </div>
-            </div>
           </div>
         </div>
 
