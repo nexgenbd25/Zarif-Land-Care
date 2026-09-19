@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import {
@@ -22,9 +22,10 @@ import { createClient } from '@/lib/supabase/client';
 const LOGO_URL =
   'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
 
-export default function LoginPage() {
+function LoginForm() {
   const locale = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const isBn = locale === 'bn';
   const prefix = isBn ? '' : `/${locale}`;
 
@@ -38,6 +39,19 @@ export default function LoginPage() {
   }>({});
   const [success, setSuccess] = useState('');
   const [generalError, setGeneralError] = useState('');
+  const [justRegistered, setJustRegistered] = useState(false);
+
+  // 🎯 Check for "registered=true" from register page
+  useEffect(() => {
+    if (searchParams.get('registered') === 'true') {
+      setJustRegistered(true);
+      setSuccess(
+        isBn
+          ? '✅ অ্যাকাউন্ট তৈরি হয়েছে! এখন লগইন করুন।'
+          : '✅ Account created! Now login.'
+      );
+    }
+  }, [searchParams, isBn]);
 
   const content = {
     title_bn: 'স্বাগতম',
@@ -79,9 +93,6 @@ export default function LoginPage() {
     emailNotConfirmed_bn: 'ইমেইল কনফার্ম করা হয়নি। ইনবক্স চেক করুন।',
     emailNotConfirmed_en: 'Email not confirmed. Check your inbox.',
 
-    tooManyRequests_bn: 'অনেকবার চেষ্টা করা হয়েছে। একটু পর আবার চেষ্টা করুন।',
-    tooManyRequests_en: 'Too many attempts. Please try again later.',
-
     loading_bn: 'অপেক্ষা করুন...',
     loading_en: 'Please wait...',
 
@@ -94,32 +105,6 @@ export default function LoginPage() {
 
   const t = (key: string) =>
     isBn ? (content as any)[`${key}_bn`] : (content as any)[`${key}_en`];
-
-  // Auto-redirect if already logged in
-  useEffect(() => {
-    const checkSession = async () => {
-      const supabase = createClient();
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (session?.user) {
-        const { data: profile } = await supabase
-          .from('users')
-          .select('role')
-          .eq('id', session.user.id)
-          .maybeSingle();
-
-        if (profile?.role === 'admin') {
-          router.replace(`${prefix}/admin/dashboard`);
-        } else {
-          router.replace(`${prefix}/dashboard`);
-        }
-      }
-    };
-
-    checkSession();
-  }, [router, prefix]);
 
   const validate = () => {
     const newErrors: { identifier?: string; password?: string } = {};
@@ -172,8 +157,6 @@ export default function LoginPage() {
 
         if (error.message.includes('Email not confirmed')) {
           setGeneralError(t('emailNotConfirmed'));
-        } else if (error.message.includes('Too many requests')) {
-          setGeneralError(t('tooManyRequests'));
         } else {
           setGeneralError(t('loginFailed'));
         }
@@ -199,13 +182,12 @@ export default function LoginPage() {
 
       setTimeout(() => {
         if (profile?.role === 'admin') {
-          router.replace(`${prefix}/admin/dashboard`);
+          window.location.href = `${prefix}/admin/dashboard`;
         } else {
-          router.replace(`${prefix}/dashboard`);
+          window.location.href = `${prefix}/dashboard`;
         }
-        router.refresh();
       }, 500);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Login exception:', err);
       setGeneralError(t('loginFailed'));
       setIsLoading(false);
@@ -214,7 +196,6 @@ export default function LoginPage() {
 
   return (
     <section className="relative min-h-[100dvh] w-full flex items-center justify-center px-4 py-3 sm:py-6 bg-gradient-to-br from-[#F0FDF4] via-white to-[#F0FDF4] overflow-hidden">
-      {/* Background decorations */}
       <div className="absolute top-0 left-0 w-56 h-56 sm:w-72 sm:h-72 bg-[#1F7A3F]/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-[#22C55E]/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -444,5 +425,19 @@ export default function LoginPage() {
         </div>
       </motion.div>
     </section>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F0FDF4] via-white to-[#F0FDF4]">
+          <Loader2 size={40} className="animate-spin text-[#1F7A3F]" />
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }
