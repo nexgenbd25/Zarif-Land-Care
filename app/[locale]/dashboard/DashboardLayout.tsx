@@ -140,11 +140,10 @@ export default function DashboardLayout({
 
   return (
     <div
-      className="min-h-screen bg-[#F8FAF9]"
+      className="min-h-screen bg-[#F8FAF9] w-full overflow-x-hidden"
       style={{
-        overflowX: 'hidden',
         width: '100%',
-        maxWidth: '100%',
+        maxWidth: '100vw',
       }}
     >
       {/* ===== Desktop Sidebar ===== */}
@@ -212,18 +211,18 @@ export default function DashboardLayout({
         )}
       </AnimatePresence>
 
-      {/* ===== Main Content — FIXED ===== */}
+      {/* ===== Main Content — PROPERLY CALCULATED ===== */}
       <div
-        className="lg:ml-72 flex flex-col min-h-screen w-full"
+        className="flex flex-col min-h-screen w-full lg:pl-72"
         style={{
           minWidth: 0,
-          maxWidth: '100%',
+          maxWidth: '100vw',
           overflowX: 'hidden',
         }}
       >
         {/* Top Bar */}
         <header className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB] shadow-sm w-full">
-          <div className="flex items-center justify-between px-4 sm:px-6 py-3">
+          <div className="flex items-center justify-between px-4 sm:px-6 py-3 w-full">
             <button
               onClick={handleOpenSidebar}
               className="lg:hidden w-10 h-10 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB] flex items-center justify-center text-[#1F2937] hover:bg-[#1F7A3F]/10 hover:border-[#1F7A3F]/30 transition-all shrink-0"
