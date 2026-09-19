@@ -69,24 +69,60 @@ export default function DashboardLayout({
     setIsProfileOpen(false);
   }, [pathname]);
 
-  // 🎯 Mobile sidebar open hole body lock + scrollbar compensate
+  // 🎯 Mobile sidebar open hole — FULL PAGE LOCK
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     if (isSidebarOpen) {
       const scrollBarWidth =
         window.innerWidth - document.documentElement.clientWidth;
+
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = '0';
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
       document.body.style.paddingRight = `${scrollBarWidth}px`;
+
+      document.documentElement.style.overflow = 'hidden';
+      document.documentElement.style.paddingRight = `${scrollBarWidth}px`;
     } else {
       document.body.style.overflow = 'unset';
-      document.body.style.paddingRight = '0px';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      document.body.style.paddingRight = '';
+
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.paddingRight = '';
     }
+
     return () => {
       document.body.style.overflow = 'unset';
-      document.body.style.paddingRight = '0px';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      document.body.style.paddingRight = '';
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.paddingRight = '';
     };
   }, [isSidebarOpen]);
 
-  // 🎯 Stable callbacks — sidebar re-render bondho
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isSidebarOpen) {
+        setIsSidebarOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isSidebarOpen]);
+
   const handleCloseSidebar = useCallback(() => setIsSidebarOpen(false), []);
   const handleOpenSidebar = useCallback(() => setIsSidebarOpen(true), []);
   const handleLogout = useCallback(() => onLogout(), [onLogout]);
@@ -112,7 +148,7 @@ export default function DashboardLayout({
         maxWidth: '100%',
       }}
     >
-      {/* ===== Desktop Sidebar — FIXED & STABLE ===== */}
+      {/* ===== Desktop Sidebar — UNTOUCHED ===== */}
       <aside
         className="hidden lg:flex lg:flex-col sidebar-fixed bg-gradient-to-b from-[#0F3D1F] via-[#0A2E17] to-[#061B0D] text-white z-40"
         style={{
@@ -128,7 +164,7 @@ export default function DashboardLayout({
         <DashboardSidebar user={user} onLogout={handleLogout} />
       </aside>
 
-      {/* ===== Mobile Sidebar ===== */}
+      {/* ===== Mobile Sidebar — UNTOUCHED ===== */}
       <AnimatePresence>
         {isSidebarOpen && (
           <>
@@ -138,7 +174,12 @@ export default function DashboardLayout({
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
               onClick={handleCloseSidebar}
-              className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+              className="lg:hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[9998]"
+              style={{
+                touchAction: 'none',
+                overscrollBehavior: 'none',
+                WebkitOverflowScrolling: 'touch',
+              }}
             />
 
             <motion.aside
@@ -146,11 +187,14 @@ export default function DashboardLayout({
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="lg:hidden fixed inset-y-0 left-0 w-[80%] max-w-[320px] bg-gradient-to-b from-[#0F3D1F] via-[#0A2E17] to-[#061B0D] text-white z-50 flex flex-col overflow-hidden"
+              className="lg:hidden fixed inset-y-0 left-0 w-[80%] max-w-[320px] bg-gradient-to-b from-[#0F3D1F] via-[#0A2E17] to-[#061B0D] text-white z-[9999] flex flex-col overflow-hidden shadow-2xl"
               style={{
                 transform: 'translate3d(0, 0, 0)',
                 backfaceVisibility: 'hidden',
                 willChange: 'transform',
+                touchAction: 'pan-y',
+                overscrollBehavior: 'contain',
+                WebkitOverflowScrolling: 'touch',
               }}
             >
               <button
@@ -171,28 +215,27 @@ export default function DashboardLayout({
         )}
       </AnimatePresence>
 
-      {/* ===== Main Content — Stable Width ===== */}
+      {/* ===== Main Content — FIXED ===== */}
       <div
-        className="lg:ml-72 flex flex-col min-h-screen"
+        className="lg:ml-72 flex flex-col min-h-screen w-full"
         style={{
           minWidth: 0,
-          width: '100%',
           maxWidth: '100%',
           overflowX: 'hidden',
         }}
       >
         {/* Top Bar */}
-        <header className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB] shadow-sm">
-          <div className="flex items-center justify-between px-4 sm:px-6 py-3">
+        <header className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB] shadow-sm w-full">
+          <div className="flex items-center justify-between px-3 sm:px-4 lg:px-6 py-3">
             <button
               onClick={handleOpenSidebar}
-              className="lg:hidden w-10 h-10 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB] flex items-center justify-center text-[#1F2937] hover:bg-[#1F7A3F]/10 hover:border-[#1F7A3F]/30 transition-all"
+              className="lg:hidden w-10 h-10 rounded-lg bg-[#F8FAF9] border border-[#E5E7EB] flex items-center justify-center text-[#1F2937] hover:bg-[#1F7A3F]/10 hover:border-[#1F7A3F]/30 transition-all shrink-0"
               aria-label="Open menu"
             >
               <Menu size={20} />
             </button>
 
-            <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+            <div className="flex items-center gap-2 sm:gap-3 ml-auto min-w-0">
               <div className="relative" ref={profileRef}>
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -204,12 +247,12 @@ export default function DashboardLayout({
                       {avatarLetter}
                     </span>
                   </div>
-                  <span className="hidden sm:inline text-sm font-semibold text-[#1F2937] text-bangla-safe max-w-[140px] truncate">
+                  <span className="hidden sm:inline text-sm font-semibold text-[#1F2937] text-bangla-safe max-w-[120px] lg:max-w-[140px] truncate">
                     {displayName}
                   </span>
                   <ChevronDown
                     size={14}
-                    className={`text-[#6B7280] transition-transform duration-300 ${
+                    className={`text-[#6B7280] transition-transform duration-300 shrink-0 ${
                       isProfileOpen ? 'rotate-180' : ''
                     }`}
                   />
@@ -222,7 +265,7 @@ export default function DashboardLayout({
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-64 z-[100] bg-white border border-[#E5E7EB] rounded-xl shadow-2xl overflow-hidden"
+                      className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] z-[100] bg-white border border-[#E5E7EB] rounded-xl shadow-2xl overflow-hidden"
                     >
                       <div className="px-4 py-3 bg-[#F8FAF9] border-b border-[#E5E7EB]">
                         <div className="flex items-center gap-2.5">
@@ -285,19 +328,19 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        {/* Main Content Area */}
+        {/* ===== Main Content Area — FIXED ===== */}
         <main
-          className="flex-1 p-4 sm:p-6 lg:p-8"
+          className="flex-1 p-3 sm:p-4 lg:p-6 w-full"
           style={{
             minWidth: 0,
-            minHeight: 0,
+            maxWidth: '100%',
             overflowX: 'hidden',
             overflowAnchor: 'none',
-            width: '100%',
-            maxWidth: '100%',
           }}
         >
-          {children}
+          <div className="w-full max-w-7xl mx-auto">
+            {children}
+          </div>
         </main>
       </div>
     </div>
