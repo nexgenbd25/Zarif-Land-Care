@@ -797,4 +797,26 @@ export default function LoginPage() {
                   {/* Info Box */}
                   <div className="mt-5 p-3.5 rounded-xl bg-gradient-to-br from-[#F0FDF4] to-[#F8FAF9] border border-[#1F7A3F]/15">
                     <div className="flex items-start gap-2.5">
-                      <div className="w
+                      <div className="w-8 h-8 rounded-lg bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
+                        <Smartphone size={16} className="text-[#1F7A3F]" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[11px] sm:text-xs font-bold text-[#1F7A3F] text-bangla-safe mb-1 flex items-center gap-1.5">
+                          <Info size={12} className="flex-shrink-0" />
+                          {t('infoTitle')}
+                        </p>
+                        <p className="text-[10px] sm:text-[11px] text-[#6B7280] text-bangla-safe leading-relaxed">
+                          {t('infoText')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </section>
+  );
+}
