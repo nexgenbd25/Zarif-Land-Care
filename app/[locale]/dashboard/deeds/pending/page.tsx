@@ -23,6 +23,7 @@ import {
   Users,
 } from 'lucide-react';
 import { getDemoUser, clearDemoUser, DemoUser } from '@/lib/auth';
+import { useBodyScrollLock } from '@/lib/useBodyScrollLock';
 import DashboardLayout from '../../DashboardLayout';
 
 interface Deed {
@@ -139,38 +140,6 @@ const PENDING_DEEDS: Deed[] = [
     remarks: 'পুত্রকে দান',
     pdfUrl: 'N/A',
   },
-  {
-    id: 7,
-    serialNo: '107',
-    deedNo: '266',
-    date: '2020-07-14',
-    donorName: 'মোঃ শফিকুল ইসলাম',
-    donorFatherName: 'মোঃ মজিবর রহমান',
-    recipientName: 'মোঃ মামুন',
-    recipientFatherName: 'মোঃ শফিকুল ইসলাম',
-    mouzaName: 'বানারী',
-    deedType: 'বিনিময় দলিল',
-    value: 600000,
-    mobile: '01829784457',
-    remarks: '',
-    pdfUrl: 'N/A',
-  },
-  {
-    id: 8,
-    serialNo: '108',
-    deedNo: '267',
-    date: '2020-08-30',
-    donorName: 'মোঃ কামাল হোসেন',
-    donorFatherName: 'মোঃ জামাল হোসেন',
-    recipientName: 'মোঃ সবুজ হোসেন',
-    recipientFatherName: 'মোঃ কামাল হোসেন',
-    mouzaName: 'রহিমগঞ্জ',
-    deedType: 'বিক্রয় দলিল',
-    value: 950000,
-    mobile: '01302555723',
-    remarks: 'জমি বিক্রয়',
-    pdfUrl: 'N/A',
-  },
 ];
 
 const ITEMS_PER_PAGE = 8;
@@ -186,6 +155,9 @@ export default function PendingDeedsPage() {
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [viewDeed, setViewDeed] = useState<Deed | null>(null);
+
+  // 🎯 Body scroll lock when modal open
+  useBodyScrollLock(!!viewDeed);
 
   useEffect(() => {
     const currentUser = getDemoUser();
@@ -317,7 +289,7 @@ export default function PendingDeedsPage() {
   return (
     <DashboardLayout user={user} onLogout={handleLogout}>
       <div className="w-full max-w-7xl mx-auto">
-        {/* ===== Page Header (ONLY TITLE HERE) ===== */}
+        {/* Header */}
         <div className="mb-4 sm:mb-5">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center flex-shrink-0">
@@ -578,7 +550,7 @@ export default function PendingDeedsPage() {
           </>
         )}
 
-        {/* View Modal */}
+        {/* ===== View Modal — GPU + Scroll Lock ===== */}
         <AnimatePresence>
           {viewDeed && (
             <>
@@ -590,13 +562,20 @@ export default function PendingDeedsPage() {
                 className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
               />
 
-              <div className="fixed inset-0 z-[101] flex items-center justify-center p-3 sm:p-4 pointer-events-none">
+              <div
+                className="fixed inset-0 z-[101] flex items-center justify-center p-3 sm:p-4 pointer-events-none"
+                style={{ overflowAnchor: 'none' }}
+              >
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 20 }}
                   transition={{ duration: 0.25 }}
                   className="pointer-events-auto w-full max-w-3xl max-h-[92vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+                  style={{
+                    transform: 'translateZ(0)',
+                    backfaceVisibility: 'hidden',
+                  }}
                 >
                   {/* Modal Header */}
                   <div className="bg-white border-b border-[#E5E7EB] px-4 sm:px-5 py-3.5 flex-shrink-0">
@@ -625,7 +604,7 @@ export default function PendingDeedsPage() {
                     </div>
                   </div>
 
-                  {/* Modal Body — 13 Fields */}
+                  {/* Modal Body */}
                   <div className="p-4 sm:p-5 overflow-y-auto flex-1">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                       <DetailRow
@@ -690,7 +669,6 @@ export default function PendingDeedsPage() {
                       />
                     </div>
 
-                    {/* Status — Full Width */}
                     <div className="mt-2.5 flex items-center gap-2.5 p-3 rounded-xl bg-orange-50 border border-orange-200">
                       <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
                         <Clock size={14} className="text-orange-600" />
@@ -706,20 +684,24 @@ export default function PendingDeedsPage() {
                       </div>
                     </div>
 
-                    {/* Remarks — Full Width */}
-                    <div className="mt-2.5 flex items-start gap-2.5 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
-                      <div className="w-8 h-8 rounded-lg bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
-                        <MessageSquare size={14} className="text-[#1F7A3F]" />
+                    {viewDeed.remarks && (
+                      <div className="mt-2.5 flex items-start gap-2.5 p-3 rounded-xl bg-[#F8FAF9] border border-[#E5E7EB]">
+                        <div className="w-8 h-8 rounded-lg bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
+                          <MessageSquare
+                            size={14}
+                            className="text-[#1F7A3F]"
+                          />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-0.5">
+                            {t('remarks')}
+                          </p>
+                          <p className="text-sm text-[#1F2937] text-bangla-safe break-words">
+                            {viewDeed.remarks || '—'}
+                          </p>
+                        </div>
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[10px] uppercase tracking-wider text-[#6B7280] font-bold mb-0.5">
-                          {t('remarks')}
-                        </p>
-                        <p className="text-sm text-[#1F2937] text-bangla-safe break-words">
-                          {viewDeed.remarks || '—'}
-                        </p>
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </motion.div>
               </div>
