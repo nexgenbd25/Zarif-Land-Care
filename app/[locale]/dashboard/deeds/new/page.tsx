@@ -363,14 +363,8 @@ export default function NewDeedPage() {
         <div className="mb-4 sm:mb-5 lg:mb-6 w-full">
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
-              <FilePlus2
-                size={18}
-                className="text-[#1F7A3F] sm:hidden"
-              />
-              <FilePlus2
-                size={20}
-                className="text-[#1F7A3F] hidden sm:block"
-              />
+              <FilePlus2 size={18} className="text-[#1F7A3F] sm:hidden" />
+              <FilePlus2 size={20} className="text-[#1F7A3F] hidden sm:block" />
             </div>
             <div className="min-w-0">
               <h1 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold text-[#1F2937] text-bangla-heading pt-1 pb-0.5 leading-tight">
@@ -406,29 +400,15 @@ export default function NewDeedPage() {
               {t('sectionBasic')}
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 w-full">
-              {/* Serial No — Read Only */}
-              <div className="w-full min-w-0">
-                <label className="block text-[11px] sm:text-xs lg:text-sm font-semibold text-[#1F2937] mb-1 sm:mb-1.5 text-bangla-safe">
-                  {t('serialNo')}
-                  <span className="text-red-500 ml-0.5">*</span>
-                </label>
-                <div className="relative w-full">
-                  <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                    <Hash size={14} className="sm:hidden" />
-                    <Hash size={16} className="hidden sm:block" />
-                  </div>
-                  <input
-                    type="text"
-                    value={
-                      serialLoading ? t('serialLoading') : formData.serialNo
-                    }
-                    readOnly
-                    disabled
-                    className="w-full pl-8 sm:pl-10 pr-2.5 sm:pr-3 py-2 sm:py-2.5 rounded-lg border border-[#E5E7EB] bg-[#F8FAF9] text-[13px] sm:text-sm text-[#1F7A3F] font-bold text-bangla-safe cursor-not-allowed focus:outline-none"
-                  />
-                </div>
-              </div>
+            {/* 🎯 2 columns max — NO 3 columns */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 w-full">
+              {renderField({
+                icon: Hash,
+                label: t('serialNo'),
+                field: 'serialNo',
+                placeholder: t('serialNoPh'),
+                required: true,
+              })}
 
               {renderField({
                 icon: FileText,
@@ -598,10 +578,7 @@ export default function NewDeedPage() {
               {pdfFile ? (
                 <div className="flex items-center justify-center gap-2.5 sm:gap-3 flex-wrap sm:flex-nowrap">
                   <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
-                    <FileText
-                      size={18}
-                      className="text-[#1F7A3F] sm:hidden"
-                    />
+                    <FileText size={18} className="text-[#1F7A3F] sm:hidden" />
                     <FileText
                       size={20}
                       className="text-[#1F7A3F] hidden sm:block"
@@ -631,10 +608,7 @@ export default function NewDeedPage() {
               ) : (
                 <>
                   <div className="w-10 h-10 sm:w-11 sm:h-11 mx-auto rounded-xl bg-[#1F7A3F]/10 flex items-center justify-center mb-2">
-                    <Upload
-                      size={18}
-                      className="text-[#1F7A3F] sm:hidden"
-                    />
+                    <Upload size={18} className="text-[#1F7A3F] sm:hidden" />
                     <Upload
                       size={20}
                       className="text-[#1F7A3F] hidden sm:block"
