@@ -1,22 +1,32 @@
 // app/[locale]/admin/layout.tsx
-// Admin panel layout — NO Header/Footer
+// Admin panel layout — Header/Footer ছাড়া
+// কিন্তু /admin/login page এ AdminLayout ছাড়া render হবে
 
+'use client';
+
+import { usePathname } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
 import AdminLayout from '@/components/admin/AdminLayout';
 
-export default async function AdminRootLayout({
+export default function AdminRootLayout({
   children,
   params: { locale },
 }: {
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  const messages = await getMessages();
+  const pathname = usePathname();
+
+  // Login page হলে AdminLayout ছাড়া render করব
+  const isLoginPage = pathname?.includes('/admin/login');
 
   return (
-    <NextIntlClientProvider messages={messages}>
-      <AdminLayout locale={locale}>{children}</AdminLayout>
+    <NextIntlClientProvider>
+      {isLoginPage ? (
+        <>{children}</>
+      ) : (
+        <AdminLayout locale={locale}>{children}</AdminLayout>
+      )}
     </NextIntlClientProvider>
   );
 }
