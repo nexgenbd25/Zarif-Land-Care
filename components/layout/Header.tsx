@@ -12,12 +12,8 @@ import LanguageSwitcher from './LanguageSwitcher';
 const LOGO_URL =
   'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
 
-// 🎯 Slide-in duration (seconds)
 const DRAWER_DURATION = 0.45;
-// 🎯 Backdrop fade duration
 const BACKDROP_DURATION = 0.3;
-
-// 🎯 Framer Motion easing (door er moto smooth)
 const SMOOTH_EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function Header() {
@@ -41,7 +37,7 @@ export default function Header() {
     setIsMenuOpen(false);
   }, [pathname]);
 
-  // 🎯 FULL PAGE LOCK — Body + HTML — sob scroll bondho
+  // 🎯 FULL PAGE LOCK — Body + HTML
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -49,7 +45,6 @@ export default function Header() {
       const scrollBarWidth =
         window.innerWidth - document.documentElement.clientWidth;
 
-      // Body lock
       document.body.style.overflow = 'hidden';
       document.body.style.position = 'fixed';
       document.body.style.top = '0';
@@ -58,11 +53,9 @@ export default function Header() {
       document.body.style.width = '100%';
       document.body.style.paddingRight = `${scrollBarWidth}px`;
 
-      // HTML lock
       document.documentElement.style.overflow = 'hidden';
       document.documentElement.style.paddingRight = `${scrollBarWidth}px`;
     } else {
-      // Unlock
       document.body.style.overflow = 'unset';
       document.body.style.position = '';
       document.body.style.top = '';
@@ -88,7 +81,7 @@ export default function Header() {
     };
   }, [isMenuOpen]);
 
-  // 🎯 ESC key diye close
+  // 🎯 ESC key close
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isMenuOpen) {
@@ -130,140 +123,142 @@ export default function Header() {
   };
 
   return (
-    <header
-      className={`sticky top-0 z-50 bg-white transition-all duration-300
-                  border-b border-neutral-light
-                  ${isScrolled ? 'shadow-md' : ''}`}
-    >
-      <div className="container-custom">
-        <div className="flex items-center justify-between h-20 sm:h-22 lg:h-28">
-          <Link
-            href={`/${isBn ? '' : locale}`}
-            className="flex items-center gap-2 group z-50 shrink-0"
-          >
-            <Image
-              src={LOGO_URL}
-              alt="Zarif Landcare Center"
-              width={260}
-              height={72}
-              priority
-              unoptimized
-              className="h-12 sm:h-14 lg:h-16 w-auto object-contain 
-                         transition-transform duration-300 
-                         group-hover:scale-105"
-            />
-            <div className="hidden sm:block">
-              <div
-                className="text-[#1F7A3F] font-bold text-sm lg:text-base 
-                           leading-tight text-bangla-safe"
-              >
-                {isBn ? 'জারিফ ল্যান্ড কেয়ার' : 'Zarif Landcare'}
-              </div>
-              <div
-                className="text-black text-xs lg:text-sm 
-                           leading-tight font-medium text-bangla-safe"
-              >
-                {isBn ? 'এন্ড ডিজিটাল সেবা' : '& Digital Services'}
-              </div>
-            </div>
-          </Link>
-
-          <nav className="hidden lg:flex items-center gap-1">
-            {menuItems.map((item) => {
-              const active = isActive(item.href);
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`relative flex items-center 
-                              px-4 xl:px-5 py-3 rounded-md 
-                              text-base xl:text-lg font-semibold
-                              transition-all duration-200
-                              ${
-                                active
-                                  ? 'text-[#1F7A3F]'
-                                  : 'text-black hover:text-[#1F7A3F]'
-                              }`}
-                >
-                  <span className="whitespace-nowrap">{item.name}</span>
-                  {active && (
-                    <motion.div
-                      layoutId="activeNav"
-                      className="absolute bottom-0 left-3 right-3 h-0.5 
-                                 bg-[#1F7A3F] rounded-full"
-                      transition={{
-                        type: 'spring',
-                        stiffness: 380,
-                        damping: 30,
-                      }}
-                    />
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-
-          <div className="flex items-center gap-3 lg:gap-4 z-50">
-            <LanguageSwitcher />
-
+    <>
+      <header
+        className={`sticky top-0 z-50 bg-white transition-all duration-300
+                    border-b border-neutral-light
+                    ${isScrolled ? 'shadow-md' : ''}`}
+      >
+        <div className="container-custom">
+          <div className="flex items-center justify-between h-20 sm:h-22 lg:h-28">
             <Link
-              href={`/${isBn ? '' : locale + '/'}login`}
-              className="hidden lg:inline-flex items-center gap-2 
-                         px-5 py-3 rounded-md
-                         bg-[#1F7A3F] text-white font-bold text-base
-                         shadow-md shadow-[#1F7A3F]/20
-                         transition-all duration-200
-                         hover:bg-[#155E30] hover:shadow-lg hover:scale-105"
+              href={`/${isBn ? '' : locale}`}
+              className="flex items-center gap-2 group z-50 shrink-0"
             >
-              <LogIn size={20} />
-              <span>{t('login')}</span>
+              <Image
+                src={LOGO_URL}
+                alt="Zarif Landcare Center"
+                width={260}
+                height={72}
+                priority
+                unoptimized
+                className="h-12 sm:h-14 lg:h-16 w-auto object-contain 
+                           transition-transform duration-300 
+                           group-hover:scale-105"
+              />
+              <div className="hidden sm:block">
+                <div
+                  className="text-[#1F7A3F] font-bold text-sm lg:text-base 
+                             leading-tight text-bangla-safe"
+                >
+                  {isBn ? 'জারিফ ল্যান্ড কেয়ার' : 'Zarif Landcare'}
+                </div>
+                <div
+                  className="text-black text-xs lg:text-sm 
+                             leading-tight font-medium text-bangla-safe"
+                >
+                  {isBn ? 'এন্ড ডিজিটাল সেবা' : '& Digital Services'}
+                </div>
+              </div>
             </Link>
 
-            {/* Hamburger button — z-[10000] — sidebar er upore */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-2 rounded-md text-black 
-                         hover:text-[#1F7A3F] hover:bg-[#1F7A3F]/5 
-                         transition-colors relative z-[10000]"
-              aria-label="Toggle menu"
-              aria-expanded={isMenuOpen}
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                {isMenuOpen ? (
-                  <motion.span
-                    key="close"
-                    initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="block"
+            <nav className="hidden lg:flex items-center gap-1">
+              {menuItems.map((item) => {
+                const active = isActive(item.href);
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`relative flex items-center 
+                                px-4 xl:px-5 py-3 rounded-md 
+                                text-base xl:text-lg font-semibold
+                                transition-all duration-200
+                                ${
+                                  active
+                                    ? 'text-[#1F7A3F]'
+                                    : 'text-black hover:text-[#1F7A3F]'
+                                }`}
                   >
-                    <X size={28} />
-                  </motion.span>
-                ) : (
-                  <motion.span
-                    key="menu"
-                    initial={{ rotate: 90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: -90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="block"
-                  >
-                    <Menu size={28} />
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </button>
+                    <span className="whitespace-nowrap">{item.name}</span>
+                    {active && (
+                      <motion.div
+                        layoutId="activeNav"
+                        className="absolute bottom-0 left-3 right-3 h-0.5 
+                                   bg-[#1F7A3F] rounded-full"
+                        transition={{
+                          type: 'spring',
+                          stiffness: 380,
+                          damping: 30,
+                        }}
+                      />
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            <div className="flex items-center gap-3 lg:gap-4 z-50">
+              <LanguageSwitcher />
+
+              <Link
+                href={`/${isBn ? '' : locale + '/'}login`}
+                className="hidden lg:inline-flex items-center gap-2 
+                           px-5 py-3 rounded-md
+                           bg-[#1F7A3F] text-white font-bold text-base
+                           shadow-md shadow-[#1F7A3F]/20
+                           transition-all duration-200
+                           hover:bg-[#155E30] hover:shadow-lg hover:scale-105"
+              >
+                <LogIn size={20} />
+                <span>{t('login')}</span>
+              </Link>
+
+              {/* Hamburger button */}
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="lg:hidden p-2 rounded-md text-black 
+                           hover:text-[#1F7A3F] hover:bg-[#1F7A3F]/5 
+                           transition-colors relative z-[10000]"
+                aria-label="Toggle menu"
+                aria-expanded={isMenuOpen}
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  {isMenuOpen ? (
+                    <motion.span
+                      key="close"
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: 90, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="block"
+                    >
+                      <X size={28} />
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="menu"
+                      initial={{ rotate: 90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: -90, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="block"
+                    >
+                      <Menu size={28} />
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* ===== MOBILE DRAWER ===== */}
+      {/* ===== MOBILE DRAWER — OUTSIDE HEADER ===== */}
       <AnimatePresence>
         {isMenuOpen && (
           <>
-            {/* Backdrop — z-[9998] — sidebar er niche, content er upore */}
+            {/* Backdrop — z-[9998] */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -278,7 +273,7 @@ export default function Header() {
               }}
             />
 
-            {/* 🚪 Drawer — z-[9999] — SOBAR UPORE */}
+            {/* 🚪 Drawer — z-[9999] — FULL SCREEN + TOP */}
             <motion.aside
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
@@ -290,7 +285,6 @@ export default function Header() {
               className="lg:hidden fixed inset-y-0 left-0
                          w-[80%] max-w-[320px]
                          bg-white 
-                         border-r border-neutral-light
                          shadow-2xl z-[9999]
                          overflow-y-auto overflow-x-hidden"
               style={{
@@ -302,7 +296,7 @@ export default function Header() {
                 WebkitOverflowScrolling: 'touch',
               }}
             >
-              {/* Close Button — top right */}
+              {/* Close Button */}
               <button
                 onClick={() => setIsMenuOpen(false)}
                 className="absolute top-4 right-4 w-10 h-10 rounded-full 
@@ -396,6 +390,6 @@ export default function Header() {
           </>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }
