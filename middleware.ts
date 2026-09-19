@@ -6,35 +6,23 @@ import { NextRequest, NextResponse } from 'next/server';
 import { locales, defaultLocale } from './i18n';
 import { updateSession } from './lib/supabase/middleware';
 
-// ============================================
-// i18n Middleware
-// ============================================
 const intlMiddleware = createMiddleware({
   locales,
   defaultLocale,
   localePrefix: 'as-needed',
 });
 
-// ============================================
-// Helper: Get locale prefix
-// ============================================
 function getLocalePrefix(pathname: string): string {
   if (pathname.startsWith('/en/') || pathname === '/en') return '/en';
   return '';
 }
 
-// ============================================
-// Helper: Get path without locale
-// ============================================
 function getPathWithoutLocale(pathname: string): string {
   if (pathname.startsWith('/en/')) return pathname.slice(3);
   if (pathname === '/en') return '/';
   return pathname;
 }
 
-// ============================================
-// Main Middleware
-// ============================================
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -46,14 +34,16 @@ export async function middleware(request: NextRequest) {
   const localePrefix = getLocalePrefix(pathname);
 
   // Step 3: Route classification
-  const isAdminRoute = pathWithoutLocale.startsWith('/admin');
+  const isAdminLogin = pathWithoutLocale === '/admin/login';
+  const isAdminRoute =
+    pathWithoutLocale.startsWith('/admin') && !isAdminLogin;
   const isUserRoute = pathWithoutLocale.startsWith('/user');
   const isAuthRoute =
     pathWithoutLocale === '/login' ||
     pathWithoutLocale === '/register' ||
     pathWithoutLocale === '/forgot-password';
 
-  // Step 4: Fetch role if logged in (but handle users table not existing yet)
+  // Step 4: Fetch role if logged in
   let userRole: string | null = null;
   if (user) {
     try {
@@ -64,7 +54,6 @@ export async function middleware(request: NextRequest) {
         .single();
       userRole = profile?.role || 'user';
     } catch {
-      // users table না থাকলে বা error হলে default user
       userRole = 'user';
     }
   }
@@ -73,11 +62,22 @@ export async function middleware(request: NextRequest) {
   // Step 5: Route Protection
   // ============================================
 
-  // --- Admin Routes ---
-  if (isAdminRoute && !pathWithoutLocale.startsWith('/admin/login')) {
-    // Not logged in → Login
+  // --- Admin Login (public, but redirect if already admin) ---
+  if (isAdminLogin) {
+    if (user && userRole === 'admin') {
+      // Already logged in as admin → dashboard
+      return NextResponse.redirect(
+        new URL(`${localePrefix}/admin/dashboard`, request.url)
+      );
+    }
+    // Allow access
+  }
+
+  // --- Admin Routes (protected) ---
+  if (isAdminRoute) {
+    // Not logged in → Admin login
     if (!user) {
-      const loginUrl = new URL(`${localePrefix}/login`, request.url);
+      const loginUrl = new URL(`${localePrefix}/admin/login`, request.url);
       loginUrl.searchParams.set('redirect', pathname);
       loginUrl.searchParams.set('error', 'login-required');
       return NextResponse.redirect(loginUrl);
@@ -91,9 +91,8 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // --- User Routes ---
+  // --- User Routes (protected) ---
   if (isUserRoute) {
-    // Not logged in → Login
     if (!user) {
       const loginUrl = new URL(`${localePrefix}/login`, request.url);
       loginUrl.searchParams.set('redirect', pathname);
@@ -111,9 +110,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(dest, request.url));
   }
 
-  // ============================================
   // Step 6: i18n Middleware
-  // ============================================
   const response = intlMiddleware(request);
 
   // Copy Supabase cookies to final response
@@ -124,11 +121,6 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-// ============================================
-// Matcher Config
-// ============================================
 export const config = {
-  matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)'],
 };
