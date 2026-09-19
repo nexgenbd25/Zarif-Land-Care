@@ -1,11 +1,11 @@
 // middleware.ts
-// Complete middleware: i18n + Supabase auth + route protection
+// Only i18n + minimal auth check
+// Role check is done in admin layout, not here
 
 import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
 import { locales, defaultLocale } from './i18n';
 import { updateSession } from './lib/supabase/middleware';
-import { createAdminClient } from './lib/supabase/admin';
 
 const intlMiddleware = createMiddleware({
   locales,
@@ -27,96 +27,48 @@ function getPathWithoutLocale(pathname: string): string {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Step 1: Supabase session refresh
+  // Session refresh ONLY (no role query!)
   const { supabaseResponse, user } = await updateSession(request);
 
-  // Step 2: Path info
   const pathWithoutLocale = getPathWithoutLocale(pathname);
   const localePrefix = getLocalePrefix(pathname);
 
-  // Step 3: Route classification
-  const isAdminLogin = pathWithoutLocale === '/admin/login';
-  const isAdminRoute = pathWithoutLocale.startsWith('/admin') && !isAdminLogin;
+  // Routes that require login (but NOT role — role checked in layout)
+  const isAdminRoute =
+    pathWithoutLocale.startsWith('/admin') &&
+    pathWithoutLocale !== '/admin/login';
   const isUserRoute = pathWithoutLocale.startsWith('/user');
   const isAuthRoute =
     pathWithoutLocale === '/login' ||
     pathWithoutLocale === '/register' ||
     pathWithoutLocale === '/forgot-password';
 
-  // Step 4: Fetch role if logged in (using ADMIN client — RLS bypass)
-  let userRole: string | null = null;
-  if (user) {
-    try {
-      const adminClient = createAdminClient();
-      const { data: profile } = await adminClient
-        .from('users')
-        .select('role')
-        .eq('id', user.id)
-        .single();
-      userRole = profile?.role || 'user';
-      console.log('✅ Middleware role:', userRole);
-    } catch (err) {
-      console.error('❌ Middleware role fetch error:', err);
-      userRole = 'user';
-    }
+  // Admin routes: require login (role check happens in admin layout)
+  if (isAdminRoute && !user) {
+    const loginUrl = new URL(`${localePrefix}/admin/login`, request.url);
+    loginUrl.searchParams.set('redirect', pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  // ============================================
-  // Step 5: Route Protection
-  // ============================================
-
-  // --- Admin Login (public, but redirect if already admin) ---
-  if (isAdminLogin) {
-    if (user && userRole === 'admin') {
-      // Already logged in as admin → dashboard
-      return NextResponse.redirect(
-        new URL(`${localePrefix}/admin/dashboard`, request.url)
-      );
-    }
-    // Allow access to login
+  // User routes: require login
+  if (isUserRoute && !user) {
+    const loginUrl = new URL(`${localePrefix}/login`, request.url);
+    loginUrl.searchParams.set('redirect', pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  // --- Admin Routes ---
-  if (isAdminRoute) {
-    // Not logged in → Admin login
-    if (!user) {
-      const loginUrl = new URL(`${localePrefix}/admin/login`, request.url);
-      loginUrl.searchParams.set('redirect', pathname);
-      return NextResponse.redirect(loginUrl);
-    }
-
-    // Logged in but not admin → User dashboard
-    if (userRole !== 'admin') {
-      const userDash = new URL(`${localePrefix}/user/dashboard`, request.url);
-      userDash.searchParams.set('error', 'admin-only');
-      return NextResponse.redirect(userDash);
-    }
-
-    // ✅ Admin → allow
-  }
-
-  // --- User Routes ---
-  if (isUserRoute) {
-    if (!user) {
-      const loginUrl = new URL(`${localePrefix}/login`, request.url);
-      loginUrl.searchParams.set('redirect', pathname);
-      return NextResponse.redirect(loginUrl);
-    }
-  }
-
-  // --- Auth Routes (login, register, forgot-password) ---
+  // Auth routes: if already logged in, don't show login/register
   if (isAuthRoute && user) {
-    const dest =
-      userRole === 'admin'
-        ? `${localePrefix}/admin/dashboard`
-        : `${localePrefix}/user/dashboard`;
-    return NextResponse.redirect(new URL(dest, request.url));
+    // Let admin layout handle redirect logic
+    return NextResponse.redirect(
+      new URL(`${localePrefix}/admin/dashboard`, request.url)
+    );
   }
 
-  // Step 6: i18n Middleware
+  // i18n
   const response = intlMiddleware(request);
 
-  // Copy Supabase cookies to final response
+  // Copy Supabase cookies
   supabaseResponse.cookies.getAll().forEach((cookie) => {
     response.cookies.set(cookie.name, cookie.value);
   });
