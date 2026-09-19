@@ -33,7 +33,7 @@ interface FormErrors {
 }
 
 const MAX_FILES = 5;
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_FILE_SIZE = 2 * 1024 * 1024;
 const ALLOWED_TYPES = [
   'image/jpeg',
   'image/jpg',
@@ -42,8 +42,6 @@ const ALLOWED_TYPES = [
   'application/msword',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ];
-
-const ALLOWED_EXTENSIONS = '.jpg, .jpeg, .png, .pdf, .doc, .docx';
 
 export default function NewTicketPage() {
   const locale = useLocale();
@@ -98,8 +96,6 @@ export default function NewTicketPage() {
     messageLabel_en: 'Message',
     messagePh_bn: 'আপনার সমস্যা বা প্রশ্ন বিস্তারিত লিখুন',
     messagePh_en: 'Describe your issue or question in detail',
-    attachLabel_bn: 'সংযুক্তি',
-    attachLabel_en: 'Attachments',
     attachHint_bn: 'সর্বোচ্চ ৫টি ফাইল, প্রতিটি ২MB',
     attachHint_en: 'Max 5 files, 2MB each',
     attachAllowed_bn: 'অনুমোদিত: jpg, jpeg, png, pdf, doc, docx',
@@ -130,8 +126,6 @@ export default function NewTicketPage() {
     saveFailed_en: 'Failed to submit ticket',
     sessionExpired_bn: 'সেশন মেয়াদোত্তীর্ণ',
     sessionExpired_en: 'Session expired',
-    loading_bn: 'লোড হচ্ছে...',
-    loading_en: 'Loading...',
   };
 
   const t = (key: string) =>
@@ -202,10 +196,8 @@ export default function NewTicketPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // 🎯 Generate ticket number
   const generateTicketNo = async (
-    supabase: ReturnType<typeof createClient>,
-    userId: string
+    supabase: ReturnType<typeof createClient>
   ) => {
     const { data: existing } = await supabase
       .from('support_tickets')
@@ -251,10 +243,8 @@ export default function NewTicketPage() {
         return;
       }
 
-      // 🎯 Generate ticket number
-      const ticketNo = await generateTicketNo(supabase, user.id);
+      const ticketNo = await generateTicketNo(supabase);
 
-      // 🎯 Insert ticket
       const { data: ticket, error: ticketError } = await supabase
         .from('support_tickets')
         .insert({
@@ -278,11 +268,9 @@ export default function NewTicketPage() {
         return;
       }
 
-      // 🎯 Upload attachments
       if (files.length > 0) {
         for (const file of files) {
           try {
-            const fileExt = file.name.split('.').pop() || 'file';
             const fileName = `${user.id}/${ticket.id}/${Date.now()}-${file.name.replace(/[^\w.-]/g, '_')}`;
 
             const { data: uploadData, error: uploadError } =
@@ -309,12 +297,10 @@ export default function NewTicketPage() {
             }
           } catch (err) {
             console.error('Upload error:', err);
-            // Continue even if one file fails
           }
         }
       }
 
-      // 🎯 Success
       setToast({ type: 'success', message: t('success') });
       setIsLoading(false);
 
@@ -338,7 +324,6 @@ export default function NewTicketPage() {
       transition={{ duration: 0.4 }}
       className="w-full max-w-3xl mx-auto"
     >
-      {/* Toast */}
       <AnimatePresence>
         {toast && (
           <motion.div
@@ -392,7 +377,6 @@ export default function NewTicketPage() {
         )}
       </AnimatePresence>
 
-      {/* Header */}
       <div className="mb-5 sm:mb-6">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#1F7A3F]/10 border border-[#1F7A3F]/20 flex items-center justify-center flex-shrink-0">
@@ -406,9 +390,7 @@ export default function NewTicketPage() {
         </div>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-        {/* Section 1: Ticket Info */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5 lg:p-6">
           <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
             <MessageSquare size={16} className="text-[#1F7A3F]" />
@@ -417,7 +399,6 @@ export default function NewTicketPage() {
 
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
-              {/* Subject */}
               <div className="w-full min-w-0 md:col-span-2">
                 <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
                   {t('subjectLabel')}
@@ -448,7 +429,6 @@ export default function NewTicketPage() {
                 )}
               </div>
 
-              {/* Priority */}
               <div className="w-full min-w-0">
                 <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
                   {t('priorityLabel')}
@@ -484,7 +464,6 @@ export default function NewTicketPage() {
               </div>
             </div>
 
-            {/* Message */}
             <div className="w-full min-w-0">
               <label className="block text-xs sm:text-sm font-semibold text-[#1F2937] mb-1.5 text-bangla-safe">
                 {t('messageLabel')}
@@ -517,7 +496,6 @@ export default function NewTicketPage() {
           </div>
         </div>
 
-        {/* Section 2: Attachments */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-5 lg:p-6">
           <h2 className="text-sm sm:text-base font-bold text-[#1F2937] text-bangla-heading pt-1 pb-2 mb-4 flex items-center gap-2 border-b border-[#F3F4F6]">
             <Upload size={16} className="text-[#1F7A3F]" />
@@ -620,7 +598,6 @@ export default function NewTicketPage() {
           )}
         </div>
 
-        {/* Actions */}
         <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 sm:justify-end pt-1">
           <button
             type="button"
