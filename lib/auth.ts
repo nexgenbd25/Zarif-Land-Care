@@ -1,6 +1,9 @@
 // lib/auth.ts
-// Server-side auth helpers
+// Server-side auth helpers ONLY
+// ⚠️ শুধু Server Components, Server Actions এ use করুন
+// Client Components এ lib/auth-client.ts use করুন
 
+import 'server-only'; // ⚠️ এই file শুধু server-side
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 
@@ -30,7 +33,6 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
 
   if (!user) return null;
 
-  // users table থেকে profile আনা
   const { data: profile } = await supabase
     .from('users')
     .select('first_name, last_name, username, role')
@@ -38,7 +40,6 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     .single();
 
   if (!profile) {
-    // Profile না থাকলে শুধু auth info দিয়ে return
     return {
       id: user.id,
       email: user.email || '',
@@ -68,7 +69,7 @@ export async function getUserRole(): Promise<UserRole | null> {
 }
 
 // ============================================
-// Check if Admin
+// Check if Admin (Server-side)
 // ============================================
 export async function isAdmin(): Promise<boolean> {
   const role = await getUserRole();
@@ -95,7 +96,7 @@ export async function requireAdmin(locale: string = 'bn') {
 
   if (!user) {
     const prefix = locale === 'bn' ? '' : `/${locale}`;
-    redirect(`${prefix}/login?error=unauthorized`);
+    redirect(`${prefix}/login?error=login-required`);
   }
 
   if (user.role !== 'admin') {
@@ -107,7 +108,7 @@ export async function requireAdmin(locale: string = 'bn') {
 }
 
 // ============================================
-// Sign Out
+// Sign Out (Server-side)
 // ============================================
 export async function signOut() {
   const supabase = await createClient();
