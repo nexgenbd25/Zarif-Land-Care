@@ -1,7 +1,6 @@
-// app/[locale]/admin/dashboard/page.tsx
-// Admin Dashboard
-
 'use client';
+
+export const dynamic = 'force-dynamic';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -28,7 +27,14 @@ interface StatCardProps {
   href: string;
 }
 
-function StatCard({ icon: Icon, label, value, trend, color, href }: StatCardProps) {
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+  trend,
+  color,
+  href,
+}: StatCardProps) {
   return (
     <Link href={href}>
       <motion.div
@@ -70,9 +76,8 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
-    // TODO: Fetch from Supabase
     setStats({
-      users: 5,
+      users: 1,
       pendingDeeds: 0,
       pendingKhatian: 0,
       openTickets: 0,
@@ -111,9 +116,6 @@ export default function AdminDashboard() {
 
     noActivity_bn: 'কোনো কার্যক্রম নেই',
     noActivity_en: 'No activity yet',
-
-    loading_bn: 'লোড হচ্ছে...',
-    loading_en: 'Loading...',
   };
 
   const t = (key: string) =>
@@ -124,7 +126,6 @@ export default function AdminDashboard() {
       icon: Users,
       label: t('statUsers'),
       value: stats.users,
-      trend: '+12%',
       color: '#3B82F6',
       href: `${prefix}/admin/users`,
     },
