@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   AlertCircle,
   Loader2,
+  X,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -94,16 +95,18 @@ function LoginForm() {
   const t = (key: string) =>
     isBn ? (content as any)[`${key}_bn`] : (content as any)[`${key}_en`];
 
-  // Show toast from register redirect
+  // Show register success toast
   useEffect(() => {
     if (searchParams.get('registered') === 'true') {
       setToast({ type: 'success', message: t('registerSuccess') });
-      // Clean URL
-      window.history.replaceState({}, '', `${prefix}/login`);
+      // Clean URL without reload
+      if (typeof window !== 'undefined') {
+        window.history.replaceState({}, '', `${prefix}/login`);
+      }
     }
   }, [searchParams, isBn, prefix]);
 
-  // Auto-hide toast after 4s
+  // Auto-hide toast
   useEffect(() => {
     if (toast) {
       const timer = setTimeout(() => setToast(null), 4000);
@@ -132,7 +135,7 @@ function LoginForm() {
 
       let loginEmail = identifier.trim();
 
-      // If not email format, lookup username → email
+      // Username → email lookup
       if (!loginEmail.includes('@')) {
         const { data: profile } = await supabase
           .from('users')
@@ -149,7 +152,6 @@ function LoginForm() {
         loginEmail = profile.email;
       }
 
-      // Supabase Auth
       const { data, error } = await supabase.auth.signInWithPassword({
         email: loginEmail.toLowerCase(),
         password: password,
@@ -174,17 +176,16 @@ function LoginForm() {
         return;
       }
 
-      // Get user role
+      // Get role
       const { data: profile } = await supabase
         .from('users')
         .select('role')
         .eq('id', data.user.id)
         .maybeSingle();
 
-      // Show success toast
       setToast({ type: 'success', message: t('loginSuccess') });
 
-      // 🎯 Redirect based on role after short delay
+      // 🎯 Force full page reload to dashboard
       setTimeout(() => {
         const redirectUrl =
           profile?.role === 'admin'
@@ -201,11 +202,10 @@ function LoginForm() {
 
   return (
     <section className="relative min-h-[100dvh] w-full flex items-center justify-center px-4 py-3 sm:py-6 bg-gradient-to-br from-[#F0FDF4] via-white to-[#F0FDF4] overflow-hidden">
-      {/* Background decorations */}
       <div className="absolute top-0 left-0 w-56 h-56 sm:w-72 sm:h-72 bg-[#1F7A3F]/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-[#22C55E]/5 rounded-full blur-3xl pointer-events-none" />
 
-      {/* 🎯 Toast Notification */}
+      {/* 🎯 Mobile Responsive Toast */}
       <AnimatePresence>
         {toast && (
           <motion.div
@@ -213,29 +213,29 @@ function LoginForm() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -30, scale: 0.95 }}
             transition={{ duration: 0.3 }}
-            className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-md"
+            className="fixed top-3 left-3 right-3 sm:top-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-[100] sm:w-full sm:max-w-md"
           >
             <div
-              className={`flex items-start gap-3 p-4 rounded-xl shadow-lg border-2 backdrop-blur-sm ${
+              className={`flex items-start gap-3 p-3 sm:p-4 rounded-xl shadow-lg border-2 backdrop-blur-sm ${
                 toast.type === 'success'
                   ? 'bg-[#DCFCE7]/95 border-[#22C55E]/40'
                   : 'bg-red-50/95 border-red-300'
               }`}
             >
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                   toast.type === 'success' ? 'bg-[#22C55E]' : 'bg-red-500'
                 }`}
               >
                 {toast.type === 'success' ? (
-                  <CheckCircle2 size={18} className="text-white" />
+                  <CheckCircle2 size={16} className="text-white" />
                 ) : (
-                  <AlertCircle size={18} className="text-white" />
+                  <AlertCircle size={16} className="text-white" />
                 )}
               </div>
-              <div className="flex-1 min-w-0 pt-1">
+              <div className="flex-1 min-w-0 pt-0.5 sm:pt-1">
                 <p
-                  className={`text-sm font-semibold text-bangla-safe ${
+                  className={`text-xs sm:text-sm font-semibold text-bangla-safe leading-snug ${
                     toast.type === 'success'
                       ? 'text-[#166534]'
                       : 'text-red-700'
@@ -253,21 +253,7 @@ function LoginForm() {
                 }`}
                 aria-label="Close"
               >
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M9 3L3 9M3 3L9 9"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <X size={14} />
               </button>
             </div>
           </motion.div>
