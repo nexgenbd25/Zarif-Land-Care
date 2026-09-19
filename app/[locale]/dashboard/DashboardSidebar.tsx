@@ -33,7 +33,6 @@ interface DashboardSidebarProps {
   onClose?: () => void;
 }
 
-// 🎯 React.memo — sidebar re-render bondho (input typing e re-render hobe na)
 const DashboardSidebar = React.memo(function DashboardSidebar({
   user,
   onLogout,
@@ -42,6 +41,7 @@ const DashboardSidebar = React.memo(function DashboardSidebar({
   const locale = useLocale();
   const pathname = usePathname();
   const isBn = locale === 'bn';
+  const prefix = isBn ? '' : `/${locale}`;
 
   const [isDeedsOpen, setIsDeedsOpen] = React.useState(
     pathname.includes('/dashboard/deeds')
@@ -96,8 +96,8 @@ const DashboardSidebar = React.memo(function DashboardSidebar({
       type: 'link' as const,
       icon: Home,
       label: t('dashboard'),
-      href: `/${isBn ? '' : locale + '/'}dashboard`,
-      active: pathname === `/${isBn ? '' : locale + '/'}dashboard`,
+      href: `${prefix}/dashboard`,
+      active: pathname === `${prefix}/dashboard`,
     },
     {
       type: 'dropdown' as const,
@@ -109,15 +109,15 @@ const DashboardSidebar = React.memo(function DashboardSidebar({
       children: [
         {
           label: t('newDeed'),
-          href: `/${isBn ? '' : locale + '/'}dashboard/deeds/new`,
+          href: `${prefix}/dashboard/deeds/new`,
         },
         {
           label: t('approvedDeed'),
-          href: `/${isBn ? '' : locale + '/'}dashboard/deeds/approved`,
+          href: `${prefix}/dashboard/deeds/approved`,
         },
         {
           label: t('pendingDeed'),
-          href: `/${isBn ? '' : locale + '/'}dashboard/deeds/pending`,
+          href: `${prefix}/dashboard/deeds/pending`,
         },
       ],
     },
@@ -131,15 +131,15 @@ const DashboardSidebar = React.memo(function DashboardSidebar({
       children: [
         {
           label: t('newKhatian'),
-          href: `/${isBn ? '' : locale + '/'}dashboard/khatian/new`,
+          href: `${prefix}/dashboard/khatian/new`,
         },
         {
           label: t('approvedKhatian'),
-          href: `/${isBn ? '' : locale + '/'}dashboard/khatian/approved`,
+          href: `${prefix}/dashboard/khatian/approved`,
         },
         {
           label: t('pendingKhatian'),
-          href: `/${isBn ? '' : locale + '/'}dashboard/khatian/pending`,
+          href: `${prefix}/dashboard/khatian/pending`,
         },
       ],
     },
@@ -147,24 +147,24 @@ const DashboardSidebar = React.memo(function DashboardSidebar({
       type: 'link' as const,
       icon: Ticket,
       label: t('support'),
-      href: `/${isBn ? '' : locale + '/'}dashboard/support`,
+      href: `${prefix}/dashboard/support`,
       active: pathname.includes('/dashboard/support'),
     },
     {
       type: 'link' as const,
       icon: Shield,
       label: t('security'),
-      href: `/${isBn ? '' : locale + '/'}dashboard/security`,
+      href: `${prefix}/dashboard/security`,
       active: pathname.includes('/dashboard/security'),
     },
   ];
 
   return (
     <div className="flex flex-col h-full w-full">
-      {/* Logo — Fixed */}
+      {/* Logo */}
       <div className="px-5 pt-5 pb-4 border-b border-white/10 flex-shrink-0">
         <Link
-          href={`/${isBn ? '' : locale}`}
+          href={`${prefix}/`}
           className="flex items-center justify-center group"
           onClick={onClose}
         >
@@ -310,7 +310,7 @@ const DashboardSidebar = React.memo(function DashboardSidebar({
         </nav>
       </div>
 
-      {/* Footer — Fixed */}
+      {/* Footer */}
       <div className="px-4 py-3 border-t border-white/10 flex-shrink-0">
         <p className="text-[10px] text-center text-gray-400 text-bangla-safe">
           © {new Date().getFullYear()} Zarif Land Care
