@@ -553,8 +553,7 @@ export default function LoginPage() {
                   <span className="text-bangla-safe">{t('signUp')}</span>
                   <ArrowRight size={14} className="sm:hidden" />
                   <ArrowRight size={16} className="hidden sm:block" />
-                </button>
-              </Link>
+                </Link>
               </form>
             </motion.div>
           ) : (
@@ -798,9 +797,4 @@ export default function LoginPage() {
                   {/* Info Box */}
                   <div className="mt-5 p-3.5 rounded-xl bg-gradient-to-br from-[#F0FDF4] to-[#F8FAF9] border border-[#1F7A3F]/15">
                     <div className="flex items-start gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-[#1F7A3F]/10 flex items-center justify-center flex-shrink-0">
-                        <Smartphone size={16} className="text-[#1F7A3F]" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[11px] sm:text-xs font-bold text-[#1F7A3F] text-bangla-safe mb-1 flex items-center gap-1.5">
-                          <Info size={
+                      <div className="w
