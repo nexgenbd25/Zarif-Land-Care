@@ -22,8 +22,9 @@ import {
   Building2,
   Hash,
   Home,
+  MailCheck,
 } from 'lucide-react';
-import { demoRegister } from '@/lib/auth';
+import { createClient } from '@/lib/supabase/client';
 
 const LOGO_URL =
   'https://i.postimg.cc/L4BcXGzb/file-0000000063fc8211bafecb49ffa1e4cf.png';
@@ -81,12 +82,15 @@ export default function RegisterPage() {
   const locale = useLocale();
   const router = useRouter();
   const isBn = locale === 'bn';
+  const prefix = isBn ? '' : `/${locale}`;
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [success, setSuccess] = useState('');
+  const [generalError, setGeneralError] = useState('');
+  const [showEmailVerify, setShowEmailVerify] = useState(false);
 
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -202,10 +206,31 @@ export default function RegisterPage() {
     passwordMismatch_bn: 'পাসওয়ার্ড মিলছে না',
     passwordMismatch_en: 'Passwords do not match',
 
-    registerSuccess_bn: 'অ্যাকাউন্ট তৈরি হয়েছে! ড্যাশবোর্ডে যাচ্ছে...',
-    registerSuccess_en: 'Account created! Going to dashboard...',
+    registerSuccess_bn: 'অ্যাকাউন্ট তৈরি হয়েছে!',
+    registerSuccess_en: 'Account created!',
+
+    registerSuccessWithEmail_bn:
+      'অ্যাকাউন্ট তৈরি হয়েছে! আপনার ইমেইল চেক করে ভেরিফাই করুন।',
+    registerSuccessWithEmail_en:
+      'Account created! Check your email to verify.',
+
+    emailInUse_bn: 'এই ইমেইল দিয়ে আগেই অ্যাকাউন্ট আছে',
+    emailInUse_en: 'An account already exists with this email',
+
+    usernameInUse_bn: 'এই ইউজারনেম আগেই নেওয়া হয়েছে',
+    usernameInUse_en: 'This username is already taken',
+
     loading_bn: 'অপেক্ষা করুন...',
     loading_en: 'Please wait...',
+
+    emailVerifyTitle_bn: 'ইমেইল ভেরিফিকেশন',
+    emailVerifyTitle_en: 'Email Verification',
+    emailVerifyMsg_bn:
+      'আপনার ইমেইলে একটি ভেরিফিকেশন লিংক পাঠানো হয়েছে। লিংকে ক্লিক করে অ্যাকাউন্ট সক্রিয় করুন।',
+    emailVerifyMsg_en:
+      'A verification link has been sent to your email. Click the link to activate your account.',
+    emailVerifyBtn_bn: 'লগইন পেজে যান',
+    emailVerifyBtn_en: 'Go to Login',
   };
 
   const t = (key: string) =>
@@ -216,6 +241,7 @@ export default function RegisterPage() {
     if (errors[field as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
+    if (generalError) setGeneralError('');
   };
 
   const validate = () => {
@@ -285,6 +311,8 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSuccess('');
+    setGeneralError('');
+
     if (!validate()) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
@@ -292,32 +320,152 @@ export default function RegisterPage() {
 
     setIsLoading(true);
 
-    // 🎯 DEMO REGISTER with firstName + lastName
-    setTimeout(() => {
-      const result = demoRegister({
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        username: formData.username,
-        email: formData.email,
-        country: formData.country,
-        phone: formData.mobile,
+    try {
+      const supabase = createClient();
+
+      const cleanUsername = formData.username.trim().toLowerCase();
+      const cleanEmail = formData.email.trim().toLowerCase();
+
+      // 🎯 Check username unique
+      const { data: existingUsername } = await supabase
+        .from('users')
+        .select('id')
+        .eq('username', cleanUsername)
+        .maybeSingle();
+
+      if (existingUsername) {
+        setErrors({ username: t('usernameInUse') });
+        setIsLoading(false);
+        return;
+      }
+
+      // 🎯 Check email unique
+      const { data: existingEmail } = await supabase
+        .from('users')
+        .select('id')
+        .eq('email', cleanEmail)
+        .maybeSingle();
+
+      if (existingEmail) {
+        setErrors({ email: t('emailInUse') });
+        setIsLoading(false);
+        return;
+      }
+
+      // 🎯 Supabase Auth signup
+      const { data, error } = await supabase.auth.signUp({
+        email: cleanEmail,
         password: formData.password,
+        options: {
+          data: {
+            first_name: formData.firstName.trim(),
+            last_name: formData.lastName.trim(),
+            username: cleanUsername,
+            country_code: formData.country,
+            mobile: formData.mobile.trim(),
+            address: formData.address.trim(),
+            state: formData.state.trim(),
+            city: formData.city.trim(),
+            zip_code: formData.zipCode.trim(),
+          },
+        },
       });
 
-      if (result.success) {
-        setSuccess(t('registerSuccess'));
-        setTimeout(() => {
-          router.push(`/${isBn ? '' : locale + '/'}dashboard`);
-        }, 900);
-      } else {
+      if (error) {
+        console.error('Signup error:', error);
+
+        if (error.message.toLowerCase().includes('already registered')) {
+          setErrors({ email: t('emailInUse') });
+        } else {
+          setGeneralError(error.message);
+        }
+
         setIsLoading(false);
+        return;
       }
-    }, 1100);
+
+      if (!data.user) {
+        setGeneralError(t('registerFailed'));
+        setIsLoading(false);
+        return;
+      }
+
+      // 🎯 If email confirmation is enabled in Supabase
+      if (!data.session) {
+        // User needs to verify email
+        setSuccess(t('registerSuccessWithEmail'));
+        setShowEmailVerify(true);
+        setIsLoading(false);
+        return;
+      }
+
+      // 🎯 Auto logged in (email confirmation disabled)
+      setSuccess(t('registerSuccess'));
+      setTimeout(() => {
+        router.replace(`${prefix}/dashboard`);
+        router.refresh();
+      }, 800);
+    } catch (err: any) {
+      console.error('Register exception:', err);
+      setGeneralError(err?.message || 'Registration failed');
+      setIsLoading(false);
+    }
   };
+
+  // 🎯 Email verify screen
+  if (showEmailVerify) {
+    return (
+      <section className="relative min-h-[100dvh] w-full flex items-center justify-center px-4 py-4 sm:py-6 bg-gradient-to-br from-[#F0FDF4] via-white to-[#F0FDF4] overflow-hidden">
+        <div className="absolute top-0 left-0 w-56 h-56 sm:w-72 sm:h-72 bg-[#1F7A3F]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-[#22C55E]/5 rounded-full blur-3xl pointer-events-none" />
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="relative w-full max-w-md z-10"
+        >
+          <div className="text-center mb-5">
+            <Image
+              src={LOGO_URL}
+              alt="Zarif Landcare"
+              width={200}
+              height={60}
+              className="h-12 w-auto object-contain mx-auto"
+              unoptimized
+            />
+          </div>
+
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-lg p-6 sm:p-8 text-center">
+            <div className="relative mx-auto w-20 h-20 mb-5">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#22C55E] to-[#1F7A3F] shadow-xl shadow-[#22C55E]/30" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <MailCheck size={36} className="text-white" strokeWidth={2} />
+              </div>
+            </div>
+
+            <h2 className="text-xl sm:text-2xl font-bold text-[#1F2937] text-bangla-heading mb-3">
+              {t('emailVerifyTitle')}
+            </h2>
+            <p className="text-sm text-[#6B7280] text-bangla-safe leading-relaxed mb-6">
+              {t('emailVerifyMsg')}
+            </p>
+
+            <Link
+              href={`${prefix}/login`}
+              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-bold text-white text-sm bg-[#1F7A3F] hover:bg-[#155E30] transition-all duration-300"
+            >
+              {t('emailVerifyBtn')}
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+        </motion.div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative min-h-[100dvh] w-full flex items-start sm:items-center justify-center px-4 py-4 sm:py-6 bg-gradient-to-br from-[#F0FDF4] via-white to-[#F0FDF4] overflow-hidden">
-      {/* Background decorations */}
       <div className="absolute top-0 left-0 w-56 h-56 sm:w-72 sm:h-72 bg-[#1F7A3F]/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-[#22C55E]/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -329,7 +477,7 @@ export default function RegisterPage() {
       >
         {/* Logo */}
         <div className="text-center mb-3 sm:mb-5">
-          <Link href={`/${isBn ? '' : locale}`} className="inline-block group">
+          <Link href={`${prefix}/`} className="inline-block group">
             <Image
               src={LOGO_URL}
               alt="Zarif Landcare Center"
@@ -351,24 +499,40 @@ export default function RegisterPage() {
           </p>
         </div>
 
+        {/* General Error */}
+        {generalError && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-3 flex items-start gap-2 p-3 rounded-lg bg-red-50 border border-red-200"
+          >
+            <AlertCircle
+              size={16}
+              className="text-red-600 flex-shrink-0 mt-0.5"
+            />
+            <p className="text-xs sm:text-sm text-red-700 text-bangla-safe">
+              {generalError}
+            </p>
+          </motion.div>
+        )}
+
         {/* Success */}
         {success && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-3 flex items-start gap-2 p-2.5 rounded-lg bg-[#DCFCE7] border border-[#22C55E]/30"
+            className="mb-3 flex items-start gap-2 p-3 rounded-lg bg-[#DCFCE7] border border-[#22C55E]/30"
           >
             <CheckCircle
-              size={14}
+              size={16}
               className="text-[#15803D] flex-shrink-0 mt-0.5"
             />
-            <p className="text-[11px] sm:text-sm text-[#166534] text-bangla-safe">
+            <p className="text-xs sm:text-sm text-[#166534] text-bangla-safe">
               {success}
             </p>
           </motion.div>
         )}
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
           {/* Section 1: Personal Info */}
           <div>
@@ -394,7 +558,8 @@ export default function RegisterPage() {
                     value={formData.firstName}
                     onChange={(e) => handleChange('firstName', e.target.value)}
                     placeholder={t('firstNamePh')}
-                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                    disabled={isLoading}
+                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
                       errors.firstName
                         ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                         : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -425,7 +590,8 @@ export default function RegisterPage() {
                     value={formData.lastName}
                     onChange={(e) => handleChange('lastName', e.target.value)}
                     placeholder={t('lastNamePh')}
-                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                    disabled={isLoading}
+                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
                       errors.lastName
                         ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                         : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -456,7 +622,8 @@ export default function RegisterPage() {
                     value={formData.username}
                     onChange={(e) => handleChange('username', e.target.value)}
                     placeholder={t('usernamePh')}
-                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                    disabled={isLoading}
+                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
                       errors.username
                         ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                         : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -487,7 +654,8 @@ export default function RegisterPage() {
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
                     placeholder={t('emailPh')}
-                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                    disabled={isLoading}
+                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
                       errors.email
                         ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                         : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -524,7 +692,8 @@ export default function RegisterPage() {
                       )
                     }
                     placeholder={t('mobilePh')}
-                    className={`w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-r-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                    disabled={isLoading}
+                    className={`w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-r-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
                       errors.mobile
                         ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                         : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -563,7 +732,8 @@ export default function RegisterPage() {
                   <select
                     value={formData.country}
                     onChange={(e) => handleChange('country', e.target.value)}
-                    className={`w-full pl-8 sm:pl-10 pr-8 sm:pr-10 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] text-bangla-safe focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
+                    disabled={isLoading}
+                    className={`w-full pl-8 sm:pl-10 pr-8 sm:pr-10 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] text-bangla-safe focus:outline-none focus:ring-2 appearance-none cursor-pointer disabled:opacity-60 ${
                       errors.country
                         ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                         : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -610,7 +780,8 @@ export default function RegisterPage() {
                     value={formData.state}
                     onChange={(e) => handleChange('state', e.target.value)}
                     placeholder={t('statePh')}
-                    className="w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20"
+                    disabled={isLoading}
+                    className="w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20 disabled:opacity-60"
                   />
                 </div>
               </div>
@@ -630,7 +801,8 @@ export default function RegisterPage() {
                     value={formData.city}
                     onChange={(e) => handleChange('city', e.target.value)}
                     placeholder={t('cityPh')}
-                    className="w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20"
+                    disabled={isLoading}
+                    className="w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border border-[#E5E7EB] transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20 disabled:opacity-60"
                   />
                 </div>
               </div>
@@ -655,7 +827,8 @@ export default function RegisterPage() {
                       )
                     }
                     placeholder={t('zipCodePh')}
-                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                    disabled={isLoading}
+                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
                       errors.zipCode
                         ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                         : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -670,7 +843,7 @@ export default function RegisterPage() {
                 )}
               </div>
 
-              {/* Address — Full width */}
+              {/* Address */}
               <div className="w-full min-w-0 sm:col-span-2">
                 <label className="block text-[11px] sm:text-xs font-semibold text-[#1F2937] mb-1 text-bangla-safe">
                   {t('addressLabel')}
@@ -685,7 +858,8 @@ export default function RegisterPage() {
                     onChange={(e) => handleChange('address', e.target.value)}
                     placeholder={t('addressPh')}
                     rows={3}
-                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 resize-none ${
+                    disabled={isLoading}
+                    className={`w-full pl-8 sm:pl-10 pr-3 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 resize-none disabled:opacity-60 ${
                       errors.address
                         ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                         : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -733,7 +907,8 @@ export default function RegisterPage() {
                     value={formData.password}
                     onChange={(e) => handleChange('password', e.target.value)}
                     placeholder={t('passwordPh')}
-                    className={`w-full pl-8 sm:pl-10 pr-10 sm:pr-12 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                    disabled={isLoading}
+                    className={`w-full pl-8 sm:pl-10 pr-10 sm:pr-12 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
                       errors.password
                         ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                         : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -783,7 +958,8 @@ export default function RegisterPage() {
                       handleChange('confirmPassword', e.target.value)
                     }
                     placeholder={t('confirmPasswordPh')}
-                    className={`w-full pl-8 sm:pl-10 pr-10 sm:pr-12 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 ${
+                    disabled={isLoading}
+                    className={`w-full pl-8 sm:pl-10 pr-10 sm:pr-12 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 bg-white text-[13px] sm:text-sm text-[#1F2937] placeholder-[#9CA3AF] text-bangla-safe focus:outline-none focus:ring-2 disabled:opacity-60 ${
                       errors.confirmPassword
                         ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
                         : 'border-[#E5E7EB] focus:border-[#1F7A3F] focus:ring-[#1F7A3F]/20'
@@ -844,7 +1020,7 @@ export default function RegisterPage() {
           <p className="text-center text-[11px] sm:text-sm text-[#6B7280] pt-1 text-bangla-safe leading-tight">
             {t('haveAccount')}{' '}
             <Link
-              href={`/${isBn ? '' : locale + '/'}login`}
+              href={`${prefix}/login`}
               className="text-[#1F7A3F] hover:text-[#155E30] font-bold transition-colors"
             >
               {t('signIn')}
