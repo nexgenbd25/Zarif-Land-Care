@@ -5,6 +5,7 @@ import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
 import { locales, defaultLocale } from './i18n';
 import { updateSession } from './lib/supabase/middleware';
+import { createAdminClient } from './lib/supabase/admin';
 
 const intlMiddleware = createMiddleware({
   locales,
@@ -27,7 +28,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Step 1: Supabase session refresh
-  const { supabaseResponse, user, supabase } = await updateSession(request);
+  const { supabaseResponse, user } = await updateSession(request);
 
   // Step 2: Path info
   const pathWithoutLocale = getPathWithoutLocale(pathname);
@@ -35,25 +36,27 @@ export async function middleware(request: NextRequest) {
 
   // Step 3: Route classification
   const isAdminLogin = pathWithoutLocale === '/admin/login';
-  const isAdminRoute =
-    pathWithoutLocale.startsWith('/admin') && !isAdminLogin;
+  const isAdminRoute = pathWithoutLocale.startsWith('/admin') && !isAdminLogin;
   const isUserRoute = pathWithoutLocale.startsWith('/user');
   const isAuthRoute =
     pathWithoutLocale === '/login' ||
     pathWithoutLocale === '/register' ||
     pathWithoutLocale === '/forgot-password';
 
-  // Step 4: Fetch role if logged in
+  // Step 4: Fetch role if logged in (using ADMIN client — RLS bypass)
   let userRole: string | null = null;
   if (user) {
     try {
-      const { data: profile } = await supabase
+      const adminClient = createAdminClient();
+      const { data: profile } = await adminClient
         .from('users')
         .select('role')
         .eq('id', user.id)
         .single();
       userRole = profile?.role || 'user';
-    } catch {
+      console.log('✅ Middleware role:', userRole);
+    } catch (err) {
+      console.error('❌ Middleware role fetch error:', err);
       userRole = 'user';
     }
   }
@@ -70,16 +73,15 @@ export async function middleware(request: NextRequest) {
         new URL(`${localePrefix}/admin/dashboard`, request.url)
       );
     }
-    // Allow access
+    // Allow access to login
   }
 
-  // --- Admin Routes (protected) ---
+  // --- Admin Routes ---
   if (isAdminRoute) {
     // Not logged in → Admin login
     if (!user) {
       const loginUrl = new URL(`${localePrefix}/admin/login`, request.url);
       loginUrl.searchParams.set('redirect', pathname);
-      loginUrl.searchParams.set('error', 'login-required');
       return NextResponse.redirect(loginUrl);
     }
 
@@ -89,14 +91,15 @@ export async function middleware(request: NextRequest) {
       userDash.searchParams.set('error', 'admin-only');
       return NextResponse.redirect(userDash);
     }
+
+    // ✅ Admin → allow
   }
 
-  // --- User Routes (protected) ---
+  // --- User Routes ---
   if (isUserRoute) {
     if (!user) {
       const loginUrl = new URL(`${localePrefix}/login`, request.url);
       loginUrl.searchParams.set('redirect', pathname);
-      loginUrl.searchParams.set('error', 'login-required');
       return NextResponse.redirect(loginUrl);
     }
   }
